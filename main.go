@@ -41,6 +41,9 @@ func storyHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
     http.HandleFunc("/", introHandler)
     http.HandleFunc("/story/", storyHandler)
+    http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("css"))))
+    http.Handle("/scripts/", http.StripPrefix("/scripts/", http.FileServer(http.Dir("scripts"))))
+
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
 

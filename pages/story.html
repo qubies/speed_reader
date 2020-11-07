@@ -1,42 +1,6 @@
-<style>
-.position_text_box {
-    position: relative;
-    height: 
-}
-.display_position_text {
-    position: relative;
-    color: #AAA;
-    font-size: 1.4em;
-    text-align: center;
-}
-
-#WORD {
-    font-size: 5em;
-}
-
-.WORD_BOX {
-    display: flex;
-    position:absolute;
-    justify-content: center;
-    align-items: center;
-    height: 70%;
-    width: 100%;
-}
-
-mark {
-    color:red;
-    background-color:#fff;
-    font-weight: 600;
-}
-#current_word {
-    color: red;
-}
-
-p {
-    margin: 0;
-    padding: 0;
-}
-</style>
+<head>
+<link rel="stylesheet" href="/css/main.css" >
+</head>
 <script>
     function wpmToSeconds(wpm) {
         return 1 / (wpm / 60);
@@ -46,6 +10,7 @@ p {
         return new Promise(resolve => setTimeout(resolve, s*1000));
     }
 
+    let running = false;
     let story = {{.Story}};
     let wpm_base = 250;
     let pauseTime = wpmToSeconds(wpm_base);
@@ -71,13 +36,23 @@ p {
             line-=1;
             line = Math.max(line, 0);
         }
+        if (event.key === "ArrowRight") {
+            line+=1;
+            line = Math.min(line, story.length-1);
+        }
     });
 
     async function presentStory() {
+        start_button = document.getElementById('start_button')
+        start_button.style.display="none";
+        console.log(start_button);
+        if (running) {return;}
+        running = true;
         let previous_line = document.getElementById('previous_line');
         let current_line = document.getElementById('current_line');
         let next_line = document.getElementById('next_line');
         let wp = document.getElementById('WORD');
+
         while (true) {
             for (line=0; line < story.length;line++){
                 let lp=line;
@@ -109,15 +84,17 @@ p {
     }
 
 </script>
-<H1>{{.Title}}</H1>
-<div class="WORD_BOX">
-    <p id="WORD"></p>
+<div id=whole_page>
+    <div id=presentation_column>
+        <H1>{{.Title}}</H1>
+        <button onclick="presentStory();", id="start_button"> START </button>
+        <div class="WORD_BOX">
+            <p id="WORD"></p>
+        </div>
+        <div class="position_text_box">
+            <p id="previous_line", class="display_position_text"><p>
+            <p id="current_line", class="display_position_text"><p>
+            <p id="next_line", class="display_position_text"><p>
+        </div>
+    </div>
 </div>
-<div class="position_text_box">
-    <p id="previous_line", class="display_position_text"><p>
-    <p id="current_line", class="display_position_text"><p>
-    <p id="next_line", class="display_position_text"><p>
-</div>
-<form action="presentStory()">
-    <input type="submit" value="START" />
-</form>

@@ -1,0 +1,61 @@
+
+#whole_page {
+    margin:0;
+    background-color:#dddddd;
+    padding:0;
+}
+#presentation_column {
+    position: relative;
+    width: 80%;
+    height: 100%;
+    background-color:#fff;
+    margin:0 8% 0 8%;
+    padding: 2%;
+    box-shadow: #666 10px 10px 20px;
+}
+.position_text_box {
+    position: relative;
+    height: 
+}
+.display_position_text {
+    position: relative;
+    color: #AAA;
+    font-size: 1.4em;
+    text-align: center;
+}
+
+#WORD {
+    font-size: 5em;
+}
+#start_button {
+    color:red;
+}
+.WORD_BOX {
+    display: flex;
+    position:absolute;
+    justify-content: center;
+    align-items: center;
+    height: 50%;
+    width: 80%;
+    margin:8em 8%;
+    border: solid;
+}
+
+mark {
+    color:red;
+    background-color:transparent;
+    font-weight: 600;
+}
+#current_word {
+    color: red;
+}
+body {
+    height:100%;
+    width:100%;
+    position: absolute;
+}
+p, body {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+

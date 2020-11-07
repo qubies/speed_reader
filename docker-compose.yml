@@ -1,0 +1,13 @@
+version: "3"
+services:
+    web:
+        container_name: go_server
+        build: .
+        environment:
+            - PORT=${PORT}
+            - STORY_PATH=${STORY_PATH}
+        ports:
+            - ${PORT}:${PORT}
+        volumes:
+            - ./:/app
+

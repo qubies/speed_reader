@@ -21,13 +21,11 @@ document.addEventListener('keyup', function (event) {
     if (event.key === "ArrowUp") {
         wpm_base += wpm_increment;
         pauseTime = wpmToSeconds(wpm_base);
-        console.log(pauseTime);
     }
     if (event.key === "ArrowDown") {
         wpm_base -= wpm_increment;
         wpm_base = Math.max(wpm_increment, wpm_base);
         pauseTime = wpmToSeconds(wpm_base);
-        console.log(pauseTime);
     }
     if (event.key === "ArrowLeft") {
         line-=1;

@@ -15,6 +15,12 @@ let wpm_increment = 25;
 let pre_range = 2;
 let post_range = 1;
 
+//boosts
+let comma_boost = 1.5;
+let end_boost = 2.0;
+let uncommon_boost = 1.3;
+let ai_boost = 2.0;
+
 
 document.addEventListener('keyup', function (event) {
     console.log(event.key);
@@ -36,6 +42,21 @@ document.addEventListener('keyup', function (event) {
         line = Math.min(line, story.length-1);
     }
 });
+
+function calculate_pause_time(word) {
+    let base = pause_time
+    if word.includes(",") {
+        base += comma_boost * pause_time
+            if any(x in word for x in [".", "!", "?", "...", ":", ";"]):
+                base += self.period_boost * self.base_pause_time
+            if self.are_any_uncommon(words):
+                base += self.uncommon_boost * self.base_pause_time
+            if self.is_ai(char):
+                base += self.ai_boost * self.base_pause_time
+        return base
+
+    
+}
 
 async function presentStory() {
     start_button = document.getElementById('start_button')

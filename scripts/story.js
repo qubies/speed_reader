@@ -15,21 +15,20 @@ let pre_range = 2;
 let post_range = 1;
 
 //boosts
-let comma_boost = 1.5;
-let end_boost = 2.0;
-let uncommon_boost = 1.3;
-let ai_boost = 2.0;
+let comma_boost = 1.2;
+let end_boost = 1.5;
+let uncommon_boost = 1.1;
+let ai_boost = 1.5;
 
 document.addEventListener('keyup', function (event) {
-    console.log(event.key);
     if (event.key === "ArrowUp") {
         wpm_base += wpm_increment;
-        pauseTime = wpmToSeconds(wpm_base);
+        pause_time = wpmToSeconds(wpm_base);
     }
     if (event.key === "ArrowDown") {
         wpm_base -= wpm_increment;
         wpm_base = Math.max(wpm_increment, wpm_base);
-        pauseTime = wpmToSeconds(wpm_base);
+        pause_time = wpmToSeconds(wpm_base);
     }
     if (event.key === "ArrowLeft") {
         line-=1;
@@ -41,16 +40,22 @@ document.addEventListener('keyup', function (event) {
     }
 });
 
-function calculate_pause_time(word) {
+function calculate_pause_time(word, line_index, word_index) {
     let base = pause_time
     if (word.includes(",")) {
-        base += comma_boost * pause_time
+        base += comma_boost * pause_time;
     }
     if ([".", "!", "?", "...", ":", ";"].some(v => word.includes(v))) {
-        base += end_boost * pause_time
+        base += end_boost * pause_time;
     }
     if (!common_words.has(word)) {
         base += uncommon_boost * pause_time;
+    }
+    for (i=0; i<spans.length; i++) {
+        if (spans[i][0] == line_index && spans[i][1]<=word_index && spans[i][2]>word_index) {
+            base += ai_boost * pause_time;
+            break;
+        }
     }
     return base
 }
@@ -90,7 +95,7 @@ async function presentStory() {
             for (word=0; word < story[lp].length; word++){
                 current_line.innerHTML = story[lp].slice(0,word).join(" ") + "<mark> " +story[lp][word] + " </mark>" + story[lp].slice(word+1, story[lp].length).join(" ");
                 wp.innerHTML = story[lp][word];
-                await sleep(calculate_pause_time(story[lp][word]));
+                await sleep(calculate_pause_time(story[lp][word], lp, word));
             }
         }
     }

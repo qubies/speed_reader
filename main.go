@@ -8,7 +8,7 @@ import (
     "github.com/joho/godotenv"
     "encoding/json"
     "github.com/gin-gonic/gin"
-    // "fmt"
+    "fmt"
     _ "github.com/mattn/go-sqlite3"
     "database/sql"
     "github.com/Pallinder/go-randomdata"
@@ -88,6 +88,14 @@ func add_user() {
     tx.Commit()
 }
 
+func get_user_info(user string) {
+    rows, err := db.Query(fmt.Sprintf("select * from Users where User_ID=%s;",user))
+    if err != nil {
+        log.Fatal("Unable to query users: ", err)
+    }
+
+}
+
 func create_db() {
     err := *new(error)
 	db, err = sql.Open("sqlite3", "./data/656_project.db")
@@ -121,7 +129,7 @@ func init() {
     if err := godotenv.Load(); err != nil {
         log.Print("No .env file found")
     }
-    templates = template.Must(template.ParseFiles("pages/quiz.html", "pages/intro.html", "pages/story.html"))
+    templates = template.Must(template.ParseFiles("pages/quiz.html", "pages/intro.html", "pages/story.html", "pages/login.html"))
 }
 
 func main() {
@@ -142,6 +150,7 @@ func main() {
     //routing
     app.Static("/css","./css")
     app.Static("/scripts","./scripts")
+    app.Static("/images","./images")
     app.GET("/story", s.handle_request)
     app.GET("/", introHandler)
     app.Run(":"+PORT)

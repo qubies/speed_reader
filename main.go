@@ -64,7 +64,7 @@ func init() {
 }
 
 func main() {
-    s := StoryPage {"This old man", common_words, [][]string{{"l1","one"}, {"l2","two"}, {"l3","three"}, {"four"}, {"five"}, {"six"}}, [][]int{{1,2}}}
+    s := StoryPage {"This old man", common_words, [][]string{{"l1","one,"}, {"l2","two."}, {"l3","three"}, {"four"}, {"five"}, {"six"}}, [][]int{{1,2}}}
     PORT := os.Getenv("PORT")
     if PORT == "" {
         PORT = "80"

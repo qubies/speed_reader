@@ -9,5 +9,5 @@ services:
         ports:
             - ${PORT}:${PORT}
         volumes:
-            - ./:/app
+            - ./:/go/src/speed_reader
 

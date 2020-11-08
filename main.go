@@ -58,8 +58,8 @@ func get_common_words() []string {
     return common_words
 }
 
-func generate_user_info() User {
-    return User{randomdata.FullName(randomdata.RandomGender), randomdata.SillyName(), choose_group()}
+func generate_user_info() *User {
+    return &User{randomdata.FullName(randomdata.RandomGender), randomdata.SillyName(), choose_group()}
 }
 
 func choose_group() string {
@@ -71,6 +71,9 @@ func choose_group() string {
 
 func add_user() {
     new_user := generate_user_info()
+    for user_exists(new_user.User_ID) {
+        new_user = generate_user_info()
+    }
     tx, err := db.Begin()
 	if err != nil {
 		log.Fatal(err)
@@ -88,12 +91,36 @@ func add_user() {
     tx.Commit()
 }
 
-func get_user_info(user string) {
-    rows, err := db.Query(fmt.Sprintf("select * from Users where User_ID=%s;",user))
+func user_exists(user string) (bool) {
+    var count int
+    rows, err := db.Query(fmt.Sprintf("select count(*) from Users where User_ID='%s';",user))
+    if err != nil {
+        log.Fatal("count query error: ", err)
+    }
+
+ 	for rows.Next() {
+    	err:= rows.Scan(&count)
+        if err != nil {
+            log.Fatal("ooopse")
+        }
+    }
+    return count>0
+}
+
+func get_user_info(user string) (*User, bool) {
+    if user_exists(user) {
+        return new(User), false
+    }
+    rows, err := db.Query(fmt.Sprintf("select User_ID, Password, Group_ID from Users where User_ID='%s';",user))
+
     if err != nil {
         log.Fatal("Unable to query users: ", err)
     }
-
+    defer rows.Close()
+    
+    u := new(User)
+    err = rows.Scan(&u.User_ID, &u.Password, &u.Group)
+    return u, true
 }
 
 func create_db() {
@@ -102,6 +129,7 @@ func create_db() {
 	if err != nil {
 		log.Fatal(err)
 	}
+    
 
     sqlStmt := `
     PRAGMA foreign_keys = ON;

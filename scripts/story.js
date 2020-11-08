@@ -8,9 +8,8 @@ function sleep(s) {
 }
 
 let running = false;
-let story = {{.Story}};
 let wpm_base = 250;
-let pauseTime = wpmToSeconds(wpm_base);
+let pause_time = wpmToSeconds(wpm_base);
 let wpm_increment = 25;
 let pre_range = 2;
 let post_range = 1;
@@ -20,7 +19,6 @@ let comma_boost = 1.5;
 let end_boost = 2.0;
 let uncommon_boost = 1.3;
 let ai_boost = 2.0;
-
 
 document.addEventListener('keyup', function (event) {
     console.log(event.key);
@@ -45,17 +43,16 @@ document.addEventListener('keyup', function (event) {
 
 function calculate_pause_time(word) {
     let base = pause_time
-    if word.includes(",") {
+    if (word.includes(",")) {
         base += comma_boost * pause_time
-            if any(x in word for x in [".", "!", "?", "...", ":", ";"]):
-                base += self.period_boost * self.base_pause_time
-            if self.are_any_uncommon(words):
-                base += self.uncommon_boost * self.base_pause_time
-            if self.is_ai(char):
-                base += self.ai_boost * self.base_pause_time
-        return base
-
-    
+    }
+    if ([".", "!", "?", "...", ":", ";"].some(v => word.includes(v))) {
+        base += end_boost * pause_time
+    }
+    if (!common_words.has(word)) {
+        base += uncommon_boost * pause_time;
+    }
+    return base
 }
 
 async function presentStory() {
@@ -93,7 +90,7 @@ async function presentStory() {
             for (word=0; word < story[lp].length; word++){
                 current_line.innerHTML = story[lp].slice(0,word).join(" ") + "<mark> " +story[lp][word] + " </mark>" + story[lp].slice(word+1, story[lp].length).join(" ");
                 wp.innerHTML = story[lp][word];
-                await sleep(pauseTime);
+                await sleep(calculate_pause_time(story[lp][word]));
             }
         }
     }

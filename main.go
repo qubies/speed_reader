@@ -22,6 +22,9 @@ type StoryPage struct {
     Spans [][]int
 }
 
+type Page struct {
+}
+
 func (SP *StoryPage) handle_request(w http.ResponseWriter, r *http.Request) {
     err := templates.ExecuteTemplate(w, "story.html", SP)
     if err != nil {
@@ -30,29 +33,12 @@ func (SP *StoryPage) handle_request(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
-}
-
-type Page struct {
-
-}
-
 func introHandler(w http.ResponseWriter, r *http.Request) {
     p := Page {}
     err := templates.ExecuteTemplate(w, "intro.html", p)
     if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
     }
-}
-
-
-func init() {
-    // loads values from .env into the system
-    common_words = get_common_words()
-    if err := godotenv.Load(); err != nil {
-        log.Print("No .env file found")
-    }
-    templates = template.Must(template.ParseFiles("pages/quiz.html", "pages/intro.html", "pages/story.html"))
 }
 
 func get_common_words() []string {
@@ -65,6 +51,16 @@ func get_common_words() []string {
     byteValue, _ := ioutil.ReadAll(common_word_file)
     json.Unmarshal(byteValue, &common_words)
     return common_words
+}
+
+// do all of the goodness setup stuffs
+func init() {
+    // loads values from .env into the system
+    common_words = get_common_words()
+    if err := godotenv.Load(); err != nil {
+        log.Print("No .env file found")
+    }
+    templates = template.Must(template.ParseFiles("pages/quiz.html", "pages/intro.html", "pages/story.html"))
 }
 
 func main() {

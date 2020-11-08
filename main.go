@@ -8,7 +8,7 @@ import (
     "github.com/joho/godotenv"
     "encoding/json"
     "github.com/gin-gonic/gin"
-    "fmt"
+    // "fmt"
     _ "github.com/mattn/go-sqlite3"
     "database/sql"
     "github.com/Pallinder/go-randomdata"
@@ -20,7 +20,7 @@ import (
 var common_words []string
 var templates *template.Template
 var db *sql.DB
-var groups []string = []string{"experimental", "control"}
+var groups []string = []string{"Experimental", "Control"}
 var last_group int = 1
 
 type StoryPage struct {
@@ -69,26 +69,44 @@ func choose_group() string {
 
 }
 
-// func add_user() {
-//     new_user := generate_user_info()
-//     group 
-//     sqlStmt := `
-//     insert into Users( 
-// }
-
-func create_db() {
-	db, err := sql.Open("sqlite3", "./data/656_project.db")
+func add_user() {
+    new_user := generate_user_info()
+    tx, err := db.Begin()
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+    stmt, err := tx.Prepare(`INSERT into Users(User_ID, Password, Group_ID) values (?,?,?)`) 
+    if err != nil {
+		log.Fatal(err)
+	}
+    defer stmt.Close()
+    _, err = stmt.Exec(new_user.User_ID, new_user.Password, new_user.Group)
+		if err != nil {
+			log.Fatal(err)
+		}
+    log.Println("Added New User: ", new_user)
+    tx.Commit()
+}
+
+func create_db() {
+    err := *new(error)
+	db, err = sql.Open("sqlite3", "./data/656_project.db")
+	if err != nil {
+		log.Fatal(err)
+	}
 
     sqlStmt := `
-    create table IF NOT EXISTS Groups (Group_ID integer primary key autoincrement, Type text not null); 
-	create table IF NOT EXISTS Users (User_ID text not null primary key, Password text, Group_ID integer, FOREIGN KEY(Group_ID) REFERENCES Groups(Group_ID);
-    create table IF NOT EXISTS Stories (Story_ID integer primary key autoincrement, Date integer not null, wpm REAL, User_ID text, FOREIGN KEY(User_ID) REFERENCES Users(User_ID);
+    PRAGMA foreign_keys = ON;
+    create table IF NOT EXISTS Groups (Group_ID text not null primary key); 
+	create table IF NOT EXISTS Users (User_ID text not null primary key, Password text, Group_ID text, FOREIGN KEY(Group_ID) REFERENCES Groups(Group_ID));
+    create table IF NOT EXISTS Stories (Story_ID integer primary key autoincrement, Date integer not null, wpm REAL, User_ID text, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
 	`
     _, err = db.Exec(sqlStmt)
+    if err != nil {
+        log.Fatal("Unable to create DB: ", err)
+    }
+    sqlStmt = "INSERT INTO Groups(Group_ID) Values ('Experimental'), ('Control');"
+    db.Exec(sqlStmt)
 }
 
 func verify_user(user string) {
@@ -107,12 +125,12 @@ func init() {
 }
 
 func main() {
-    fmt.Println(generate_user_info())
-    fmt.Println(generate_user_info())
-    fmt.Println(generate_user_info())
-    fmt.Println(generate_user_info())
-    fmt.Println(generate_user_info())
-    fmt.Println(generate_user_info())
+	defer db.Close()
+    add_user()
+    add_user()
+    add_user()
+    add_user()
+    add_user()
     s := StoryPage {"This old man", "user", common_words, [][]string{{"l1","one,"}, {"l2","two."}, {"l3","three"}, {"four"}, {"five"}, {"six"}}, [][]int{{1,0,100}}}
     PORT := os.Getenv("PORT")
     if PORT == "" {

@@ -51,6 +51,9 @@ func introHandler(c *gin.Context) {
     c.HTML(200, "intro.html", nil)
 }
 
+func quizHandler(c *gin.Context) {
+    c.HTML(200, "quiz.html", nil)
+}
 func new_handler(c *gin.Context) {
     u := add_user()
     c.HTML(200, "new_user.html", u)
@@ -256,6 +259,7 @@ func main() {
     app.GET("/new_account", new_handler)
     app.POST("/login", login)
     app.GET("/logout", logout)
+    app.GET("/quiz", quizHandler)
     private := app.Group("/private")
     private.Use(AuthRequired) 
     {

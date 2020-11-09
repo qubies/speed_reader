@@ -44,6 +44,10 @@ type User struct {
 
 func (SP *StoryPage) handle_request(c *gin.Context) {
     c.HTML(200, "story.html", SP)
+    session := sessions.Default(c)
+	user := session.Get(userkey)
+    fmt.Println("User: ", user)
+
 }
 
 
@@ -54,6 +58,7 @@ func introHandler(c *gin.Context) {
 func quizHandler(c *gin.Context) {
     c.HTML(200, "quiz.html", nil)
 }
+
 func new_handler(c *gin.Context) {
     u := add_user()
     c.HTML(200, "new_user.html", u)

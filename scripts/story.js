@@ -20,6 +20,24 @@ let end_boost = 1.5;
 let uncommon_boost = 1.1;
 let ai_boost = 1.5;
 
+class Timer {
+    constructor() {
+        this.start_time = Date.now();
+        this.reset_time = Date.now();
+        this.stop_time = Date.now();
+    }
+    elapsed() {
+        return Date.now() - this.reset_time;
+    }
+    reset() {
+        this.reset_time = Date.now();
+    }
+    stop() {
+        this.stop_time= Date.now();
+        return {"started":this.start_time, ["stopped"]:this.stop_time};
+    }
+}
+
 document.addEventListener('keyup', function (event) {
     if (event.key === "ArrowUp") {
         wpm_base += wpm_increment;
@@ -61,6 +79,7 @@ function calculate_pause_time(word, line_index, word_index) {
 }
 
 async function presentStory() {
+    let t = new Timer();
     start_button = document.getElementById('start_button')
     start_button.style.display="none";
     console.log(start_button);
@@ -98,5 +117,11 @@ async function presentStory() {
                 await sleep(calculate_pause_time(story[lp][word], lp, word));
             }
         }
+        // here the return of t.elapsed should be written to the story table along with t.started. 
+        let results = t.stop();
+        console.log("Timer =", t.elapsed(), "Started =", t.start_time, "Stopped =", t.stop_time);
+        console.log("Timer =", t.elapsed(), "Started =", results["started"], "Stopped =", results["stopped"]);
+        
+        t.reset();
     }
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+    "strings"
     "log"
     "io/ioutil"
     "html/template"
@@ -8,15 +9,19 @@ import (
     "github.com/joho/godotenv"
     "encoding/json"
     "github.com/gin-gonic/gin"
-     "fmt"
+    "fmt"
     _ "github.com/mattn/go-sqlite3"
     "database/sql"
     "github.com/Pallinder/go-randomdata"
     "math/rand"
+    "net/http"
     "time"
     "strconv"
+    "github.com/gin-gonic/contrib/sessions"
 )
-
+const (
+	userkey = "user"
+)
 // globals 
 var common_words []string
 var templates *template.Template
@@ -53,14 +58,14 @@ func handle_request(c *gin.Context) {
      json.Unmarshal([]byte(byteValue), &result)
 
 
-     story := result["story"]
+     //story := result["story"]
 
-     spans := result["spans"]
+     //spans := result["spans"]
 
 
 
-     //story := [][]string{{"rawr", "hi"}}
-     //spans := [][]int{{1,2,3}}
+     story := [][]string{{"rawr", "hi"}}
+     spans := [][]int{{1,2,3}}
      SP := StoryPage {files[id], "user", common_words, story, spans}
      c.HTML(200, "story.html", SP)
 }
@@ -68,6 +73,11 @@ func handle_request(c *gin.Context) {
 
 func introHandler(c *gin.Context) {
     c.HTML(200, "intro.html", nil)
+}
+
+func new_handler(c *gin.Context) {
+    u := add_user()
+    c.HTML(200, "new_user.html", u)
 }
 
 func get_common_words() []string {
@@ -82,8 +92,8 @@ func get_common_words() []string {
     return common_words
 }
 
-func generate_user_info() User {
-    return User{randomdata.FullName(randomdata.RandomGender), randomdata.SillyName(), choose_group()}
+func generate_user_info() *User {
+    return &User{strings.ReplaceAll(randomdata.FullName(randomdata.RandomGender), " ", "_"), strings.ReplaceAll(randomdata.SillyName(), " ", "_"), choose_group()}
 }
 
 func choose_group() string {
@@ -93,8 +103,11 @@ func choose_group() string {
 
 }
 
-func add_user() {
+func add_user() *User{
     new_user := generate_user_info()
+    for user_exists(new_user.User_ID) {
+        new_user = generate_user_info()
+    }
     tx, err := db.Begin()
 	if err != nil {
 		log.Fatal(err)
@@ -110,6 +123,55 @@ func add_user() {
 		}
     log.Println("Added New User: ", new_user)
     tx.Commit()
+    return new_user
+}
+
+func user_exists(user string) (bool) {
+    var count int
+    rows, err := db.Query(fmt.Sprintf("select count(*) from Users where User_ID='%s';",user))
+    if err != nil {
+        log.Fatal("count query error: ", err)
+    }
+
+ 	for rows.Next() {
+    	err:= rows.Scan(&count)
+        if err != nil {
+            log.Fatal("ooopse")
+        }
+    }
+    return count>0
+}
+
+func (U *User) Validate() bool {
+    var count int
+    rows, err := db.Query(fmt.Sprintf("select count(*) from Users where User_ID='%s' and Password='%s';",U.User_ID, U.Password))
+    if err != nil {
+        log.Fatal("count query error: ", err)
+    }
+
+ 	for rows.Next() {
+    	err:= rows.Scan(&count)
+        if err != nil {
+            log.Fatal("ooopse")
+        }
+    }
+    return count>0
+}
+
+func get_user_info(user string) (*User, bool) {
+    if user_exists(user) {
+        return new(User), false
+    }
+    rows, err := db.Query(fmt.Sprintf("select User_ID, Password, Group_ID from Users where User_ID='%s';",user))
+
+    if err != nil {
+        log.Fatal("Unable to query users: ", err)
+    }
+    defer rows.Close()
+    
+    u := new(User)
+    err = rows.Scan(&u.User_ID, &u.Password, &u.Group)
+    return u, true
 }
 
 func create_db() {
@@ -118,6 +180,7 @@ func create_db() {
 	if err != nil {
 		log.Fatal(err)
 	}
+    
 
     sqlStmt := `
     PRAGMA foreign_keys = ON;
@@ -133,9 +196,44 @@ func create_db() {
     db.Exec(sqlStmt)
 }
 
-func verify_user(user string) {
+func login(c *gin.Context) {
+    username := c.PostForm("username")
+    password := c.PostForm("password")
+    session := sessions.Default(c)
 
+    if strings.Trim(username, " ") == "" || strings.Trim(password, " ") == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Parameters can't be empty"})
+		return
+	}
+
+    U := new(User)
+    U.User_ID = username
+    U.Password = password
+    if U.Validate() {
+        session.Set(userkey, username) // In real world usage you'd set this to the users ID
+	if err := session.Save(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully authenticated user"})
+    } else {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+		return
+    }
 }
+// AuthRequired is a simple middleware to check the session
+func AuthRequired(c *gin.Context) {
+	session := sessions.Default(c)
+	user := session.Get(userkey)
+	if user == nil {
+		// Abort the request with the appropriate error code
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	// Continue down the chain to handler etc
+	c.Next()
+}
+
 // do all of the goodness setup stuffs
 func init() {
     // loads values from .env into the system
@@ -145,29 +243,35 @@ func init() {
     if err := godotenv.Load(); err != nil {
         log.Print("No .env file found")
     }
-    templates = template.Must(template.ParseFiles("pages/quiz.html", "pages/intro.html", "pages/story.html"))
+    templates = template.Must(template.ParseFiles("pages/quiz.html", "pages/intro.html", "pages/story.html", "pages/new_user.html"))
 }
 
 func main() {
 	defer db.Close()
-    add_user()
-    add_user()
-    add_user()
-    add_user()
-    add_user()
-//    s := StoryPage {"This old man", "user", common_words, [][]string{{"l1","one,"}, {"l2","two."}, {"l3","three"}, {"four"}, {"five"}, {"six"}}, [][]int{{1,0,100}}}
+
+    //s := StoryPage {"This old man", "user", common_words, [][]string{{"l1","one,"}, {"l2","two."}, {"l3","three"}, {"four"}, {"five"}, {"six"}}, [][]int{{1,0,100}}}
     PORT := os.Getenv("PORT")
     if PORT == "" {
         PORT = "80"
     }
     app := gin.Default()
+    app.Use(sessions.Sessions("speed_reading", sessions.NewCookieStore([]byte("secret"))))
     app.SetHTMLTemplate(templates)
 
     //routing
     app.Static("/css","./css")
     app.Static("/scripts","./scripts")
-    app.GET("/story/:id", handle_request)
+
+    app.Static("/images","./images")
     app.GET("/", introHandler)
+    app.GET("/new_user", new_handler)
+    app.POST("/login", login)
+    //private := app.Group("/private")
+    //private.Use(AuthRequired) 
+    //{
+    //    private.GET("/story/:id", handle_request)
+    //}
+    app.GET("/story/:id", handle_request)
     app.Run(":"+PORT)
 }
 

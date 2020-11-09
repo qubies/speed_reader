@@ -335,7 +335,7 @@ func init() {
     if err := godotenv.Load(); err != nil {
         log.Print("No .env file found")
     }
-    templates = template.Must(template.ParseFiles("pages/quiz.html", "pages/intro.html", "pages/story.html", "pages/new_user.html", "pages/all_done.html"))
+    templates = template.Must(template.ParseGlob("pages/*"))
 
 }
 

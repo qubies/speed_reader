@@ -1,6 +1,7 @@
 package main
 
 import (
+    "strings"
     "log"
     "io/ioutil"
     "html/template"
@@ -46,6 +47,11 @@ func introHandler(c *gin.Context) {
     c.HTML(200, "intro.html", nil)
 }
 
+func new_handler(c *gin.Context) {
+    u := add_user()
+    c.HTML(200, "new_user.html", u)
+}
+
 func get_common_words() []string {
     common_word_file, err := os.Open("data/common_words.json")
     var common_words []string
@@ -59,7 +65,7 @@ func get_common_words() []string {
 }
 
 func generate_user_info() *User {
-    return &User{randomdata.FullName(randomdata.RandomGender), randomdata.SillyName(), choose_group()}
+    return &User{strings.ReplaceAll(randomdata.FullName(randomdata.RandomGender), " ", "_"), strings.ReplaceAll(randomdata.SillyName(), " ", "_"), choose_group()}
 }
 
 func choose_group() string {
@@ -69,7 +75,7 @@ func choose_group() string {
 
 }
 
-func add_user() {
+func add_user() *User{
     new_user := generate_user_info()
     for user_exists(new_user.User_ID) {
         new_user = generate_user_info()
@@ -89,6 +95,7 @@ func add_user() {
 		}
     log.Println("Added New User: ", new_user)
     tx.Commit()
+    return new_user
 }
 
 func user_exists(user string) (bool) {
@@ -157,16 +164,11 @@ func init() {
     if err := godotenv.Load(); err != nil {
         log.Print("No .env file found")
     }
-    templates = template.Must(template.ParseFiles("pages/quiz.html", "pages/intro.html", "pages/story.html", "pages/login.html"))
+    templates = template.Must(template.ParseFiles("pages/quiz.html", "pages/intro.html", "pages/story.html", "pages/new_user.html"))
 }
 
 func main() {
 	defer db.Close()
-    add_user()
-    add_user()
-    add_user()
-    add_user()
-    add_user()
     s := StoryPage {"This old man", "user", common_words, [][]string{{"l1","one,"}, {"l2","two."}, {"l3","three"}, {"four"}, {"five"}, {"six"}}, [][]int{{1,0,100}}}
     PORT := os.Getenv("PORT")
     if PORT == "" {
@@ -181,6 +183,7 @@ func main() {
     app.Static("/images","./images")
     app.GET("/story", s.handle_request)
     app.GET("/", introHandler)
+    app.GET("/new_user", new_handler)
     app.Run(":"+PORT)
 }
 

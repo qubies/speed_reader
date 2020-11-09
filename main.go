@@ -8,12 +8,13 @@ import (
     "github.com/joho/godotenv"
     "encoding/json"
     "github.com/gin-gonic/gin"
-    // "fmt"
+     "fmt"
     _ "github.com/mattn/go-sqlite3"
     "database/sql"
     "github.com/Pallinder/go-randomdata"
     "math/rand"
     "time"
+    "strconv"
 )
 
 // globals 
@@ -22,6 +23,7 @@ var templates *template.Template
 var db *sql.DB
 var groups []string = []string{"Experimental", "Control"}
 var last_group int = 1
+
 
 type StoryPage struct {
     Title string
@@ -37,8 +39,30 @@ type User struct {
     Group string
 }
 
-func (SP *StoryPage) handle_request(c *gin.Context) {
-    c.HTML(200, "story.html", SP)
+func handle_request(c *gin.Context) {
+
+     files := [5]string{"carnivorous-plants.json","hyperinflation.json","test-reading.json","that-spot.json","worst-game-ever.json"}
+
+     id,_ := strconv.Atoi(c.Param("id"))
+
+     jsonFile, _ := os.Open("data/"+files[id])
+     defer jsonFile.Close()
+     byteValue, _ := ioutil.ReadAll(jsonFile)
+
+     var result map[string]interface{}
+     json.Unmarshal([]byte(byteValue), &result)
+
+
+     story := result["story"]
+
+     spans := result["spans"]
+
+
+
+     //story := [][]string{{"rawr", "hi"}}
+     //spans := [][]int{{1,2,3}}
+     SP := StoryPage {files[id], "user", common_words, story, spans}
+     c.HTML(200, "story.html", SP)
 }
 
 
@@ -131,7 +155,7 @@ func main() {
     add_user()
     add_user()
     add_user()
-    s := StoryPage {"This old man", "user", common_words, [][]string{{"l1","one,"}, {"l2","two."}, {"l3","three"}, {"four"}, {"five"}, {"six"}}, [][]int{{1,0,100}}}
+//    s := StoryPage {"This old man", "user", common_words, [][]string{{"l1","one,"}, {"l2","two."}, {"l3","three"}, {"four"}, {"five"}, {"six"}}, [][]int{{1,0,100}}}
     PORT := os.Getenv("PORT")
     if PORT == "" {
         PORT = "80"
@@ -142,7 +166,7 @@ func main() {
     //routing
     app.Static("/css","./css")
     app.Static("/scripts","./scripts")
-    app.GET("/story", s.handle_request)
+    app.GET("/story/:id", handle_request)
     app.GET("/", introHandler)
     app.Run(":"+PORT)
 }

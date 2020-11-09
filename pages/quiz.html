@@ -1,5 +1,4 @@
 <head>
-    
 {{template "preamble.html" .}}
 <link href="/css/quiz.css" rel="stylesheet">
 </head>
@@ -18,4 +17,10 @@
   </div>
 </div>
 <script src="/scripts/quiz.js"></script>
+<script>
+    let all_questions = {{.Questions}};
+</script>
+<script>
+    let quiz = new Quiz({{.Name}});
+</script>
 

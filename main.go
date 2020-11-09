@@ -191,11 +191,25 @@ func login(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Successfully authenticated user"})
+    c.Redirect(http.StatusFound, "/private/story")
     } else {
         c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 		return
     }
+}
+func logout(c *gin.Context) {
+	session := sessions.Default(c)
+	user := session.Get(userkey)
+	if user == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session token"})
+		return
+	}
+	session.Delete(userkey)
+	if err := session.Save(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully logged out"})
 }
 // AuthRequired is a simple middleware to check the session
 func AuthRequired(c *gin.Context) {
@@ -238,8 +252,9 @@ func main() {
     app.Static("/scripts","./scripts")
     app.Static("/images","./images")
     app.GET("/", introHandler)
-    app.GET("/new_user", new_handler)
+    app.GET("/new_account", new_handler)
     app.POST("/login", login)
+    app.GET("/logout", logout)
     private := app.Group("/private")
     private.Use(AuthRequired) 
     {

@@ -845,55 +845,55 @@
             "q_num": "1",
             "q_text": "Which statement would the author most likely agree with?",
             "answer": "c",
-            "a.": "a. There are too many species of carnivorous plants.",
-            "b.": "b. There are too few plant species in the world.",
-            "c.": "c. Only a small number of plants are carnivorous.",
-            "d.": "d. A majority of plants are carnivorous."
+            "a.": " There are too many species of carnivorous plants.",
+            "b.": " There are too few plant species in the world.",
+            "c.": " Only a small number of plants are carnivorous.",
+            "d.": " A majority of plants are carnivorous."
         },
         {
             "q_num": "2",
             "q_text": "Which plant traps bugs in its stem and forces them to walk forward?\n\n\n\n",
             "answer": "a",
-            "a.": "a. Corkscrew plants",
-            "b.": "b. Sundews",
-            "c.": "c. Bladderworts",
-            "d.": "d. Pitcher plants"
+            "a.": " Corkscrew plants",
+            "b.": " Sundews",
+            "c.": " Bladderworts",
+            "d.": " Pitcher plants"
         },
         {
             "q_num": "3",
             "q_text": "Which of the following statements is false?",
             "answer": "a",
-            "a.": "a. Carnivorous plants get their energy from eating bugs.",
-            "b.": "b. Carnivorous plants do not get nutrients from the soil.",
-            "c.": "c. Carnivorous plants get their energy from the sun.",
-            "d.": "d. Carnivorous plants get their nutrients from eating bugs."
+            "a.": " Carnivorous plants get their energy from eating bugs.",
+            "b.": " Carnivorous plants do not get nutrients from the soil.",
+            "c.": " Carnivorous plants get their energy from the sun.",
+            "d.": " Carnivorous plants get their nutrients from eating bugs."
         },
         {
             "q_num": "4",
             "q_text": "Which event happens last when a sundew eats a meal?",
             "answer": "d",
-            "a.": "a. The sundew creates mucilage.",
-            "b.": "b. The sundew's tentacles curl in response to the prey.",
-            "c.": "c. The bug is attracted to the mucilage.",
-            "d.": "d. The sundew releases enzymes."
+            "a.": " The sundew creates mucilage.",
+            "b.": " The sundew's tentacles curl in response to the prey.",
+            "c.": " The bug is attracted to the mucilage.",
+            "d.": " The sundew releases enzymes."
         },
         {
             "q_num": "8",
             "q_text": "Which statement would the author most likely disagree with?\n",
             "answer": "c",
-            "a.": "a. Carnivorous plants cannot thrive in rich soil.",
-            "b.": "b. Bladderworts react quickly when their trigger hairs are bumped.",
-            "c.": "c. Carnivorous plants are tough and can live in any environment.",
-            "d.": "d. Bladderworts hide their traps just below the surface of the water."
+            "a.": " Carnivorous plants cannot thrive in rich soil.",
+            "b.": " Bladderworts react quickly when their trigger hairs are bumped.",
+            "c.": " Carnivorous plants are tough and can live in any environment.",
+            "d.": " Bladderworts hide their traps just below the surface of the water."
         },
         {
             "q_num": "10",
             "q_text": "Which title best expresses the author's main purpose in writing this text?\nLong Response\n",
             "answer": "d",
-            "a.": "a. Watch Out! How To Avoid Being Eaten by Carnivorous Plants",
-            "b.": "b. At Risk: How You Can Help to Preserve Carnivorous Plants",
-            "c.": "c. Venus Flytrap: Nature's Most Beautiful and Dangerous Plant",
-            "d.": "d. Fatal Flowers: Plants That Kill Insects"
+            "a.": " Watch Out! How To Avoid Being Eaten by Carnivorous Plants",
+            "b.": " At Risk: How You Can Help to Preserve Carnivorous Plants",
+            "c.": " Venus Flytrap: Nature's Most Beautiful and Dangerous Plant",
+            "d.": " Fatal Flowers: Plants That Kill Insects"
         }
     ]
 }

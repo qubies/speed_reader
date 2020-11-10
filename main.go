@@ -172,14 +172,13 @@ func quizHandler(c *gin.Context) {
     var correct_answer string
     for _,q := range result.Questions {
         var wrong_list []string
-        list :=[]string {q.A, q.B, q.C, q.D}
-        for _,o := range list {
-            if o[:1] != q.Answer {
-                wrong_list = append(wrong_list, o)
-                fmt.Printf("%v\n", wrong_list)
+        list :=[]string {"a", "b", "c", "d"}
+	options :=[]string {q.A, q.B, q.C, q.D}
+        for i,o := range list {
+            if o != q.Answer {
+                wrong_list = append(wrong_list, options[i])
             } else {
-                correct_answer = o
-                fmt.Println(o)
+                correct_answer = options[i]
             }
         }
         new_q :=new_question(q.Q_text, correct_answer, wrong_list)

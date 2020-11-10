@@ -569,64 +569,64 @@
             "q_num": "2",
             "q_text": "Why does the author think that you should read books that are boring?",
             "answer": "d",
-            "a.": "a. You will eventually grow to love them if you read them enough.",
-            "b.": "b. You will get better grades in reading class.",
-            "c.": "c. You will make your teacher very happy.",
-            "d.": "d. You will learn new words."
+            "a.": " You will eventually grow to love them if you read them enough.",
+            "b.": " You will get better grades in reading class.",
+            "c.": " You will make your teacher very happy.",
+            "d.": " You will learn new words."
         },
         {
             "q_num": "4",
             "q_text": "Which is not a reason given by the author why students fail to complete reading assignments?",
             "answer": "d",
-            "a.": "a. Students may be bored.",
-            "b.": "b. Students may be distracted.",
-            "c.": "c. Students may be unwilling to focus.",
-            "d.": "d. Students may be tired."
+            "a.": " Students may be bored.",
+            "b.": " Students may be distracted.",
+            "c.": " Students may be unwilling to focus.",
+            "d.": " Students may be tired."
         },
         {
             "q_num": "5",
             "q_text": "Which best expresses the author's main purpose in writing this text?",
             "answer": "a",
-            "a.": "a. He is trying to persuade students to do their reading work.",
-            "b.": "b. He is teaching people how to become better readers.",
-            "c.": "c. He is explaining why people don't do their reading work.",
-            "d.": "d. He is entertaining readers with facts about the mind and body."
+            "a.": " He is trying to persuade students to do their reading work.",
+            "b.": " He is teaching people how to become better readers.",
+            "c.": " He is explaining why people don't do their reading work.",
+            "d.": " He is entertaining readers with facts about the mind and body."
         },
         {
             "q_num": "6",
             "q_text": "Which best describes the author's tone in the first three sentences?",
             "answer": "b",
-            "a.": "a. Surprised",
-            "b.": "b. Sarcastic",
-            "c.": "c. Informative",
-            "d.": "d. Irate"
+            "a.": " Surprised",
+            "b.": " Sarcastic",
+            "c.": " Informative",
+            "d.": " Irate"
         },
         {
             "q_num": "7",
             "q_text": "Which of the following is not one of the author's main points?",
             "answer": "c",
-            "a.": "a. Reading broadens your perspective and makes you a better person.",
-            "b.": "b. Reading is a relaxing activity with positive mental side effects.",
-            "c.": "c. Reading helps you perform on tests and get into selective schools.",
-            "d.": "d. Reading keeps your mind in shape and prevents losses due to age."
+            "a.": " Reading broadens your perspective and makes you a better person.",
+            "b.": " Reading is a relaxing activity with positive mental side effects.",
+            "c.": " Reading helps you perform on tests and get into selective schools.",
+            "d.": " Reading keeps your mind in shape and prevents losses due to age."
         },
         {
             "q_num": "9",
             "q_text": "Why does the author believe that reading is good for your mind state?",
             "answer": "d",
-            "a.": "a. It has a calming effect.",
-            "b.": "b. It can lower your stress levels.",
-            "c.": "c. It can help you relax.",
-            "d.": "d. All of these"
+            "a.": " It has a calming effect.",
+            "b.": " It can lower your stress levels.",
+            "c.": " It can help you relax.",
+            "d.": " All of these"
         },
         {
             "q_num": "10",
             "q_text": "Which title best expresses the main idea of this text?\n",
             "answer": "a",
-            "a.": "a. Reading: Good for the Mind in Many Ways",
-            "b.": "b. Reading: The Key to a Successful Academic Future",
-            "c.": "c. Reading: Improve Your Vocabulary While Being Entertained",
-            "d.": "d. Reading: The Best Way to Improve Your Writing Skills"
+            "a.": " Reading: Good for the Mind in Many Ways",
+            "b.": " Reading: The Key to a Successful Academic Future",
+            "c.": " Reading: Improve Your Vocabulary While Being Entertained",
+            "d.": " Reading: The Best Way to Improve Your Writing Skills"
         }
     ]
 }

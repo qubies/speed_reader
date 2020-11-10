@@ -4910,82 +4910,82 @@
             "q_num": "1",
             "q_text": "Which best expresses the narrator's relationship with Stephen Mackaye?\n\n",
             "answer": "c",
-            "a.": "a. They were bitter enemies, but are now good friends.",
-            "c.": "c. They were good friends but are now bitter enemies.",
-            "b.": "b. They have always been bitter enemies.",
-            "d.": "d. They have been good friends for many years."
+            "a.": " They were bitter enemies, but are now good friends.",
+            "c.": " They were good friends but are now bitter enemies.",
+            "b.": " They have always been bitter enemies.",
+            "d.": " They have been good friends for many years."
         },
         {
             "q_num": "2",
             "q_text": "Which is the most likely explanation why the narrator and Stephen travel to the Yukon?\n\n",
             "answer": "c",
-            "a.": "a. They want to get in the business of dog trading.",
-            "c.": "c. They want to make money from the gold rush.",
-            "b.": "b. They want to compete in an important sled race.",
-            "d.": "d. They want to go on an Alaskan vacation."
+            "a.": " They want to get in the business of dog trading.",
+            "c.": " They want to make money from the gold rush.",
+            "b.": " They want to compete in an important sled race.",
+            "d.": " They want to go on an Alaskan vacation."
         },
         {
             "q_num": "3",
             "q_text": "Which statement about Spot is false?\n\n",
             "answer": "b",
-            "a.": "a. Spot steals and eats greedily.",
-            "c.": "c. Spot is attractive and intelligent.",
-            "b.": "b. Spot is loyal and a hard worker.",
-            "d.": "d. Spot is tough and fearless."
+            "a.": " Spot steals and eats greedily.",
+            "c.": " Spot is attractive and intelligent.",
+            "b.": " Spot is loyal and a hard worker.",
+            "d.": " Spot is tough and fearless."
         },
         {
             "q_num": "4",
             "q_text": "Why doesn't the narrator kill Spot?\nHe doesn't want to lose all of the money that he spent on Spot.\nHe was weakened by Spot's deep stare.\nHe is threatened by Spot and is afraid that Spot will kill him first.\nHe promised his mother that he would never harm a loyal dog.\n\n",
             "answer": "b",
-            "a.": "a.",
-            "b.": "b.",
-            "c.": "c.",
-            "d.": "d."
+            "a.": "",
+            "b.": "",
+            "c.": "",
+            "d.": ""
         },
         {
             "q_num": "5",
             "q_text": "How does Spot react to being whipped by the narrator?\n\n",
             "answer": "a",
-            "a.": "a. He exaggerates his pain.",
-            "c.": "c. He threatens the narrator with his eyes.",
-            "b.": "b. He takes it without a whimper.",
-            "d.": "d. He bites the narrator."
+            "a.": " He exaggerates his pain.",
+            "c.": " He threatens the narrator with his eyes.",
+            "b.": " He takes it without a whimper.",
+            "d.": " He bites the narrator."
         },
         {
             "q_num": "6",
             "q_text": "Which is not a claim that the narrator makes about Spot?\n\n",
             "answer": "d",
-            "a.": "a. Spot came out on top in a fight with 50 dogs.",
-            "c.": "c. Spot was sold many times but always returns.",
-            "b.": "b. Spot cannot be killed and will never die.",
-            "d.": "d. Spot chased away the narrator's fianc\u00c3\u00a9."
+            "a.": " Spot came out on top in a fight with 50 dogs.",
+            "c.": " Spot was sold many times but always returns.",
+            "b.": " Spot cannot be killed and will never die.",
+            "d.": " Spot chased away the narrator's fianc\u00c3\u00a9."
         },
         {
             "q_num": "7",
             "q_text": "With which statement would the narrator most likely agree?\nSpot is a horrible dog that messes up everything.\nSpot is rough around the edges but he is a good dog when you get to know him.\nSpot is a lazy thief, but he'll pull his weight when everyone is counting on him.\nSpot gets into a bit of trouble, but it's worth keeping him because he earns money.\n\n",
             "answer": "a",
-            "a.": "a.",
-            "b.": "b.",
-            "c.": "c.",
-            "d.": "d."
+            "a.": "",
+            "b.": "",
+            "c.": "",
+            "d.": ""
         },
         {
             "q_num": "8",
             "q_text": "Which best describes the narrator's tone in the following sentences?\"Who told him we were up the Stewart? We could have gone a thousand other places. How did he know?\"\n\n\n\n",
             "answer": "b",
-            "a.": "a. Pleased",
-            "c.": "c. Irate",
-            "b.": "b. Astonished",
-            "d.": "d. Relieved"
+            "a.": " Pleased",
+            "c.": " Irate",
+            "b.": " Astonished",
+            "d.": " Relieved"
         },
         {
             "q_num": "9",
             "q_text": "Which best describes how the narrator lived his life without Spot?\n\n",
             "answer": "c",
-            "a.": "a. He finds out that he misses Spot.",
-            "c.": "c. He grows healthy and has good fortune.",
-            "b.": "b. He loses weight and becomes morose.",
-            "d.": "d. He learns that friendship is the most important thing."
+            "a.": " He finds out that he misses Spot.",
+            "c.": " He grows healthy and has good fortune.",
+            "b.": " He loses weight and becomes morose.",
+            "d.": " He learns that friendship is the most important thing."
         }
     ]
 }

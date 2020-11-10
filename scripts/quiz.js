@@ -17,6 +17,16 @@ Quiz.prototype.add_question = function(question) {
     this.questions.splice(index_to_add_question, 0, question);
 }
 
+function getParameterByName(name, url = window.location.href) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+
 // A function that you can enact on an instance of a quiz object. This function is called render() and takes in a variable called the container, which is the <div> that I will render the quiz in.
 Quiz.prototype.render = function(container) {
     // For when we're out of scope
@@ -78,13 +88,12 @@ Quiz.prototype.render = function(container) {
                 score++;
             }
 
+	    
             $('#quiz-retry-button').click(function(reset) {
                 window.location.replace('/private/story');
             });
 
         }
-
-
 
         // Display the score with the appropriate message
         var percentage = score / self.questions.length;
@@ -103,8 +112,14 @@ Quiz.prototype.render = function(container) {
         $('#submit-button').slideUp();
         $('#next-question-button').slideUp();
         $('#prev-question-button').slideUp();
-        $('#quiz-retry-button').sideDown();
-
+        $('#quiz-retry-button').slideDown();
+	var wpm = getParameterByName('wpm');
+	var start_time = getParameterByName('date');
+	const Http = new XMLHttpRequest();
+	const url=`/private/record?mark=${percentage}&wpm=${wpm}&date=${start_time}`;
+	console.log(url)
+	Http.open("POST", url);
+	Http.send();
     });
 
     // Add a listener on the questions container to listen for user select changes. This is for determining whether we can submit answers or not.
@@ -213,6 +228,6 @@ $(document).ready(function() {
   }
   
   // Render the quiz
-  var quiz_container = $('#quiz');
-  quiz.render(quiz_container);
+    var quiz_container = $('#quiz');
+    quiz.render(quiz_container);
 });

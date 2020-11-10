@@ -847,64 +847,64 @@
             "q_num": "1",
             "q_text": "Which is not a reason why the German Mark lost value?",
             "answer": "d",
-            "a.": "a. The Germans borrowed money to pay for World War I.",
-            "b.": "b. The Germans had to make payments with foreign money.",
-            "c.": "c. The French demanded large payments.",
-            "d.": "d. The French lost the war."
+            "a.": " The Germans borrowed money to pay for World War I.",
+            "b.": " The Germans had to make payments with foreign money.",
+            "c.": " The French demanded large payments.",
+            "d.": " The French lost the war."
         },
         {
             "q_num": "4",
             "q_text": "Which happened first?",
             "answer": "b",
-            "a.": "a. The German Mark was replaced with the Retenmark.",
-            "b.": "b. The US Dollar was worth nine German Marks.",
-            "c.": "c. The Germans began making war payments to France.",
-            "d.": "d. German Marks were burned to provide heat."
+            "a.": " The German Mark was replaced with the Retenmark.",
+            "b.": " The US Dollar was worth nine German Marks.",
+            "c.": " The Germans began making war payments to France.",
+            "d.": " German Marks were burned to provide heat."
         },
         {
             "q_num": "5",
             "q_text": "Which statement would the author most likely agree with?",
             "answer": "d",
-            "a.": "a. Inflation affects governments, not people.",
-            "b.": "b. The best way to pay for a long war is to borrow money.",
-            "c.": "c. Living in Germany during 1923 would be fun and exciting.",
-            "d.": "d. It is important for a nation to have a stable currency."
+            "a.": " Inflation affects governments, not people.",
+            "b.": " The best way to pay for a long war is to borrow money.",
+            "c.": " Living in Germany during 1923 would be fun and exciting.",
+            "d.": " It is important for a nation to have a stable currency."
         },
         {
             "q_num": "6",
             "q_text": "According to the text, how did the German government respond to France's demands for warpayments?\n",
             "answer": "b",
-            "a.": "a. The Germans made cuts and managed their resources wisely to meet payments.",
-            "b.": "b. The Germans printed a bunch of money and traded it for foreign currency.",
-            "c.": "c. The Germans raised taxes on their citizens and used the tax money to make payments.",
-            "d.": "d. The Germans began selling luxury cars to foreign nations to raise the money."
+            "a.": " The Germans made cuts and managed their resources wisely to meet payments.",
+            "b.": " The Germans printed a bunch of money and traded it for foreign currency.",
+            "c.": " The Germans raised taxes on their citizens and used the tax money to make payments.",
+            "d.": " The Germans began selling luxury cars to foreign nations to raise the money."
         },
         {
             "q_num": "7",
             "q_text": "How was the Retenmark different from the paper Mark?\n",
             "answer": "c",
-            "a.": "a. It was printed under the close supervision of the US Government.",
-            "b.": "b. It came before the paper Mark and was printed on silver plates.",
-            "c.": "c. It was backed by land and gold and could not be endlessly printed.",
-            "d.": "d. It was used to purchase land and gold and could not buy consumer goods."
+            "a.": " It was printed under the close supervision of the US Government.",
+            "b.": " It came before the paper Mark and was printed on silver plates.",
+            "c.": " It was backed by land and gold and could not be endlessly printed.",
+            "d.": " It was used to purchase land and gold and could not buy consumer goods."
         },
         {
             "q_num": "8",
             "q_text": "Which happened last?",
             "answer": "a",
-            "a.": "a. The Germans cut 12 zeroes from the prices of their products.",
-            "b.": "b. The Germans lost World War I.",
-            "c.": "c. The prices of goods skyrocketed into the billions.",
-            "d.": "d. The French demanded large payments from the Germans."
+            "a.": " The Germans cut 12 zeroes from the prices of their products.",
+            "b.": " The Germans lost World War I.",
+            "c.": " The prices of goods skyrocketed into the billions.",
+            "d.": " The French demanded large payments from the Germans."
         },
         {
             "q_num": "10",
             "q_text": "Which title would best express the main idea of this text?",
             "answer": "c",
-            "a.": "a. World War I: A Costly Fight for All of Those Involved",
-            "b.": "b. Inflation: How It Works and How to Prevent It",
-            "c.": "c. Can I Borrow a Trillion? Inflation in Germany After World War I",
-            "d.": "d. Money Around the World: A Comparison of the Value of Money"
+            "a.": " World War I: A Costly Fight for All of Those Involved",
+            "b.": " Inflation: How It Works and How to Prevent It",
+            "c.": " Can I Borrow a Trillion? Inflation in Germany After World War I",
+            "d.": " Money Around the World: A Comparison of the Value of Money"
         }
     ]
 }

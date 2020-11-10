@@ -123,12 +123,10 @@ async function presentStory() {
         
     //    t.reset();
     //}
-    const Http = new XMLHttpRequest();
-    const url=`/private/complete?wpm=${t.wpm()}&date=${t.start_time}`;
-    Http.open("POST", url);
-    Http.send();
-    console.log(`wpm:${t.wpm()}`)
-    window.location.replace('/private/quiz');
+    console.log(`wpm:${t.wpm()}`);
+    var wpm = t.wpm();
+    var start_time = t.start_time;
+    window.location.replace(`/private/quiz?wpm=${wpm}&date=${start_time}`);
 }
 
 function up_pressed() {

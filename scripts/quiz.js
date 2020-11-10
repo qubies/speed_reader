@@ -79,7 +79,7 @@ Quiz.prototype.render = function(container) {
             }
 
             $('#quiz-retry-button').click(function(reset) {
-                quiz.render(quiz_container);
+                window.location.replace('/private/story');
             });
 
         }

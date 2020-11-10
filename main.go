@@ -40,13 +40,13 @@ type StoryPage struct {
 }
 
 type JsonQuestion struct {
-     Q_num string `json:"q_num"`
-     Q_text string	`json:"q_text"`
-     Answer string	`json:"answer"`
-     A string	`json:"a."`
-     B string	`json:"b."`
-     C string	`json:"c."`
-     D string	`json:"d." `    
+    Q_num string `json:"q_num"`
+    Q_text string	`json:"q_text"`
+    Answer string	`json:"answer"`
+    A string	`json:"a."`
+    B string	`json:"b."`
+    C string	`json:"c."`
+    D string	`json:"d." `    
 }
 
 type StoryJson struct {
@@ -80,10 +80,10 @@ type Quiz struct {
     Questions []*Question
 }
 type Record struct {
-     User_ID string
-     Story_Name string
-     Date int
-     Wpm float64
+    User_ID string
+    Story_Name string
+    Date int
+    Wpm float64
 }
 
 func string_in_slice(a string, list []string) bool {
@@ -123,12 +123,12 @@ func handle_request(c *gin.Context) {
     defer jsonFile.Close()
     byteValue, _ := ioutil.ReadAll(jsonFile)
 
-     session.Set("story", files[id]) // In real world usage you'd set this to the users ID
-     if err := session.Save(); err != nil {
+    session.Set("story", files[id]) // In real world usage you'd set this to the users ID
+    if err := session.Save(); err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
         return
-     }
-     
+    }
+
     var result StoryJson
     json.Unmarshal([]byte(byteValue), &result)
 
@@ -143,13 +143,13 @@ func handle_request(c *gin.Context) {
 }
 
 func finish_story(c *gin.Context) {
-     session := sessions.Default(c)
-     name := session.Get(userkey).(string)
-     story := session.Get("story").(string)
-     wpm,_ := strconv.ParseFloat(c.Query("wpm"), 64)
-     date,_ := strconv.Atoi(c.Query("date"))
-     record := Record{name, story, date, wpm}
-     add_record(&record)
+    session := sessions.Default(c)
+    name := session.Get(userkey).(string)
+    story := session.Get("story").(string)
+    wpm,_ := strconv.ParseFloat(c.Query("wpm"), 64)
+    date,_ := strconv.Atoi(c.Query("date"))
+    record := Record{name, story, date, wpm}
+    add_record(&record)
 }
 
 func introHandler(c *gin.Context) {
@@ -171,21 +171,21 @@ func quizHandler(c *gin.Context) {
     var q_list []*Question
     var correct_answer string
     for _,q := range result.Questions {
-    	var wrong_list []string
-	list :=[]string {q.A, q.B, q.C, q.D}
-	for _,o := range list {
-		if o[:1] != q.Answer {
-		   wrong_list = append(wrong_list, o)
-		   fmt.Printf("%v\n", wrong_list)
-		} else {
-		  correct_answer = o
-		  fmt.Println(o)
-		}
-	}
-    	new_q :=new_question(q.Q_text, correct_answer, wrong_list)
-	q_list = append(q_list, new_q)
+        var wrong_list []string
+        list :=[]string {q.A, q.B, q.C, q.D}
+        for _,o := range list {
+            if o[:1] != q.Answer {
+                wrong_list = append(wrong_list, o)
+                fmt.Printf("%v\n", wrong_list)
+            } else {
+                correct_answer = o
+                fmt.Println(o)
+            }
+        }
+        new_q :=new_question(q.Q_text, correct_answer, wrong_list)
+        q_list = append(q_list, new_q)
     }
-    quiz:= Quiz{"test", q_list}
+    quiz:= Quiz{"", q_list}
     c.HTML(200, "quiz.html", &quiz)
 }
 
@@ -291,13 +291,13 @@ func get_story_info(user string) ([]string) {
 
 func add_record(record *Record) (bool){
 
-     //insert Record into db
-     fmt.Println(record.Date, record.Wpm, record.Story_Name)
+    //insert Record into db
+    fmt.Println(record.Date, record.Wpm, record.Story_Name)
     sqlStmt := "INSERT INTO Stories (Date, wpm, Story_Name, User_ID) Values ($1, $2, $3, $4);"
     _, err := db.Exec(sqlStmt, record.Date, record.Wpm, record.Story_Name, record.User_ID)
     fmt.Println(err)
-     //retun true false success
-     return false
+    //retun true false success
+    return false
 }
 
 func get_user_info(user string) (*User, bool) {

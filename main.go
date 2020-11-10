@@ -39,10 +39,20 @@ type StoryPage struct {
     Spans [][]int
 }
 
+type JsonQuestion struct {
+     Q_num string `json:"q_num"`
+     Q_text string	`json:"q_text"`
+     Answer string	`json:"answer"`
+     A string	`json:"a."`
+     B string	`json:"b."`
+     C string	`json:"c."`
+     D string	`json:"d." `    
+}
+
 type StoryJson struct {
-    Story [][]string
-    Spans [][]int
-    Answers []string
+    Story [][]string		`json:"story"`
+    Spans [][]int		`json:"spans"`
+    Questions []JsonQuestion	`json:"questions"`
 }
 
 type User struct {
@@ -147,8 +157,36 @@ func introHandler(c *gin.Context) {
 }
 
 func quizHandler(c *gin.Context) {
-    q := Quiz{"test quiz", []*Question{new_question("Who is me?", "best", []string{"worst", "awesome"})}}
-    c.HTML(200, "quiz.html", &q)
+    session := sessions.Default(c)
+    story := session.Get("story").(string)
+
+
+    jsonFile, _ := os.Open("data/"+story)
+    defer jsonFile.Close()
+    byteValue, _ := ioutil.ReadAll(jsonFile)
+
+    var result StoryJson
+    json.Unmarshal([]byte(byteValue), &result)
+
+    var q_list []*Question
+    var correct_answer string
+    for _,q := range result.Questions {
+    	var wrong_list []string
+	list :=[]string {q.A, q.B, q.C, q.D}
+	for _,o := range list {
+		if o[:1] != q.Answer {
+		   wrong_list = append(wrong_list, o)
+		   fmt.Printf("%v\n", wrong_list)
+		} else {
+		  correct_answer = o
+		  fmt.Println(o)
+		}
+	}
+    	new_q :=new_question(q.Q_text, correct_answer, wrong_list)
+	q_list = append(q_list, new_q)
+    }
+    quiz:= Quiz{"test", q_list}
+    c.HTML(200, "quiz.html", &quiz)
 }
 
 func new_handler(c *gin.Context) {

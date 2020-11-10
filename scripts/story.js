@@ -90,7 +90,7 @@ async function presentStory() {
     let next_line = document.getElementById('next_line');
     let wp = document.getElementById('WORD');
 
-    while (true) {
+    //while (true) {
         for (line=0; line < story.length;line++){
             let lp=line;
             if (lp === 0) {
@@ -122,6 +122,10 @@ async function presentStory() {
         console.log("Timer =", t.elapsed(), "Started =", t.start_time, "Stopped =", t.stop_time);
         console.log("Timer =", t.elapsed(), "Started =", results["started"], "Stopped =", results["stopped"]);
         
-        t.reset();
-    }
+    //    t.reset();
+    //}
+    const Http = new XMLHttpRequest();
+    const url='/private/complete?wpm=2.0&date=5';
+    Http.open("POST", url);
+    Http.send();
 }

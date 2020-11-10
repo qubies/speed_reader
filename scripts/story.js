@@ -10,7 +10,7 @@ function sleep(s) {
 let running = false;
 let wpm_base = 450;
 let pause_time = wpmToSeconds(wpm_base);
-let wpm_increment = 25;
+let wpm_increment = 50;
 let pre_range = 2;
 let post_range = 1;
 
@@ -54,26 +54,6 @@ class Timer {
     }
 }
 
-document.addEventListener('keyup', function (event) {
-    if (event.key === "ArrowUp") {
-        wpm_base += wpm_increment;
-        pause_time = wpmToSeconds(wpm_base);
-    }
-    if (event.key === "ArrowDown") {
-        wpm_base -= wpm_increment;
-        wpm_base = Math.max(wpm_increment, wpm_base);
-        pause_time = wpmToSeconds(wpm_base);
-    }
-    if (event.key === "ArrowLeft") {
-        line-=1;
-        line = Math.max(line, 0);
-    }
-    if (event.key === "ArrowRight") {
-        line+=1;
-        line = Math.min(line, story.length-1);
-    }
-});
-
 function calculate_pause_time(word, line_index, word_index) {
     let base = pause_time
     if (word.includes(",")) {
@@ -93,7 +73,7 @@ function calculate_pause_time(word, line_index, word_index) {
     }
     return base
 }
-
+let line = 0;
 async function presentStory() {
     let t = new Timer();
     start_button = document.getElementById('start_button')
@@ -107,7 +87,7 @@ async function presentStory() {
     let wp = document.getElementById('WORD');
 
     //while (true) {
-        for (line=0; line < story.length;line++){
+        for (; line < story.length;line++){
             let lp=line;
             if (lp === 0) {
                 previous_line.innerHTML = "<br>";
@@ -128,6 +108,9 @@ async function presentStory() {
                 next_line.innerHTML = "<br>";
             }
             for (word=0; word < story[lp].length; word++){
+                if (lp != line) {
+                    break;
+                }
                 current_line.innerHTML = story[lp].slice(0,word).join(" ") + "<mark> " +story[lp][word] + " </mark>" + story[lp].slice(word+1, story[lp].length).join(" ");
                 wp.innerHTML = story[lp][word];
                 await sleep(calculate_pause_time(story[lp][word], lp, word));
@@ -147,3 +130,113 @@ async function presentStory() {
     console.log(`wpm:${t.wpm()}`)
     window.location.replace('/private/quiz');
 }
+
+function up_pressed() {
+    $('.up').addClass('pressed');
+    $('.uptext').text('FASTER');
+    $('.left').css('transform', 'translate(0, 2px)');
+    $('.down').css('transform', 'translate(0, 2px)');
+    $('.right').css('transform', 'translate(0, 2px)');
+    wpm_base += wpm_increment;
+    pause_time = wpmToSeconds(wpm_base);
+}
+function left_pressed() {
+    $('.left').addClass('pressed'); 
+    $('.lefttext').text('PREVIOUS LINE');
+    $('.left').css('transform', 'translate(0, 2px)');
+    line-=1;
+    line = Math.max(line, 0);
+}
+function down_pressed() {
+    $('.down').addClass('pressed');
+    $('.downtext').text('SLOWER');
+    $('.down').css('transform', 'translate(0, 2px)');
+    wpm_base -= wpm_increment;
+    wpm_base = Math.max(wpm_increment, wpm_base);
+    pause_time = wpmToSeconds(wpm_base);
+}
+function right_pressed() {
+    $('.right').addClass('pressed');
+    $('.righttext').text('NEXT LINE'); 
+    $('.right').css('transform', 'translate(0, 2px)'); 
+    line+=1;
+    line = Math.min(line, story.length-1);
+}
+function up_released() {
+    $('.up').removeClass('pressed');
+    $('.uptext').text('');
+    $('.left').css('transform', 'translate(0, 0)');
+    $('.down').css('transform', 'translate(0, 0)');
+    $('.right').css('transform', 'translate(0, 0)');
+}
+function down_released() {
+    $('.down').removeClass('pressed');
+    $('.downtext').text('');
+    $('.down').css('transform', 'translate(0, 0)');
+}
+function left_released() {
+    $('.left').removeClass('pressed');
+    $('.lefttext').text('');   
+    $('.left').css('transform', 'translate(0, 0)');  
+}
+function right_released() {
+    $('.right').removeClass('pressed'); 
+    $('.righttext').text(''); 
+    $('.right').css('transform', 'translate(0, 0)');
+}
+
+$(document).keydown(function(e) {
+  if (e.which==37) {
+      left_pressed();
+  } else if (e.which==38) {
+      up_pressed();
+  } else if (e.which==39) {
+      right_pressed();
+  } else if (e.which==40) {
+      down_pressed();
+  }
+});
+
+$(document).keyup(function(e) {
+  if (e.which==37) {
+      left_released();
+  } else if (e.which==38) {
+      up_released();
+  } else if (e.which==39) {
+      right_released();
+  } else if (e.which==40) {
+      down_released();
+  } 
+});
+
+$('.left').mousedown(function() {
+    left_pressed();
+});
+
+$('.left').mouseup(function() {
+    left_released();
+});
+
+$('.right').mousedown(function() {
+    right_pressed();
+});
+
+$('.right').mouseup(function() {
+    right_released();
+});
+
+$('.up').mousedown(function() {
+    up_pressed();
+});
+
+$('.up').mouseup(function() {
+    up_released();
+});
+
+$('.down').mousedown(function() {
+    down_pressed();
+});
+
+$('.down').mouseup(function() {
+    down_released();
+});

@@ -84,6 +84,7 @@ type Record struct {
     Story_Name string
     Date int
     Wpm float64
+    Record float64
 }
 
 func string_in_slice(a string, list []string) bool {
@@ -148,9 +149,14 @@ func finish_story(c *gin.Context) {
     story := session.Get("story").(string)
     wpm,_ := strconv.ParseFloat(c.Query("wpm"), 64)
     date,_ := strconv.Atoi(c.Query("date"))
-    record := Record{name, story, date, wpm}
+
+    mark,_ := strconv.ParseFloat(c.Query("mark"), 64)
+    record := Record{name, story, date, wpm, mark}
+
+    fmt.Printf("%v %v %v %v", wpm, date, mark, name)
     add_record(&record)
 }
+
 
 func introHandler(c *gin.Context) {
     c.HTML(200, "intro.html", nil)
@@ -291,9 +297,8 @@ func get_story_info(user string) ([]string) {
 func add_record(record *Record) (bool){
 
     //insert Record into db
-    fmt.Println(record.Date, record.Wpm, record.Story_Name)
-    sqlStmt := "INSERT INTO Stories (Date, wpm, Story_Name, User_ID) Values ($1, $2, $3, $4);"
-    _, err := db.Exec(sqlStmt, record.Date, record.Wpm, record.Story_Name, record.User_ID)
+    sqlStmt := "INSERT INTO Stories (Date, wpm, Story_Name, User_ID, Record) Values ($1, $2, $3, $4, $5);"
+    _, err := db.Exec(sqlStmt, record.Date, record.Wpm, record.Story_Name, record.User_ID, record.Record)
     fmt.Println(err)
     //retun true false success
     return false
@@ -325,12 +330,11 @@ func create_db() {
         log.Fatal(err)
     }
 
-
     sqlStmt := `
     PRAGMA foreign_keys = ON;
     create table IF NOT EXISTS Groups (Group_ID text not null primary key); 
     create table IF NOT EXISTS Users (User_ID text not null primary key, Password text, Group_ID text, FOREIGN KEY(Group_ID) REFERENCES Groups(Group_ID));
-    create table IF NOT EXISTS Stories (Story_ID integer primary key autoincrement, Date integer not null, wpm REAL, Story_Name text, User_ID text, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
+    create table IF NOT EXISTS Stories (Story_ID integer primary key autoincrement, Date integer not null, wpm REAL, Story_Name text, User_ID text, Record REAL,FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
     `
     _, err = db.Exec(sqlStmt)
     if err != nil {
@@ -432,7 +436,7 @@ func main() {
     {
         private.GET("/story", handle_request)
         private.GET("/quiz", quizHandler)
-        private.POST("/complete",finish_story)
+        private.POST("/record",finish_story)
     }
     app.Run(":"+PORT)
 }

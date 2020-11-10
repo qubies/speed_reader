@@ -1,6 +1,7 @@
 package main
 
 import (
+    "strconv"
     "strings"
     "log"
     "io/ioutil"
@@ -28,8 +29,6 @@ var templates *template.Template
 var db *sql.DB
 var groups []string = []string{"Experimental", "Control"}
 var last_group int = 1
-
-
 
 
 type StoryPage struct {
@@ -70,6 +69,12 @@ type Quiz struct {
     Name string
     Questions []*Question
 }
+type Record struct {
+     User_ID string
+     Story_Name string
+     Date int
+     Wpm float64
+}
 
 func string_in_slice(a string, list []string) bool {
     for _, b := range list {
@@ -108,6 +113,12 @@ func handle_request(c *gin.Context) {
     defer jsonFile.Close()
     byteValue, _ := ioutil.ReadAll(jsonFile)
 
+     session.Set("story", files[id]) // In real world usage you'd set this to the users ID
+     if err := session.Save(); err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
+        return
+     }
+     
     var result StoryJson
     json.Unmarshal([]byte(byteValue), &result)
 
@@ -121,6 +132,15 @@ func handle_request(c *gin.Context) {
 
 }
 
+func finish_story(c *gin.Context) {
+     session := sessions.Default(c)
+     name := session.Get(userkey).(string)
+     story := session.Get("story").(string)
+     wpm,_ := strconv.ParseFloat(c.Query("wpm"), 64)
+     date,_ := strconv.Atoi(c.Query("date"))
+     record := Record{name, story, date, wpm}
+     add_record(&record)
+}
 
 func introHandler(c *gin.Context) {
     c.HTML(200, "intro.html", nil)
@@ -229,6 +249,17 @@ func get_story_info(user string) ([]string) {
         stories = append(stories, str)
     }
     return stories
+}
+
+func add_record(record *Record) (bool){
+
+     //insert Record into db
+     fmt.Println(record.Date, record.Wpm, record.Story_Name)
+    sqlStmt := "INSERT INTO Stories (Date, wpm, Story_Name, User_ID) Values ($1, $2, $3, $4);"
+    _, err := db.Exec(sqlStmt, record.Date, record.Wpm, record.Story_Name, record.User_ID)
+    fmt.Println(err)
+     //retun true false success
+     return false
 }
 
 func get_user_info(user string) (*User, bool) {
@@ -364,6 +395,7 @@ func main() {
     private.Use(AuthRequired) 
     {
         private.GET("/story", handle_request)
+	private.POST("/complete",finish_story)
     }
     app.Run(":"+PORT)
 }

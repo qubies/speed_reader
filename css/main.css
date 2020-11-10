@@ -23,6 +23,7 @@
 
 #WORD {
     font-size: 5em;
+    transition-timing-function: linear;
 }
 #start_button {
     position: absolute;

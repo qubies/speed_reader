@@ -8,7 +8,7 @@ function sleep(s) {
 }
 
 let running = false;
-let wpm_base = 250;
+let wpm_base = 450;
 let pause_time = wpmToSeconds(wpm_base);
 let wpm_increment = 25;
 let pre_range = 2;
@@ -20,11 +20,20 @@ let end_boost = 1.5;
 let uncommon_boost = 1.1;
 let ai_boost = 1.5;
 
+function flatten(arr) {
+  return arr.reduce(function (flat, toFlatten) {
+    return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+  }, []);
+}
+let story_length = flatten(story).length;
+console.log(story_length);
+
 class Timer {
     constructor() {
         this.start_time = Date.now();
         this.reset_time = Date.now();
         this.stop_time = Date.now();
+        this.running = true;
     }
     elapsed() {
         return Date.now() - this.reset_time;
@@ -33,8 +42,15 @@ class Timer {
         this.reset_time = Date.now();
     }
     stop() {
-        this.stop_time= Date.now();
+        if (this.running) {
+            this.stop_time= Date.now();
+            this.running = false
+        }
         return {"started":this.start_time, ["stopped"]:this.stop_time};
+    }
+    wpm() {
+        this.stop();
+        return story_length/((this.stop_time-this.start_time)/1000/60);
     }
 }
 
@@ -125,7 +141,9 @@ async function presentStory() {
     //    t.reset();
     //}
     const Http = new XMLHttpRequest();
-    const url='/private/complete?wpm=2.0&date=5';
+    const url=`/private/complete?wpm=${t.wpm()}&date=${t.start_time}`;
     Http.open("POST", url);
     Http.send();
+    console.log(`wpm:${t.wpm()}`)
+    window.location.replace('/private/quiz');
 }

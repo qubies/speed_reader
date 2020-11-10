@@ -427,13 +427,13 @@ func main() {
     app.GET("/new_account", new_handler)
     app.POST("/login", login)
     app.GET("/logout", logout)
-    app.GET("/quiz", quizHandler)
 
     private := app.Group("/private")
     private.Use(AuthRequired) 
     {
         private.GET("/story", handle_request)
-	private.POST("/complete",finish_story)
+        private.GET("/quiz", quizHandler)
+        private.POST("/complete",finish_story)
     }
     app.Run(":"+PORT)
 }

@@ -3,134 +3,138 @@
 
 // An object for a Quiz, which will contain Question objects.
 var Quiz = function(quiz_name) {
-  // Private fields for an instance of a Quiz object.
-  this.quiz_name = quiz_name;
-  
-  // This one will contain an array of Question objects in the order that the questions will be presented.
-  this.questions = [];
+    // Private fields for an instance of a Quiz object.
+    this.quiz_name = quiz_name;
+
+    // This one will contain an array of Question objects in the order that the questions will be presented.
+    this.questions = [];
 }
 
 // A function that you can enact on an instance of a quiz object. This function is called add_question() and takes in a Question object which it will add to the questions field.
 Quiz.prototype.add_question = function(question) {
-  // Randomly choose where to add question
-  var index_to_add_question = Math.floor(Math.random() * this.questions.length);
-  this.questions.splice(index_to_add_question, 0, question);
+    // Randomly choose where to add question
+    var index_to_add_question = Math.floor(Math.random() * this.questions.length);
+    this.questions.splice(index_to_add_question, 0, question);
 }
 
 // A function that you can enact on an instance of a quiz object. This function is called render() and takes in a variable called the container, which is the <div> that I will render the quiz in.
 Quiz.prototype.render = function(container) {
-  // For when we're out of scope
-  var self = this;
-  
-  // Hide the quiz results modal
-  $('#quiz-results').hide();
-  
-  // Write the name of the quiz
-  $('#quiz-name').text(this.quiz_name);
-  
-  // Create a container for questions
-  var question_container = $('<div>').attr('id', 'question').insertAfter('#quiz-name');
-  
-  // Helper function for changing the question and updating the buttons
-  function change_question() {
-    self.questions[current_question_index].render(question_container);
-    $('#prev-question-button').prop('disabled', current_question_index === 0);
-    $('#next-question-button').prop('disabled', current_question_index === self.questions.length - 1);
-   
-    
-    // Determine if all questions have been answered
-    var all_questions_answered = true;
-    for (var i = 0; i < self.questions.length; i++) {
-      if (self.questions[i].user_choice_index === null) {
-        all_questions_answered = false;
-        break;
-      }
+    // For when we're out of scope
+    var self = this;
+
+    // Hide the quiz results modal
+    $('#quiz-results').hide();
+
+    // Write the name of the quiz
+    $('#quiz-name').text(this.quiz_name);
+
+    // Create a container for questions
+    var question_container = $('<div>').attr('id', 'question').insertAfter('#quiz-name');
+
+    // Helper function for changing the question and updating the buttons
+    function change_question() {
+        self.questions[current_question_index].render(question_container);
+        $('#prev-question-button').prop('disabled', current_question_index === 0);
+        $('#next-question-button').prop('disabled', current_question_index === self.questions.length - 1);
+
+
+        // Determine if all questions have been answered
+        var all_questions_answered = true;
+        for (var i = 0; i < self.questions.length; i++) {
+            if (self.questions[i].user_choice_index === null) {
+                all_questions_answered = false;
+                break;
+            }
+        }
+        $('#submit-button').prop('disabled', !all_questions_answered);
     }
-    $('#submit-button').prop('disabled', !all_questions_answered);
-  }
-  
-  // Render the first question
-  var current_question_index = 0;
-  change_question();
-  
-  // Add listener for the previous question button
-  $('#prev-question-button').click(function() {
-    if (current_question_index > 0) {
-      current_question_index--;
-      change_question();
-    }
-  });
-  
-  // Add listener for the next question button
-  $('#next-question-button').click(function() {
-    if (current_question_index < self.questions.length - 1) {
-      current_question_index++;
-      change_question();
-    }
-  });
- 
-  // Add listener for the submit answers button
-  $('#submit-button').click(function() {
-    // Determine how many questions the user got right
-    var score = 0;
-    for (var i = 0; i < self.questions.length; i++) {
-      if (self.questions[i].user_choice_index === self.questions[i].correct_choice_index) {
-        score++;
-      }
-      
-   $('#quiz-retry-button').click(function(reset) {
-      quiz.render(quiz_container);
-   });
-    
-    }
-    
-   
-    
-    // Display the score with the appropriate message
-    var percentage = score / self.questions.length;
-    console.log(percentage);
-    var message;
-    if (percentage === 1) {
-      message = 'Great job!'
-    } else if (percentage >= .75) {
-      message = 'You did alright.'
-    } else if (percentage >= .5) {
-      message = 'Better luck next time.'
-    } else {
-      message = 'Maybe you should try a little harder.'
-    }
-    $('#quiz-results-message').text(message);
-    $('#quiz-results-score').html('You got <b>' + score + '/' + self.questions.length + '</b> questions correct.');
-    $('#quiz-results').slideDown();
-    $('#submit-button').slideUp();
-    $('#next-question-button').slideUp();
-    $('#prev-question-button').slideUp();
-    $('#quiz-retry-button').sideDown();
-    
-  });
-  
-  // Add a listener on the questions container to listen for user select changes. This is for determining whether we can submit answers or not.
-  question_container.bind('user-select-change', function() {
-    var all_questions_answered = true;
-    for (var i = 0; i < self.questions.length; i++) {
-      if (self.questions[i].user_choice_index === null) {
-        all_questions_answered = false;
-        break;
-      }
-    }
-    $('#submit-button').prop('disabled', !all_questions_answered);
-  });
+
+    // Render the first question
+    var current_question_index = 0;
+    change_question();
+
+    // Add listener for the previous question button
+    $('#prev-question-button').click(function() {
+        if (current_question_index > 0) {
+            current_question_index--;
+            change_question();
+        }
+    });
+
+    // Add listener for the next question button
+    $('#next-question-button').click(function() {
+        if (current_question_index < self.questions.length - 1) {
+            current_question_index++;
+            change_question();
+        }
+    });
+
+    // Add listener for the submit answers button
+    $('#submit-button').click(function() {
+        // Determine how many questions the user got right
+        var score = 0;
+        for (var i = 0; i < self.questions.length; i++) {
+            if (self.questions[i].user_choice_index === self.questions[i].correct_choice_index) {
+                score++;
+            }
+
+            $('#quiz-retry-button').click(function(reset) {
+                quiz.render(quiz_container);
+            });
+
+        }
+
+
+
+        // Display the score with the appropriate message
+        var percentage = score / self.questions.length;
+        console.log(percentage);
+        var message;
+        if (percentage === 1) {
+            message = 'Great job!'
+        } else if (percentage >= .75) {
+            message = 'Great job!'
+        } else {
+            message = 'Maybe try a little slower :)'
+        }
+        $('#quiz-results-message').text(message);
+        $('#quiz-results-score').html('You got <b>' + score + '/' + self.questions.length + '</b> questions correct.');
+        $('#quiz-results').slideDown();
+        $('#submit-button').slideUp();
+        $('#next-question-button').slideUp();
+        $('#prev-question-button').slideUp();
+        $('#quiz-retry-button').sideDown();
+
+    });
+
+    // Add a listener on the questions container to listen for user select changes. This is for determining whether we can submit answers or not.
+    question_container.bind('user-select-change', function() {
+        var all_questions_answered = true;
+        for (var i = 0; i < self.questions.length; i++) {
+            if (self.questions[i].user_choice_index === null) {
+                all_questions_answered = false;
+                break;
+            }
+        }
+        $('#submit-button').prop('disabled', !all_questions_answered);
+    });
 }
 
 // An object for a Question, which contains the question, the correct choice, and wrong choices. This block is the constructor.
+function getRandom(min, max) {
+    return Math.floor(Math.random() * (max-0.000000001 - min) + min);
+}
 var Question = function(question_string, correct_choice, wrong_choices) {
-  // Private fields for an instance of a Question object.
-  this.question_string = question_string;
-  this.choices = [];
-  this.user_choice_index = null; // Index of the user's choice selection
-  
-  // Random assign the correct choice an index
-  this.correct_choice_index = Math.floor(Math.random(0, wrong_choices.length + 1));
+    // Private fields for an instance of a Question object.
+    this.question_string = question_string;
+    this.choices = [];
+    this.user_choice_index = null; // Index of the user's choice selection
+
+    // Random assign the correct choice an index
+    this.correct_choice_index = getRandom(0, wrong_choices.length + 1);
+    console.log(`Correct Choice index: ${this.correct_choice_index}`);
+    console.log(`Wrong Choce len: ${wrong_choices.length}`);
+
   
   // Fill in this.choices with the choices
   var number_of_choices = wrong_choices.length + 1;

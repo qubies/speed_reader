@@ -4,6 +4,9 @@
     padding:0;
     height: 100%;
 }
+html, body, #presentation_column{
+    overflow: auto;
+}
 
 .jumbotron .h1, .jumbotron h1 {
     padding: 40px 0px 20px;
@@ -23,6 +26,7 @@ h3 {
 }
 .position_text_box {
     position: relative;
+    height: 30%;
 }
 .display_position_text {
     color: #AAA;

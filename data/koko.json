@@ -1,0 +1,126 @@
+{
+    "story": [
+        [
+            "Did",
+            "you",
+            "know",
+            "that",
+            "humans",
+            "aren't",
+            "the",
+            "only",
+            "species",
+            "that",
+            "use",
+            "language?"
+        ],
+        [
+            "Bees",
+            "communicate",
+            "by",
+            "dancing."
+        ],
+        [
+            "Whales",
+            "talk",
+            "to",
+            "each",
+            "other",
+            "by",
+            "singing."
+        ],
+        [
+            "And",
+            "some",
+            "apes",
+            "talk",
+            "to",
+            "humans",
+            "by",
+            "using",
+            "American",
+            "Sign",
+            "Language."
+        ],
+        [
+            "Meet",
+            "Koko:",
+            "a",
+            "female",
+            "gorilla",
+            "born",
+            "at",
+            "the",
+            "San",
+            "Francisco",
+            "Zoo",
+            "on",
+            "July",
+            "4th,",
+            "197"
+        ]
+    ],
+    "spans": [
+        [
+            0,
+            0,
+            66
+        ]
+    ],
+    "questions": [
+        {
+            "q_num": "1",
+            "q_text": "Which best expresses the main idea of this article?\n",
+            "answer": "b",
+            "a.": " Bees, whales, and apes like Koko all use language to communicate.",
+            "b.": " Koko uses sign language but some think it's just a trick.",
+            "c.": " It is natural for gorillas and house cats to live together.",
+            "d.": " If you want a lot of \"likes\" on Facebook, get a talking gorilla."
+        },
+        {
+            "q_num": "4",
+            "q_text": "Which happened last?\n",
+            "answer": "b",
+            "a.": " Koko got a stuffed cat for Christmas.",
+            "b.": " Koko lost All Ball.",
+            "c.": " Koko began living with the Gorilla Foundation.",
+            "d.": " Dr. Patterson began teaching Koko to sign."
+        },
+        {
+            "q_num": "5",
+            "q_text": "Which statement would the author most likely agree with?\n",
+            "answer": "d",
+            "a.": " Koko has mastered sign language without a doubt.",
+            "b.": " Everybody likes how Dr. Patterson has raised Koko.",
+            "c.": " Koko doesn't really know sign language.",
+            "d.": " Some people are troubled by how Koko was raised."
+        },
+        {
+            "q_num": "7",
+            "q_text": "Which event happened first?\n",
+            "answer": "a",
+            "a.": " Koko moved onto the Stanford University campus.",
+            "b.": " Koko picked All Ball out for her birthday.",
+            "c.": " Koko began living with the Gorilla Foundation.",
+            "d.": " Koko got a stuffed cat for Christmas."
+        },
+        {
+            "q_num": "9",
+            "q_text": "Which statement would the author most likely disagree with?\n",
+            "answer": "d",
+            "a.": " Dr. Patterson has worked hard to teach Koko sign language.",
+            "b.": " Some people think that Koko only signs to get food.",
+            "c.": " The Gorilla Foundation would like to move Koko to an ape preserve.",
+            "d.": " Dr. Patterson has no regrets about working with Koko."
+        },
+        {
+            "q_num": "10",
+            "q_text": "If a book were being written about Koko and All Ball, which title would best summarize their story?\n\nLong-Response Questions\n",
+            "answer": "c",
+            "a.": " Long Wanted, Short Lived: A Tale of Strong Loves Lost",
+            "b.": " Happy Ending: The Gorilla Who Got What She Wanted",
+            "c.": " A Tale of Two Kitties: A Stuffed Cat Versus a Real One",
+            "d.": " Plushy Love: How A Gorilla Fell in Love with a Stuffed Cat"
+        }
+    ]
+}

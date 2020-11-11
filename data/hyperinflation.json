@@ -1,37 +1,6 @@
 {
     "story": [
         [
-            "Name:",
-            "_____________________________",
-            "Nonfiction",
-            "Reading",
-            "Test",
-            "Hyperinflation",
-            "Directions:",
-            "Read",
-            "the",
-            "following",
-            "passage",
-            "and",
-            "answer",
-            "the",
-            "questions",
-            "that",
-            "follow."
-        ],
-        [
-            "Refer",
-            "to",
-            "the",
-            "text",
-            "to",
-            "check",
-            "your",
-            "answers",
-            "when",
-            "appropriate."
-        ],
-        [
             "You",
             "like",
             "money,",
@@ -802,50 +771,55 @@
     ],
     "spans": [
         [
-            0,
-            0,
-            154
+            3,
+            2,
+            62
         ],
         [
-            15,
+            10,
             2,
-            54
+            61
+        ],
+        [
+            12,
+            2,
+            104
+        ],
+        [
+            19,
+            2,
+            52
         ],
         [
             20,
-            0,
-            102
+            2,
+            68
         ],
         [
-            21,
-            4,
-            54
+            22,
+            2,
+            57
         ],
         [
-            24,
-            0,
-            55
+            33,
+            2,
+            64
         ],
         [
-            36,
-            0,
-            75
+            38,
+            2,
+            51
         ],
         [
-            40,
-            0,
-            49
-        ],
-        [
-            50,
-            0,
-            93
+            48,
+            2,
+            95
         ]
     ],
     "questions": [
         {
             "q_num": "1",
-            "q_text": "Which is not a reason why the German Mark lost value?",
+            "q_text": "Which is not a reason why the German Mark lost value?\n",
             "answer": "d",
             "a.": " The Germans borrowed money to pay for World War I.",
             "b.": " The Germans had to make payments with foreign money.",
@@ -854,7 +828,7 @@
         },
         {
             "q_num": "4",
-            "q_text": "Which happened first?",
+            "q_text": "Which happened first?\n",
             "answer": "b",
             "a.": " The German Mark was replaced with the Retenmark.",
             "b.": " The US Dollar was worth nine German Marks.",
@@ -863,7 +837,7 @@
         },
         {
             "q_num": "5",
-            "q_text": "Which statement would the author most likely agree with?",
+            "q_text": "Which statement would the author most likely agree with?\n",
             "answer": "d",
             "a.": " Inflation affects governments, not people.",
             "b.": " The best way to pay for a long war is to borrow money.",
@@ -872,7 +846,7 @@
         },
         {
             "q_num": "6",
-            "q_text": "According to the text, how did the German government respond to France's demands for warpayments?\n",
+            "q_text": "According to the text, how did the German government respond to France's demands for war\npayments?\n",
             "answer": "b",
             "a.": " The Germans made cuts and managed their resources wisely to meet payments.",
             "b.": " The Germans printed a bunch of money and traded it for foreign currency.",
@@ -890,7 +864,7 @@
         },
         {
             "q_num": "8",
-            "q_text": "Which happened last?",
+            "q_text": "Which happened last?\n",
             "answer": "a",
             "a.": " The Germans cut 12 zeroes from the prices of their products.",
             "b.": " The Germans lost World War I.",
@@ -899,11 +873,11 @@
         },
         {
             "q_num": "10",
-            "q_text": "Which title would best express the main idea of this text?",
+            "q_text": "Which title would best express the main idea of this text?\nInflation in Germany After World War I\n",
             "answer": "c",
             "a.": " World War I: A Costly Fight for All of Those Involved",
             "b.": " Inflation: How It Works and How to Prevent It",
-            "c.": " Can I Borrow a Trillion? Inflation in Germany After World War I",
+            "c.": " Can I Borrow a Trillion?",
             "d.": " Money Around the World: A Comparison of the Value of Money"
         }
     ]

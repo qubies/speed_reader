@@ -1,38 +1,6 @@
 {
     "story": [
         [
-            "Name:",
-            "_____________________________",
-            "Nonfiction",
-            "Reading",
-            "Test",
-            "Carnivorous",
-            "Plants",
-            "Directions:",
-            "Read",
-            "the",
-            "following",
-            "passage",
-            "and",
-            "answer",
-            "the",
-            "questions",
-            "that",
-            "follow."
-        ],
-        [
-            "Refer",
-            "to",
-            "the",
-            "text",
-            "to",
-            "check",
-            "your",
-            "answers",
-            "when",
-            "appropriate."
-        ],
-        [
             "Imagine",
             "that",
             "you're",
@@ -795,47 +763,47 @@
     ],
     "spans": [
         [
-            0,
-            0,
-            158
+            1,
+            2,
+            95
         ],
         [
-            6,
-            0,
+            4,
+            2,
+            66
+        ],
+        [
+            8,
+            2,
             64
         ],
         [
-            15,
-            0,
-            59
+            13,
+            2,
+            61
         ],
         [
-            20,
-            0,
-            48
+            18,
+            2,
+            50
         ],
         [
-            38,
-            4,
-            73
+            21,
+            2,
+            71
         ],
         [
-            45,
-            0,
-            77
+            41,
+            2,
+            61
         ],
         [
-            62,
-            0,
-            53
+            43,
+            2,
+            79
         ],
         [
-            63,
-            0,
-            47
-        ],
-        [
-            66,
+            64,
             2,
             117
         ]
@@ -843,7 +811,7 @@
     "questions": [
         {
             "q_num": "1",
-            "q_text": "Which statement would the author most likely agree with?",
+            "q_text": "Which statement would the author most likely agree with?\n",
             "answer": "c",
             "a.": " There are too many species of carnivorous plants.",
             "b.": " There are too few plant species in the world.",
@@ -852,7 +820,7 @@
         },
         {
             "q_num": "2",
-            "q_text": "Which plant traps bugs in its stem and forces them to walk forward?\n\n\n\n",
+            "q_text": "Which plant traps bugs in its stem and forces them to walk forward?\n\n\n\n\n",
             "answer": "a",
             "a.": " Corkscrew plants",
             "b.": " Sundews",
@@ -861,7 +829,7 @@
         },
         {
             "q_num": "3",
-            "q_text": "Which of the following statements is false?",
+            "q_text": "Which of the following statements is false?\n",
             "answer": "a",
             "a.": " Carnivorous plants get their energy from eating bugs.",
             "b.": " Carnivorous plants do not get nutrients from the soil.",
@@ -870,7 +838,7 @@
         },
         {
             "q_num": "4",
-            "q_text": "Which event happens last when a sundew eats a meal?",
+            "q_text": "Which event happens last when a sundew eats a meal?\n",
             "answer": "d",
             "a.": " The sundew creates mucilage.",
             "b.": " The sundew's tentacles curl in response to the prey.",
@@ -888,9 +856,9 @@
         },
         {
             "q_num": "10",
-            "q_text": "Which title best expresses the author's main purpose in writing this text?\nLong Response\n",
+            "q_text": "Which title best expresses the author's main purpose in writing this text?\nHow To Avoid Being Eaten by Carnivorous Plants\n\nLong Response\n",
             "answer": "d",
-            "a.": " Watch Out! How To Avoid Being Eaten by Carnivorous Plants",
+            "a.": " Watch Out!",
             "b.": " At Risk: How You Can Help to Preserve Carnivorous Plants",
             "c.": " Venus Flytrap: Nature's Most Beautiful and Dangerous Plant",
             "d.": " Fatal Flowers: Plants That Kill Insects"

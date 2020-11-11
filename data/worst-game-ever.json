@@ -1,43 +1,6 @@
 {
     "story": [
         [
-            "Name:",
-            "_____________________________",
-            "Nonfiction",
-            "Reading",
-            "Comprehension",
-            "Test",
-            "6",
-            "Worst",
-            "Game",
-            "Ever?"
-        ],
-        [
-            "Directions:",
-            "Read",
-            "the",
-            "following",
-            "passage",
-            "and",
-            "answer",
-            "the",
-            "questions",
-            "that",
-            "follow."
-        ],
-        [
-            "Refer",
-            "to",
-            "the",
-            "text",
-            "to",
-            "check",
-            "your",
-            "answers",
-            "when",
-            "appropriate."
-        ],
-        [
             "E.T.",
             "the",
             "Extra-Terrestrial",
@@ -468,38 +431,33 @@
         [
             0,
             0,
-            94
+            96
         ],
         [
-            12,
-            0,
-            87
+            1,
+            2,
+            55
         ],
         [
-            18,
+            9,
+            2,
+            89
+        ],
+        [
+            15,
             2,
             109
         ],
         [
-            21,
+            20,
             2,
-            58
-        ],
-        [
-            22,
-            0,
-            74
-        ],
-        [
-            30,
-            0,
-            45
+            116
         ]
     ],
     "questions": [
         {
             "q_num": "1",
-            "q_text": "Which of the following is not a reason for the failure of E.T. the Extra-Terrestrial?",
+            "q_text": "Which of the following is not a reason for the failure of E.T. the Extra-Terrestrial?\n",
             "answer": "d",
             "a.": " The programmer was not given enough time to finish the game properly.",
             "b.": " Atari did not test the game before its release.",
@@ -508,7 +466,7 @@
         },
         {
             "q_num": "2",
-            "q_text": "Which of the following were effects of the failure of E.T the Extra-Terrestrial?",
+            "q_text": "Which of the following were effects of the failure of E.T the Extra-Terrestrial?\n",
             "answer": "d",
             "a.": " Perhaps a million or more copies of the game were buried in the desert.",
             "b.": " Atari lost over $100 million.",
@@ -517,7 +475,7 @@
         },
         {
             "q_num": "3",
-            "q_text": "Which of the following was not listed as a reason why E.T. the Extra-Terrestrial was considered one of theworst games ever?\n",
+            "q_text": "Which of the following was not listed as a reason why E.T. the Extra-Terrestrial was considered one of the\nworst games ever?\n",
             "answer": "a",
             "a.": " The soundtrack was annoying.",
             "b.": " The graphics were bad.",
@@ -526,7 +484,7 @@
         },
         {
             "q_num": "4",
-            "q_text": "Which of the following events happened first?",
+            "q_text": "Which of the following events happened first?\n",
             "answer": "c",
             "a.": " E.T. the Extra-Terrestrial video game was released to the public.",
             "b.": " The entire video game industry sank into a deep decline.",
@@ -535,7 +493,7 @@
         },
         {
             "q_num": "5",
-            "q_text": "Who programmed E.T. the Extra-Terrestrial?\n\n",
+            "q_text": "Who programmed E.T. the Extra-Terrestrial?\n\n\n",
             "answer": "c",
             "a.": " Steven Spielberg",
             "c.": " Howard Scott Warshaw",
@@ -544,7 +502,7 @@
         },
         {
             "q_num": "6",
-            "q_text": "Why did Atari decide to skip testing E.T. the Extra-Terrestrial?",
+            "q_text": "Why did Atari decide to skip testing E.T. the Extra-Terrestrial?\n",
             "answer": "c",
             "a.": " Testing was too expensive.",
             "b.": " Spielberg would not allow testing.",
@@ -553,7 +511,7 @@
         },
         {
             "q_num": "7",
-            "q_text": "When was the game E.T. the Extra-Terrestrial released?",
+            "q_text": "When was the game E.T. the Extra-Terrestrial released?\n",
             "answer": "c",
             "a.": " June 1982",
             "b.": " September 1982",
@@ -562,7 +520,7 @@
         },
         {
             "q_num": "8",
-            "q_text": "According to the text, which group of people would like playing E.T.?",
+            "q_text": "According to the text, which group of people would like playing E.T.?\n",
             "answer": "c",
             "a.": " People who really enjoyed watching the movie",
             "b.": " People who liked playing fast, fun games",
@@ -571,7 +529,7 @@
         },
         {
             "q_num": "9",
-            "q_text": "Which of the following statements is true?",
+            "q_text": "Which of the following statements is true?\n",
             "answer": "b",
             "a.": " E.T. the Extra-Terrestrial was one of the worst selling games of all time.",
             "b.": " E.T. the Extra-Terrestrial sold a lot fewer copies than Atari was hoping it would.",

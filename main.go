@@ -98,7 +98,7 @@ func string_in_slice(a string, list []string) bool {
 
 func handle_request(c *gin.Context) {
 
-    files := []string{"carnivorous-plants.json","hyperinflation.json","test-reading.json","that-spot.json","worst-game-ever.json"}
+    files := []string{"carnivorous-plants.json","hyperinflation.json","worst-game-ever.json", "black-friday.json", "google.json", "honey-badgers.json", "hummingbirds.json", "koko.json", "metal-detectors.json", "mongooses.json", "reading.json", "seat-belts.json", "trampolines.json"}
 
     session := sessions.Default(c)
     name := session.Get(userkey).(string)

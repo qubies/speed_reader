@@ -3,6 +3,14 @@
     background-color:#dddddd;
     padding:0;
 }
+
+.jumbotron .h1, .jumbotron h1 {
+    padding: 40px 0px 20px;
+}
+h3 {
+    text-decoration: underline;
+    font-size: 1.2em;
+}
 #presentation_column {
     width: 80%;
     height: 100%;

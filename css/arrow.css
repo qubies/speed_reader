@@ -12,6 +12,7 @@ html {
 }
 .arrow_box {
     float:right;
+    display:none;
 }
 .arr {
   cursor: pointer;

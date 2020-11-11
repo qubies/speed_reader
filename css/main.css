@@ -13,6 +13,7 @@ h3 {
     font-size: 1.2em;
 }
 #presentation_column {
+    display: flex;
     width: 80%;
     height: 100%;
     background-color:#fff;
@@ -33,6 +34,8 @@ h3 {
     font-size: 5em;
     transition-timing-function: linear;
 }
+
+
 #start_button {
     position: absolute;
     height: 40px;
@@ -72,4 +75,23 @@ p, body {
 
 H1 {
     color: #ddd;
+}
+@media only screen and (max-width: 1200px) {
+    #WORD {
+        font-size: 3em;
+        transition-timing-function: linear;
+    }
+    .position_text_box {
+        font-size: 0.7em;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    #WORD {
+        font-size: 2em;
+        transition-timing-function: linear;
+    }
+    .position_text_box {
+        font-size: 0.5em;
+    }
 }

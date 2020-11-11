@@ -78,6 +78,8 @@ async function presentStory() {
     let t = new Timer();
     start_button = document.getElementById('start_button')
     start_button.style.display="none";
+    arrow_box = document.getElementById('arrow_box');
+    arrow_box.style.display="inherit";
     console.log(start_button);
     if (running) {return;}
     running = true;

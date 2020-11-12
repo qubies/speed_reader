@@ -345,8 +345,8 @@ func create_db() {
 }
 
 func login(c *gin.Context) {
-    username := c.PostForm("username")
-    password := c.PostForm("password")
+    username := strings.TrimSpace(c.PostForm("username"))
+    password := strings.TrimSpace(c.PostForm("password"))
     session := sessions.Default(c)
 
     if strings.Trim(username, " ") == "" || strings.Trim(password, " ") == "" {

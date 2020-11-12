@@ -157,87 +157,6 @@
             "declines."
         ],
         [
-            "Do",
-            "not",
-            "just",
-            "discount",
-            "a",
-            "text",
-            "because",
-            "it",
-            "is",
-            "unfamiliar",
-            "to",
-            "you."
-        ],
-        [
-            "Each",
-            "time",
-            "you",
-            "read,",
-            "you",
-            "are",
-            "exposed",
-            "to",
-            "new",
-            "ideas",
-            "and",
-            "perspectives."
-        ],
-        [
-            "Reading",
-            "can",
-            "change",
-            "the",
-            "way",
-            "that",
-            "you",
-            "understand",
-            "the",
-            "world."
-        ],
-        [
-            "It",
-            "can",
-            "give",
-            "you",
-            "a",
-            "broader",
-            "perspective",
-            "on",
-            "things."
-        ],
-        [
-            "It",
-            "can",
-            "make",
-            "you",
-            "worldlier."
-        ],
-        [
-            "You",
-            "can",
-            "learn",
-            "how",
-            "people",
-            "live",
-            "in",
-            "far",
-            "away",
-            "places."
-        ],
-        [
-            "You",
-            "can",
-            "learn",
-            "about",
-            "cultures",
-            "different",
-            "from",
-            "your",
-            "own."
-        ],
-        [
             "You",
             "can",
             "benefit",
@@ -328,6 +247,151 @@
             "is",
             "to",
             "practice."
+        ],
+        [
+            "Read",
+            "everything",
+            "that",
+            "you",
+            "can",
+            "at",
+            "school,",
+            "regardless",
+            "of",
+            "whether",
+            "you",
+            "find",
+            "it",
+            "interesting."
+        ],
+        [
+            "Reading",
+            "expands",
+            "your",
+            "vocabulary."
+        ],
+        [
+            "Even",
+            "a",
+            "\"boring\"",
+            "text",
+            "can",
+            "teach",
+            "you",
+            "new",
+            "words."
+        ],
+        [
+            "Having",
+            "a",
+            "larger",
+            "vocabulary",
+            "will",
+            "help",
+            "you",
+            "better",
+            "express",
+            "yourself."
+        ],
+        [
+            "You",
+            "will",
+            "be",
+            "able",
+            "to",
+            "speak,",
+            "write,",
+            "and",
+            "think",
+            "more",
+            "intelligently."
+        ],
+        [
+            "What's",
+            "boring",
+            "about",
+            "that?"
+        ],
+        [
+            "Do",
+            "not",
+            "just",
+            "discount",
+            "a",
+            "text",
+            "because",
+            "it",
+            "is",
+            "unfamiliar",
+            "to",
+            "you."
+        ],
+        [
+            "Each",
+            "time",
+            "you",
+            "read,",
+            "you",
+            "are",
+            "exposed",
+            "to",
+            "new",
+            "ideas",
+            "and",
+            "perspectives."
+        ],
+        [
+            "Reading",
+            "can",
+            "change",
+            "the",
+            "way",
+            "that",
+            "you",
+            "understand",
+            "the",
+            "world."
+        ],
+        [
+            "It",
+            "can",
+            "give",
+            "you",
+            "a",
+            "broader",
+            "perspective",
+            "on",
+            "things."
+        ],
+        [
+            "It",
+            "can",
+            "make",
+            "you",
+            "worldlier."
+        ],
+        [
+            "You",
+            "can",
+            "learn",
+            "how",
+            "people",
+            "live",
+            "in",
+            "far",
+            "away",
+            "places."
+        ],
+        [
+            "You",
+            "can",
+            "learn",
+            "about",
+            "cultures",
+            "different",
+            "from",
+            "your",
+            "own."
         ],
         [
             "Reading",
@@ -435,102 +499,38 @@
             "next",
             "one."
         ],
-        [
-            "Read",
-            "everything",
-            "that",
-            "you",
-            "can",
-            "at",
-            "school,",
-            "regardless",
-            "of",
-            "whether",
-            "you",
-            "find",
-            "it",
-            "interesting."
-        ],
-        [
-            "Reading",
-            "expands",
-            "your",
-            "vocabulary."
-        ],
-        [
-            "Even",
-            "a",
-            "\"boring\"",
-            "text",
-            "can",
-            "teach",
-            "you",
-            "new",
-            "words."
-        ],
-        [
-            "Having",
-            "a",
-            "larger",
-            "vocabulary",
-            "will",
-            "help",
-            "you",
-            "better",
-            "express",
-            "yourself."
-        ],
-        [
-            "You",
-            "will",
-            "be",
-            "able",
-            "to",
-            "speak,",
-            "write,",
-            "and",
-            "think",
-            "more",
-            "intelligently."
-        ],
-        [
-            "What's",
-            "boring",
-            "about",
-            "that?"
-        ],
         []
     ],
     "spans": [
         [
             0,
             0,
-            64
+            66
         ],
         [
-            18,
+            28,
             2,
-            68
+            49
         ],
         [
-            19,
+            33,
             2,
-            59
+            70
         ],
         [
-            22,
+            34,
             2,
-            51
+            61
         ],
         [
-            23,
+            37,
             2,
-            55
+            53
         ],
         [
-            43,
+            38,
             2,
-            48
+            57
         ]
     ],
     "questions": [
@@ -548,8 +548,8 @@
             "q_text": "Which is not a reason given by the author why students fail to complete reading assignments?\n",
             "answer": "d",
             "a.": " Students may be bored.",
-            "b.": " Students may be distracted.",
             "c.": " Students may be unwilling to focus.",
+            "b.": " Students may be distracted.",
             "d.": " Students may be tired."
         },
         {
@@ -563,12 +563,12 @@
         },
         {
             "q_num": "6",
-            "q_text": "Which best describes the author's tone in the first three sentences?\n",
+            "q_text": "Which best describes the author's tone in the first three sentences?\n \n",
             "answer": "b",
-            "a.": " Surprised",
-            "b.": " Sarcastic",
-            "c.": " Informative",
-            "d.": " Irate"
+            "a.": " Surprised ",
+            "b.": " Sarcastic ",
+            "d.": " Irate  ",
+            "c.": " Informative "
         },
         {
             "q_num": "7",
@@ -584,18 +584,9 @@
             "q_text": "Why does the author believe that reading is good for your mind state?\n",
             "answer": "d",
             "a.": " It has a calming effect.",
-            "b.": " It can lower your stress levels.",
             "c.": " It can help you relax.",
-            "d.": " All of these"
-        },
-        {
-            "q_num": "10",
-            "q_text": "Which title best expresses the main idea of this text?\n\n",
-            "answer": "a",
-            "a.": " Reading: Good for the Mind in Many Ways",
-            "b.": " Reading: The Key to a Successful Academic Future",
-            "c.": " Reading: Improve Your Vocabulary While Being Entertained",
-            "d.": " Reading: The Best Way to Improve Your Writing Skills"
+            "b.": " It can lower your stress levels.",
+            "d.": " All of these  "
         }
     ]
 }

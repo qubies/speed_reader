@@ -765,47 +765,52 @@
         [
             1,
             2,
-            95
+            99
         ],
         [
-            4,
+            9,
             2,
-            66
-        ],
-        [
-            8,
-            2,
-            64
+            48
         ],
         [
             13,
             2,
-            61
+            63
         ],
         [
             18,
             2,
-            50
+            52
+        ],
+        [
+            19,
+            2,
+            75
         ],
         [
             21,
             2,
-            71
+            73
         ],
         [
-            41,
+            24,
             2,
-            61
+            62
         ],
         [
-            43,
+            36,
             2,
-            79
+            73
+        ],
+        [
+            61,
+            2,
+            51
         ],
         [
             64,
             2,
-            117
+            121
         ]
     ],
     "questions": [
@@ -820,12 +825,12 @@
         },
         {
             "q_num": "2",
-            "q_text": "Which plant traps bugs in its stem and forces them to walk forward?\n\n\n\n\n",
+            "q_text": "Which plant traps bugs in its stem and forces them to walk forward?\n",
             "answer": "a",
-            "a.": " Corkscrew plants",
-            "b.": " Sundews",
-            "c.": " Bladderworts",
-            "d.": " Pitcher plants"
+            "a.": " Corkscrew plants ",
+            "c.": " Bladderworts ",
+            "b.": " Sundews ",
+            "d.": " Pitcher plants "
         },
         {
             "q_num": "3",
@@ -853,15 +858,6 @@
             "b.": " Bladderworts react quickly when their trigger hairs are bumped.",
             "c.": " Carnivorous plants are tough and can live in any environment.",
             "d.": " Bladderworts hide their traps just below the surface of the water."
-        },
-        {
-            "q_num": "10",
-            "q_text": "Which title best expresses the author's main purpose in writing this text?\nHow To Avoid Being Eaten by Carnivorous Plants\n\nLong Response\n",
-            "answer": "d",
-            "a.": " Watch Out!",
-            "b.": " At Risk: How You Can Help to Preserve Carnivorous Plants",
-            "c.": " Venus Flytrap: Nature's Most Beautiful and Dangerous Plant",
-            "d.": " Fatal Flowers: Plants That Kill Insects"
         }
     ]
 }

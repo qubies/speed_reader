@@ -623,7 +623,8 @@
             "of",
             "bringing",
             "in",
-            "mongooseeating",
+            "mongoose-",
+            "eating",
             "gorillas",
             "have",
             "been",
@@ -661,42 +662,47 @@
         [
             0,
             0,
-            53
+            55
         ],
         [
             3,
             2,
-            47
+            49
         ],
         [
-            8,
+            4,
             2,
-            89
+            44
         ],
         [
-            11,
+            10,
             2,
-            70
+            56
         ],
         [
-            20,
+            17,
             2,
-            53
+            99
         ],
         [
-            23,
+            29,
             2,
-            94
+            86
         ],
         [
-            28,
+            38,
             2,
-            54
+            50
+        ],
+        [
+            43,
+            2,
+            55
         ],
         [
             44,
             2,
-            94
+            96
         ]
     ],
     "questions": [
@@ -711,12 +717,12 @@
         },
         {
             "q_num": "3",
-            "q_text": "Which event happened first?\n",
+            "q_text": "Which event happened first?\n \n",
             "answer": "c",
-            "a.": " The mongoose was introduced to Hawaii",
-            "b.": " The black rat was introduced to Hawaii",
-            "c.": " The black rat migrated to Europe",
-            "d.": " Plantation owners bred mongooses"
+            "a.": " The mongoose was introduced to Hawaii ",
+            "b.": " The black rat was introduced to Hawaii ",
+            "c.": " The black rat migrated to Europe ",
+            "d.": " Plantation owners bred mongooses "
         },
         {
             "q_num": "4",
@@ -729,12 +735,12 @@
         },
         {
             "q_num": "5",
-            "q_text": "Which best express the author's main purpose in writing this text?\n",
+            "q_text": "Which best express the author's main purpose in writing this text?\n \n",
             "answer": "c",
-            "a.": " To persuade readers to protect the endangered mongoose",
-            "b.": " To describe the habits and hazards of the black rat",
-            "c.": " To inform readers about species that have invaded Hawaii",
-            "d.": " To entertain readers with tales of a mongoose's adventures"
+            "a.": " To persuade readers to protect the endangered mongoose ",
+            "b.": " To describe the habits and hazards of the black rat ",
+            "c.": " To inform readers about species that have invaded Hawaii ",
+            "d.": " To entertain readers with tales of a mongoose's adventures "
         },
         {
             "q_num": "7",
@@ -750,18 +756,9 @@
             "q_text": "Which best explains why plantation owners imported mongooses to Hawaii?\n",
             "answer": "a",
             "a.": " Mongooses eat rats.",
-            "b.": " Mongooses are fuzzy and adorable.",
             "c.": " Mongooses make great household pets.",
+            "b.": " Mongooses are fuzzy and adorable.",
             "d.": " Mongooses kill deadly cobras."
-        },
-        {
-            "q_num": "10",
-            "q_text": "Which title best expresses the main idea of this text?\n\nLong Response\n",
-            "answer": "d",
-            "a.": " Travel Procedures: Getting in and out of Hawaii with Pets",
-            "b.": " Unwanted: The Journey of the Black Rat to Hawaii",
-            "c.": " Uncovered: What the Real Rikki-Tikki-Tavi is Like",
-            "d.": " Backfired: Solving Problems with Problems in Hawaii"
         }
     ]
 }

@@ -148,7 +148,8 @@
             "are",
             "not",
             "enough",
-            "lowpriced",
+            "low-",
+            "priced",
             "items",
             "to",
             "go",
@@ -224,6 +225,80 @@
             "people",
             "leave",
             "disappointed."
+        ],
+        [
+            "The",
+            "situation",
+            "can",
+            "be",
+            "tense."
+        ],
+        [
+            "Some",
+            "Black",
+            "Friday",
+            "events",
+            "have",
+            "been",
+            "violent."
+        ],
+        [
+            "Large,",
+            "eager",
+            "crowds",
+            "have",
+            "trampled",
+            "workers."
+        ],
+        [
+            "Fights",
+            "have",
+            "broken",
+            "out",
+            "over",
+            "toys",
+            "or",
+            "people",
+            "cutting",
+            "in",
+            "line."
+        ],
+        [
+            "People",
+            "have",
+            "shot",
+            "one",
+            "another",
+            "over",
+            "parking",
+            "spots."
+        ],
+        [
+            "But",
+            "most",
+            "Black",
+            "Friday",
+            "events",
+            "are",
+            "safe",
+            "and",
+            "fun."
+        ],
+        [
+            "Still,",
+            "if",
+            "you",
+            "plan",
+            "on",
+            "going,",
+            "expect",
+            "large",
+            "crowds",
+            "and",
+            "a",
+            "bit",
+            "of",
+            "shoving."
         ],
         [
             "So",
@@ -325,16 +400,6 @@
             "It",
             "is",
             "even",
-            "The",
-            "situation",
-            "can",
-            "be",
-            "tense."
-        ],
-        [
-            "Some",
-            "Black",
-            "Friday",
             "spreading",
             "to",
             "other",
@@ -345,15 +410,6 @@
         ],
         [
             "Stores",
-            "events",
-            "have",
-            "been",
-            "violent."
-        ],
-        [
-            "Large,",
-            "eager",
-            "crowds",
             "have",
             "held",
             "Black",
@@ -362,15 +418,6 @@
             "in",
             "the",
             "U.K.,",
-            "have",
-            "trampled",
-            "workers."
-        ],
-        [
-            "Fights",
-            "have",
-            "broken",
-            "out",
             "Australia,",
             "and",
             "Brazil",
@@ -381,17 +428,6 @@
             "In",
             "Costa",
             "Rica",
-            "over",
-            "toys",
-            "or",
-            "people",
-            "cutting",
-            "in",
-            "line."
-        ],
-        [
-            "People",
-            "have",
             "Black",
             "Friday",
             "is",
@@ -401,16 +437,6 @@
             "Negro.\""
         ],
         [
-            "shot",
-            "one",
-            "another",
-            "over",
-            "parking",
-            "spots."
-        ],
-        [
-            "But",
-            "most",
             "And",
             "in",
             "Mexico,",
@@ -428,17 +454,6 @@
             "it",
             "\"El",
             "Buen",
-            "Black",
-            "Friday",
-            "events",
-            "are",
-            "safe",
-            "and",
-            "fun."
-        ],
-        [
-            "Still,",
-            "if",
             "Fin,\"",
             "which",
             "means",
@@ -446,15 +461,6 @@
             "good",
             "weekend\"",
             "in",
-            "you",
-            "plan",
-            "on",
-            "going,",
-            "expect",
-            "large",
-            "crowds",
-            "and",
-            "a",
             "Spanish."
         ],
         [
@@ -465,11 +471,6 @@
             "of",
             "savings",
             "is",
-            "bit",
-            "of",
-            "shoving."
-        ],
-        [
             "universal."
         ],
         []
@@ -478,37 +479,37 @@
         [
             0,
             0,
-            71
+            73
         ],
         [
+            10,
             2,
-            2,
-            48
+            49
         ],
         [
-            4,
+            14,
             2,
-            48
+            55
         ],
         [
-            5,
+            21,
             2,
-            56
+            63
         ],
         [
-            11,
+            27,
             2,
-            72
+            81
         ],
         [
-            20,
+            33,
             2,
-            79
+            53
         ],
         [
-            35,
+            34,
             2,
-            61
+            89
         ]
     ],
     "questions": [
@@ -541,11 +542,11 @@
         },
         {
             "q_num": "5",
-            "q_text": "Which country does not participate in Black Friday?\n",
+            "q_text": "Which country does not participate in Black Friday?\n\n\n",
             "answer": "a",
-            "a.": " France",
-            "b.": " Costa Rica",
-            "c.": " Brazil",
+            "a.": " France ",
+            "c.": " Brazil ",
+            "b.": " Costa Rica ",
             "d.": " United Kingdom"
         },
         {
@@ -559,12 +560,12 @@
         },
         {
             "q_num": "7",
-            "q_text": "Which title best expresses the author's purpose in writing this text?\n",
+            "q_text": "Which title best expresses the author's purpose in writing this text?\n \n",
             "answer": "c",
-            "a.": " Black Friday: Stories from the Parking Lot",
-            "b.": " Black Friday: Why You Should Go This Year",
-            "c.": " Black Friday: The Stuff That You Should Know",
-            "d.": " Black Friday: How to Save Money on the Big Day"
+            "a.": " Black Friday: Stories from the Parking Lot ",
+            "b.": " Black Friday: Why You Should Go This Year ",
+            "c.": " Black Friday: The Stuff That You Should Know ",
+            "d.": " Black Friday: How to Save Money on the Big Day "
         },
         {
             "q_num": "9",

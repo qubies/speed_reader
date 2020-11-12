@@ -634,57 +634,57 @@
         [
             3,
             2,
-            51
+            53
         ],
         [
             5,
             2,
-            59
+            61
         ],
         [
             29,
             2,
-            109
-        ],
-        [
-            34,
-            2,
-            74
+            115
         ],
         [
             43,
             2,
-            112
-        ],
-        [
-            46,
-            2,
-            51
+            116
         ],
         [
             47,
             2,
-            64
+            66
+        ],
+        [
+            48,
+            2,
+            70
+        ],
+        [
+            52,
+            2,
+            69
         ]
     ],
     "questions": [
         {
             "q_num": "1",
-            "q_text": "Which title best expresses the main idea of this text?\nImprove Your Odds with Seat Belts\n",
+            "q_text": "Which title best expresses the main idea of this text?\n \n",
             "answer": "d",
-            "a.": " Car Accidents: Ways That We Can Prevent Them",
-            "b.": " Slow Down: Save Lives By Driving Slower",
-            "c.": " Seat Belts: Wear Them to Survive Any Wreck",
-            "d.": " Why Not?"
+            "a.": " Car Accidents: Ways That We Can Prevent Them ",
+            "b.": " Slow Down: Save Lives By Driving Slower ",
+            "c.": " Seat Belts: Wear Them to Survive Any Wreck ",
+            "d.": " Why Not?Improve Your Odds with Seat Belts "
         },
         {
             "q_num": "2",
-            "q_text": "Which best expresses the author's main purpose in writing this text?\n",
+            "q_text": "Which best expresses the author's main purpose in writing this text?\n \n",
             "answer": "b",
-            "a.": " To inform readers about seat belt laws",
-            "b.": " To persuade readers to wear seat belts",
-            "c.": " To entertain readers with stories and jokes about seat belts",
-            "d.": " To describe what car accidents are like without seat belts"
+            "a.": " To inform readers about seat belt laws ",
+            "b.": " To persuade readers to wear seat belts ",
+            "c.": " To entertain readers with stories and jokes about seat belts ",
+            "d.": " To describe what car accidents are like without seat belts "
         },
         {
             "q_num": "7",
@@ -712,15 +712,6 @@
             "b.": " Every state in America has seat belt laws.",
             "c.": " You shouldn't drive anywhere until you are wearing your seat belt.",
             "d.": " Seat belts increase your chances of being injured in a car wreck."
-        },
-        {
-            "q_num": "10",
-            "q_text": "Which best explains why the author starts his essay with the word click?\nLong Response\n",
-            "answer": "b",
-            "a.": " He is trying to scare readers.",
-            "b.": " He is trying to get the reader's attention.",
-            "c.": " He is trying to remind readers how seat belts sound when clasped.",
-            "d.": " He is trying to describe what it's like to ride in a car."
         }
     ]
 }

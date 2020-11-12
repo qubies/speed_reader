@@ -679,42 +679,42 @@
         [
             0,
             0,
-            52
+            54
         ],
         [
             7,
             2,
-            87
+            91
         ],
         [
             13,
             2,
-            69
+            72
         ],
         [
             29,
             2,
-            70
+            72
         ],
         [
             36,
             2,
-            72
+            76
         ],
         [
             44,
             2,
-            71
+            75
         ],
         [
             47,
             2,
-            87
+            91
         ],
         [
             48,
             2,
-            68
+            70
         ]
     ],
     "questions": [
@@ -729,12 +729,12 @@
         },
         {
             "q_num": "5",
-            "q_text": "Which best describes one of the author's main purposes in writing this text?\n",
+            "q_text": "Which best describes one of the author's main purposes in writing this text?\n \n",
             "answer": "d",
-            "a.": " To persuade readers to join the efforts to protect honey badgers",
-            "b.": " To compare and contrast honey badgers with beagles and lions",
-            "c.": " To describe how honey badgers select their partners",
-            "d.": " To explain why honey badgers are so tough"
+            "a.": " To persuade readers to join the efforts to protect honey badgers ",
+            "b.": " To compare and contrast honey badgers with beagles and lions ",
+            "c.": " To describe how honey badgers select their partners ",
+            "d.": " To explain why honey badgers are so tough "
         },
         {
             "q_num": "6",
@@ -749,37 +749,28 @@
             "q_num": "7",
             "q_text": "Which person is most likely to be disturbed by a honey badger moving in next door?\n",
             "answer": "a",
-            "a.": " A beekeeper",
-            "b.": " A biologist",
-            "c.": " A bus driver",
-            "d.": " A salesman"
+            "a.": " A beekeeper  ",
+            "c.": " A bus driver  ",
+            "b.": " A biologist ",
+            "d.": " A salesman "
         },
         {
             "q_num": "8",
-            "q_text": "Which animal is the honey badger afraid to attack?\n",
+            "q_text": "Which animal is the honey badger afraid to attack?\n\n",
             "answer": "d",
-            "a.": " Lion",
-            "b.": " Water buffalo",
-            "c.": " Poisonous snake",
-            "d.": " None of these"
+            "a.": " Lion  ",
+            "c.": " Poisonous snake ",
+            "b.": " Water buffalo ",
+            "d.": " None of these "
         },
         {
             "q_num": "9",
             "q_text": "Which is not one of the honey badger's strengths?\n",
             "answer": "c",
-            "a.": " Thick skin",
-            "b.": " Powerful jaws and strong teeth",
-            "c.": " Poisonous claws",
-            "d.": " Tireless fighting spirit"
-        },
-        {
-            "q_num": "10",
-            "q_text": "Which title best expresses the main idea of this text?\nLions\n\n",
-            "answer": "b",
-            "a.": " Battle on the Savannah: Honey Badgers Vs.",
-            "b.": " Little Badger, Big Fight: One of Nature's Toughest Scrappers",
-            "c.": " Ace in the Hole: How Honey Badgers Build and Protect Their Homes",
-            "d.": " Little Game: Interesting Animals That Live in Africa"
+            "a.": " Thick skin ",
+            "c.": " Poisonous claws ",
+            "b.": " Powerful jaws and strong teeth ",
+            "d.": " Tireless fighting spirit  "
         }
     ]
 }

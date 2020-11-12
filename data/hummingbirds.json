@@ -461,30 +461,30 @@
         [
             0,
             0,
-            46
+            48
         ],
         [
-            3,
             2,
-            48
+            2,
+            63
+        ],
+        [
+            10,
+            2,
+            47
         ],
         [
             12,
             2,
-            72
+            76
         ],
         [
-            14,
+            24,
             2,
-            46
+            51
         ],
         [
-            23,
-            2,
-            53
-        ],
-        [
-            42,
+            35,
             2,
             48
         ]
@@ -492,12 +492,12 @@
     "questions": [
         {
             "q_num": "1",
-            "q_text": "Why are they called hummingbirds?\n\n\n",
+            "q_text": "Why are they called hummingbirds?\n \n",
             "answer": "c",
-            "a.": " They are very light",
-            "c.": " Their wings make a humming sound",
-            "b.": " They sing when they fly",
-            "d.": " Their song sounds like humming"
+            "a.": " They are very light   ",
+            "b.": " They sing when they fly ",
+            "d.": " Their song sounds like humming ",
+            "c.": " Their wings make a humming sound "
         },
         {
             "q_num": "2",
@@ -521,10 +521,10 @@
             "q_num": "4",
             "q_text": "According to the text, which does the bee hummingbird use to make nests?\n",
             "answer": "c",
-            "a.": " straw",
-            "b.": " concrete",
-            "c.": " bark",
-            "d.": " sticks"
+            "a.": " straw ",
+            "c.": " bark  ",
+            "b.": " concrete ",
+            "d.": " sticks "
         },
         {
             "q_num": "6",
@@ -549,18 +549,9 @@
             "q_text": "Why do flowers need pollen?\n",
             "answer": "d",
             "a.": " Flowers eat pollen.",
-            "c.": " Hummingbirds eat pollen.",
             "b.": " Pollen attracts hummingbirds.",
-            "d.": " Flowers use pollen to make seeds."
-        },
-        {
-            "q_num": "10",
-            "q_text": "Which title best describes the main idea of this text?\n\n",
-            "answer": "s",
-            "a.": " Bee Hummingbirds: The World's Smallest Bird",
-            "b.": " Pollination: How Birds and Flowers Work Together",
-            "c.": " Hummingbirds: Unique and Uniquely Helpful",
-            "d.": " Interesting Facts About Birds"
+            "d.": " Flowers use pollen to make seeds.",
+            "c.": " Hummingbirds eat pollen."
         }
     ]
 }

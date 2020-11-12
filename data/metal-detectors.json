@@ -434,22 +434,22 @@
         [
             1,
             2,
-            69
+            73
+        ],
+        [
+            2,
+            2,
+            62
         ],
         [
             8,
             2,
-            64
+            66
         ],
         [
-            9,
+            14,
             2,
-            54
-        ],
-        [
-            33,
-            2,
-            57
+            43
         ]
     ],
     "questions": [
@@ -458,8 +458,8 @@
             "q_text": "Which was not one of the problems with the first metal detectors?\n",
             "answer": "d",
             "a.": " They were too big.",
-            "b.": " They were too expensive.",
             "c.": " They didn't work well.",
+            "b.": " They were too expensive.",
             "d.": " They were unsafe."
         },
         {
@@ -473,21 +473,21 @@
         },
         {
             "q_num": "4",
-            "q_text": "Why were metal detectors first used?\n\n\n",
+            "q_text": "Why were metal detectors first used?\n",
             "answer": "a",
-            "a.": " To help miners",
-            "c.": " To help doctors",
-            "b.": " To help security guards",
-            "d.": " To help soldiers"
+            "a.": " To help miners  ",
+            "c.": " To help doctors ",
+            "b.": " To help security guards ",
+            "d.": " To help soldiers  "
         },
         {
             "q_num": "5",
             "q_text": "According to the text, metal detectors have been used in all of the following except which?\n",
             "answer": "b",
-            "a.": " schools",
-            "b.": " churches",
-            "c.": " courthouses",
-            "d.": " airports"
+            "a.": " schools ",
+            "c.": " courthouses  ",
+            "b.": " churches ",
+            "d.": " airports  "
         },
         {
             "q_num": "6",
@@ -518,21 +518,12 @@
         },
         {
             "q_num": "9",
-            "q_text": "How did metal detectors get better over time?\n\n\n",
+            "q_text": "How did metal detectors get better over time?\n \n",
             "answer": "d",
             "a.": " They became cheaper.",
-            "c.": " They began working better",
             "b.": " They became lighter.",
-            "d.": " All of these"
-        },
-        {
-            "q_num": "10",
-            "q_text": "Which title would best describe the purpose of this text?\n\n",
-            "answer": "d",
-            "a.": " A Day at the Beach: Using Your Metal Detector to Find Things",
-            "b.": " Metal Detectors: a Complete the Story of Their Invention",
-            "c.": " Magnetism and More: How a Metal Detector Works",
-            "d.": " Metal Detectors: What They Do and How We Use Them"
+            "d.": " All of these ",
+            "c.": " They began working better "
         }
     ]
 }

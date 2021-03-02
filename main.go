@@ -23,6 +23,7 @@ import (
 const (
     userkey = "user"
 )
+
 // globals 
 var common_words []string
 var templates *template.Template
@@ -325,7 +326,7 @@ func get_user_info(user string) (*User, bool) {
 
 func create_db() {
     err := *new(error)
-    db, err = sql.Open("sqlite3", "./data/656_project.db")
+    db, err = sql.Open("sqlite3", "./data/focused_reader.db")
     if err != nil {
         log.Fatal(err)
     }

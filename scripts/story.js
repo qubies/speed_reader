@@ -1,13 +1,4 @@
-
-function wpmToSeconds(wpm) {
-    return 1 / (wpm / 60);
-}
-
-function sleep(s) {
-    return new Promise(resolve => setTimeout(resolve, s*1000));
-}
-
-let running = false;
+// Define default parameters
 let wpm_base = 450;
 let pause_time = wpmToSeconds(wpm_base);
 let wpm_increment = 50;
@@ -20,13 +11,10 @@ let end_boost = 1.5;
 let uncommon_boost = 1.1;
 let ai_boost = 1.5;
 
-function flatten(arr) {
-  return arr.reduce(function (flat, toFlatten) {
-    return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
-  }, []);
-}
+//state
+let running = false;
 let story_length = flatten(story).length;
-console.log(story_length);
+let line = 0;
 
 class Timer {
     constructor() {
@@ -54,6 +42,21 @@ class Timer {
     }
 }
 
+function wpmToSeconds(wpm) {
+    return 1 / (wpm / 60);
+}
+
+function sleep(s) {
+    return new Promise(resolve => setTimeout(resolve, s*1000));
+}
+
+function flatten(arr) {
+  return arr.reduce(function (flat, toFlatten) {
+    return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+  }, []);
+}
+
+
 function calculate_pause_time(word, line_index, word_index) {
     let base = pause_time
     if (word.includes(",")) {
@@ -62,7 +65,7 @@ function calculate_pause_time(word, line_index, word_index) {
     if ([".", "!", "?", "...", ":", ";"].some(v => word.includes(v))) {
         base += end_boost * pause_time;
     }
-    if (!common_words.has(word)) {
+    if (!common_words.has(word) || word.length > 12) {
         base += uncommon_boost * pause_time;
     }
     for (i=0; i<spans.length; i++) {
@@ -73,7 +76,7 @@ function calculate_pause_time(word, line_index, word_index) {
     }
     return base
 }
-let line = 0;
+
 async function presentStory() {
     let t = new Timer();
     start_button = document.getElementById('start_button')
@@ -81,9 +84,7 @@ async function presentStory() {
     arrow_box = document.getElementById('arrow_box');
     arrow_box.style.display="inherit";
     console.log(start_button);
-    if (running) {return;}
-    running = true;
-    let previous_line = document.getElementById('previous_line');
+    let previous_lrne = document.getElementById('previous_line');
     let current_line = document.getElementById('current_line');
     let next_line = document.getElementById('next_line');
     let wp = document.getElementById('WORD');
@@ -118,14 +119,11 @@ async function presentStory() {
                 await sleep(calculate_pause_time(story[lp][word], lp, word));
             }
         }
-        // here the return of t.elapsed should be written to the story table along with t.started. 
-        let results = t.stop();
-        console.log("Timer =", t.elapsed(), "Started =", t.start_time, "Stopped =", t.stop_time);
-        console.log("Timer =", t.elapsed(), "Started =", results["started"], "Stopped =", results["stopped"]);
-        
-    //    t.reset();
-    //}
-    console.log(`wpm:${t.wpm()}`);
+    // console.log("Timer =", t.elapsed(), "Started =", t.start_time, "Stopped =", t.stop_time);
+    // console.log("Timer =", t.elapsed(), "Started =", results["started"], "Stopped =", results["stopped"]);
+    // console.log(`wpm:${t.wpm()}`);
+    
+    let results = t.stop();
     var wpm = t.wpm();
     var start_time = t.start_time;
     window.location.replace(`/private/quiz?wpm=${wpm}&date=${start_time}`);
@@ -184,6 +182,7 @@ function right_released() {
     $('.righttext').text(''); 
     $('.right').css('transform', 'translate(0, 0)');
 }
+
 
 $(document).keydown(function(e) {
   if (e.which==37) {

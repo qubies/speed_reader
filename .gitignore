@@ -1,3 +1,5 @@
 .env
 src/*
 speed_reader
+data/656_project.db
+data/focused_reader.db

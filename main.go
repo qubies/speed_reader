@@ -15,17 +15,17 @@ import (
     "net/http"
     "time"
     "github.com/gin-gonic/contrib/sessions"
-    db "github.com/qubies/speed_reader/database"
+    data "github.com/qubies/speed_reader/data"
 )
+
+// the session var that holds the user's info
 const (
     userkey = "user"
 )
 
-
 // globals 
-var common_words []string
 var templates *template.Template
-var system *db.System
+var system *data.System
 
 
 type StoryPage struct {
@@ -36,37 +36,35 @@ type StoryPage struct {
     Spans [][]int
 }
 
+// type Choice struct {
+//     Correct string   `json:"correct"`
+//     Wrong   []string `json:"wrong"`
+// }
 
+// type Question struct {
+//     QuestionString string `json:"question_string"`
+//     Choices Choice `json:"choices"`
+// }
 
-type Choice struct {
-    Correct string   `json:"correct"`
-    Wrong   []string `json:"wrong"`
-}
+// func new_question(question string, correct_answer string, wrong_answer []string) *Question {
+//     return &Question{question, Choice{correct_answer, wrong_answer}}
+// }
 
-type Question struct {
-    QuestionString string `json:"question_string"`
-    Choices Choice `json:"choices"`
-}
+// type Quiz struct {
+//     Name string
+//     Questions []*Question
+// }
 
-func new_question(question string, correct_answer string, wrong_answer []string) *Question {
-    return &Question{question, Choice{correct_answer, wrong_answer}}
-}
-
-type Quiz struct {
-    Name string
-    Questions []*Question
+type Story_Record struct {
+    User_ID string
+    Story_Name string
+    Results *Quiz_Results
 }
 
 type Quiz_Results struct {
     Date int
     Score float64
     Wpm float64
-}
-
-type Record struct {
-    User_ID string
-    Story_Name string
-    Results *Quiz_Results
 }
 
 type Record_Update struct {
@@ -81,7 +79,7 @@ func handle_request(c *gin.Context) {
     user, _ := get_user_info(name)
 
     // check if they are done all the stories
-    if id < 0 {
+    if user.Story_ID >= len(data.Stories) {
         fmt.Println("all done stories")
         c.HTML(200, "all_done.html", nil)
         return
@@ -187,17 +185,6 @@ func new_handler(c *gin.Context) {
     c.HTML(200, "new_user.html", u)
 }
 
-func get_common_words() []string {
-    common_word_file, err := os.Open("data/common_words.json")
-    var common_words []string
-    if err != nil {
-        log.Fatal("Common words file not found")
-    }
-    defer common_word_file.Close()
-    byteValue, _ := ioutil.ReadAll(common_word_file)
-    json.Unmarshal(byteValue, &common_words)
-    return common_words
-}
 
 
 func get_story_info(user string) ([]string) {

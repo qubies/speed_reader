@@ -87,12 +87,6 @@ Quiz.prototype.render = function(container) {
             if (self.questions[i].user_choice_index === self.questions[i].correct_choice_index) {
                 score++;
             }
-
-	    
-            $('#quiz-retry-button').click(function(reset) {
-                window.location.replace('/private/story');
-            });
-
         }
 
         // Display the score with the appropriate message
@@ -113,14 +107,11 @@ Quiz.prototype.render = function(container) {
         $('#next-question-button').slideUp();
         $('#prev-question-button').slideUp();
         $('#quiz-retry-button').slideDown();
-	var wpm = getParameterByName('wpm');
-	var start_time = getParameterByName('date');
-	const Http = new XMLHttpRequest();
-	const url=`/private/record?mark=${percentage}&wpm=${wpm}&date=${start_time}`;
-	console.log(url)
-	Http.open("POST", url);
-	Http.send();
+        let data = {"Date":Date.now(), "Score":percentage, "Wpm":parseFloat(getParameterByName('wpm'))}
+        console.log(data)
+        send_post('/private/record', data);
     });
+    
 
     // Add a listener on the questions container to listen for user select changes. This is for determining whether we can submit answers or not.
     question_container.bind('user-select-change', function() {

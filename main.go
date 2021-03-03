@@ -1,7 +1,6 @@
 package main
 
 import (
-    "strconv"
     "strings"
     "log"
     "io/ioutil"
@@ -12,24 +11,21 @@ import (
     "github.com/gin-gonic/gin"
 
     "fmt"
-    _ "github.com/mattn/go-sqlite3"
-    "database/sql"
-    "github.com/Pallinder/go-randomdata"
     "math/rand"
     "net/http"
     "time"
     "github.com/gin-gonic/contrib/sessions"
+    db "github.com/qubies/speed_reader/database"
 )
 const (
     userkey = "user"
 )
 
+
 // globals 
 var common_words []string
 var templates *template.Template
-var db *sql.DB
-var groups []string = []string{"Experimental", "Control"}
-var last_group int = 1
+var system *db.System
 
 
 type StoryPage struct {
@@ -40,27 +36,7 @@ type StoryPage struct {
     Spans [][]int
 }
 
-type JsonQuestion struct {
-    Q_num string `json:"q_num"`
-    Q_text string	`json:"q_text"`
-    Answer string	`json:"answer"`
-    A string	`json:"a."`
-    B string	`json:"b."`
-    C string	`json:"c."`
-    D string	`json:"d." `    
-}
 
-type StoryJson struct {
-    Story [][]string		`json:"story"`
-    Spans [][]int		`json:"spans"`
-    Questions []JsonQuestion	`json:"questions"`
-}
-
-type User struct {
-    User_ID string
-    Password string
-    Group string
-}
 
 type Choice struct {
     Correct string   `json:"correct"`
@@ -80,59 +56,44 @@ type Quiz struct {
     Name string
     Questions []*Question
 }
+
+type Quiz_Results struct {
+    Date int
+    Score float64
+    Wpm float64
+}
+
 type Record struct {
     User_ID string
     Story_Name string
-    Date int
-    Wpm float64
-    Record float64
+    Results *Quiz_Results
 }
 
-func string_in_slice(a string, list []string) bool {
-    for _, b := range list {
-        if b == a {
-            return true
-        }
-    }
-    return false
+type Record_Update struct {
+    Action int
+    Date int
 }
 
 func handle_request(c *gin.Context) {
-
-    files := []string{"carnivorous-plants.json","hyperinflation.json","worst-game-ever.json", "black-friday.json", "google.json", "honey-badgers.json", "hummingbirds.json", "koko.json", "metal-detectors.json", "mongooses.json", "reading.json", "seat-belts.json", "trampolines.json"}
 
     session := sessions.Default(c)
     name := session.Get(userkey).(string)
     user, _ := get_user_info(name)
 
-    stories := get_story_info(name)
-
-    id := -1
-    for i, name := range files {
-        if string_in_slice(name, stories) {
-            continue
-        }
-        id = i
-    }
-
+    // check if they are done all the stories
     if id < 0 {
         fmt.Println("all done stories")
         c.HTML(200, "all_done.html", nil)
         return
     }
 
-    jsonFile, _ := os.Open("data/"+files[id])
-    defer jsonFile.Close()
-    byteValue, _ := ioutil.ReadAll(jsonFile)
-
-    session.Set("story", files[id]) // In real world usage you'd set this to the users ID
+    session.Set("story", files[id]) 
+    session.Set("story_id", id)
     if err := session.Save(); err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
         return
     }
 
-    var result StoryJson
-    json.Unmarshal([]byte(byteValue), &result)
 
     if user.Group == "Control" {
         result.Spans = [][]int{}
@@ -148,16 +109,42 @@ func finish_story(c *gin.Context) {
     session := sessions.Default(c)
     name := session.Get(userkey).(string)
     story := session.Get("story").(string)
-    wpm,_ := strconv.ParseFloat(c.Query("wpm"), 64)
-    date,_ := strconv.Atoi(c.Query("date"))
-
-    mark,_ := strconv.ParseFloat(c.Query("mark"), 64)
-    record := Record{name, story, date, wpm, mark}
-
-    fmt.Printf("%v %v %v %v", wpm, date, mark, name)
+    fmt.Println(name, story, "in thing")
+    record := Record{name, story, new(Quiz_Results)}
+    if err := c.ShouldBindJSON(record.Results); err != nil {
+        fmt.Println("Error: ", err)
+        c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
+        return
+    }
+    fmt.Println(record)
     add_record(&record)
 }
 
+func story_update(data *Record_Update) {
+
+    //insert Record into dbStoryActions (Action_ID integer primary key autoincrement, Date integer not null, Story_ID integer, Action integer not null, User_ID text not null, FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID), FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
+    sqlStmt := "INSERT INTO  StoryActions(Date,Story_ID, User_ID, Score) Values ($1, $2, $3, $4, $5);"
+    fmt.Println(sqlStmt)
+    _, err := db.Exec(sqlStmt, record.Results.Date, record.Results.Wpm, record.Story_Name, record.User_ID, record.Results.Score)
+    if err != nil {
+        fmt.Println("Error encountered in adding record: '", err, "'")
+    }
+}
+
+func update_story(c *gin.Context) {
+    // collect session vars
+    session := sessions.Default(c)
+    name := session.Get(userkey).(string)
+    story := session.Get("story").(string)
+
+    // collect post data
+    var data Record_Update
+    if err := c.ShouldBindJSON(&data); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
+        return
+    }
+    fmt.Println("updated", data, name, story)
+}
 
 func introHandler(c *gin.Context) {
     c.HTML(200, "intro.html", nil)
@@ -212,73 +199,6 @@ func get_common_words() []string {
     return common_words
 }
 
-func generate_user_info() *User {
-
-    return &User{strings.ReplaceAll(randomdata.FullName(randomdata.RandomGender), " ", "_"), strings.ReplaceAll(randomdata.SillyName(), " ", "_"), choose_group()}
-
-}
-
-func choose_group() string {
-    last_group = (last_group + 1) % len(groups)
-    return groups[last_group]
-    // return groups[rand.Intn(len(groups))]
-
-}
-
-func add_user() *User{
-    new_user := generate_user_info()
-    for user_exists(new_user.User_ID) {
-        new_user = generate_user_info()
-    }
-    tx, err := db.Begin()
-    if err != nil {
-        log.Fatal(err)
-    }
-    stmt, err := tx.Prepare(`INSERT into Users(User_ID, Password, Group_ID) values (?,?,?)`) 
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer stmt.Close()
-    _, err = stmt.Exec(new_user.User_ID, new_user.Password, new_user.Group)
-    if err != nil {
-        log.Fatal(err)
-    }
-    log.Println("Added New User: ", new_user)
-    tx.Commit()
-    return new_user
-}
-
-func user_exists(user string) (bool) {
-    var count int
-    rows, err := db.Query(fmt.Sprintf("select count(*) from Users where User_ID='%s';",user))
-    if err != nil {
-        log.Fatal("count query error: ", err)
-    }
-
-    for rows.Next() {
-        err:= rows.Scan(&count)
-        if err != nil {
-            log.Fatal("ooopse")
-        }
-    }
-    return count>0
-}
-
-func (U *User) Validate() bool {
-    var count int
-    rows, err := db.Query(fmt.Sprintf("select count(*) from Users where User_ID='%s' and Password='%s';",U.User_ID, U.Password))
-    if err != nil {
-        log.Fatal("count query error: ", err)
-    }
-
-    for rows.Next() {
-        err:= rows.Scan(&count)
-        if err != nil {
-            log.Fatal("ooopse")
-        }
-    }
-    return count>0
-}
 
 func get_story_info(user string) ([]string) {
     rows, err := db.Query(fmt.Sprintf("select Story_Name from Stories where User_ID='%s';",user))
@@ -295,14 +215,15 @@ func get_story_info(user string) ([]string) {
     return stories
 }
 
-func add_record(record *Record) (bool){
+func add_record(record *Record) {
 
     //insert Record into db
-    sqlStmt := "INSERT INTO Stories (Date, wpm, Story_Name, User_ID, Record) Values ($1, $2, $3, $4, $5);"
-    _, err := db.Exec(sqlStmt, record.Date, record.Wpm, record.Story_Name, record.User_ID, record.Record)
-    fmt.Println(err)
-    //retun true false success
-    return false
+    sqlStmt := "INSERT INTO stories (Date, wpm, Story_Name, User_ID, Score) Values ($1, $2, $3, $4, $5);"
+    fmt.Println(sqlStmt)
+    _, err := db.Exec(sqlStmt, record.Results.Date, record.Results.Wpm, record.Story_Name, record.User_ID, record.Results.Score)
+    if err != nil {
+        fmt.Println("Error encountered in adding record: '", err, "'")
+    }
 }
 
 func get_user_info(user string) (*User, bool) {
@@ -324,26 +245,6 @@ func get_user_info(user string) (*User, bool) {
     return u, true
 }
 
-func create_db() {
-    err := *new(error)
-    db, err = sql.Open("sqlite3", "./data/focused_reader.db")
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    sqlStmt := `
-    PRAGMA foreign_keys = ON;
-    create table IF NOT EXISTS Groups (Group_ID text not null primary key); 
-    create table IF NOT EXISTS Users (User_ID text not null primary key, Password text, Group_ID text, FOREIGN KEY(Group_ID) REFERENCES Groups(Group_ID));
-    create table IF NOT EXISTS Stories (Story_ID integer primary key autoincrement, Date integer not null, wpm REAL, Story_Name text, User_ID text, Record REAL,FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
-    `
-    _, err = db.Exec(sqlStmt)
-    if err != nil {
-        log.Fatal("Unable to create DB: ", err)
-    }
-    sqlStmt = "INSERT INTO Groups(Group_ID) Values ('Experimental'), ('Control');"
-    db.Exec(sqlStmt)
-}
 
 func login(c *gin.Context) {
     username := strings.TrimSpace(c.PostForm("username"))
@@ -358,8 +259,9 @@ func login(c *gin.Context) {
     U := new(User)
     U.User_ID = username
     U.Password = password
+    U.Current_Story_Index = 0
     if U.Validate() {
-        session.Set(userkey, username) // In real world usage you'd set this to the users ID
+        session.Set("user", U)
         if err := session.Save(); err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
             return
@@ -426,7 +328,9 @@ func main() {
     app.Static("/css","./css")
     app.Static("/scripts","./scripts")
 
-    app.Static("/images","./images")
+    // so there currently aren't images, but if we want....
+    // app.Static("/images","./images")
+
     app.GET("/", introHandler)
     app.GET("/new_account", new_handler)
     app.POST("/login", login)
@@ -438,6 +342,7 @@ func main() {
         private.GET("/story", handle_request)
         private.GET("/quiz", quizHandler)
         private.POST("/record",finish_story)
+        private.POST("/update_story", update_story)
     }
     app.Run(":"+PORT)
 }

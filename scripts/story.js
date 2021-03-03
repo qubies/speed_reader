@@ -126,7 +126,8 @@ async function presentStory() {
     let results = t.stop();
     var wpm = t.wpm();
     var start_time = t.start_time;
-    window.location.replace(`/private/quiz?wpm=${wpm}&date=${start_time}`);
+    send_update(actionsEnum.START_QUIZ)
+    window.location.replace(`/private/quiz?wpm=${wpm}`);
 }
 
 function up_pressed() {
@@ -161,6 +162,7 @@ function right_pressed() {
     line = Math.min(line, story.length-1);
 }
 function up_released() {
+    send_update(actionsEnum.SPEED_UP);
     $('.up').removeClass('pressed');
     $('.uptext').text('');
     $('.left').css('transform', 'translate(0, 0)');
@@ -168,16 +170,19 @@ function up_released() {
     $('.right').css('transform', 'translate(0, 0)');
 }
 function down_released() {
+    send_update(actionsEnum.SLOW_DOWN);
     $('.down').removeClass('pressed');
     $('.downtext').text('');
     $('.down').css('transform', 'translate(0, 0)');
 }
 function left_released() {
+    send_update(actionsEnum.REWIND);
     $('.left').removeClass('pressed');
     $('.lefttext').text('');   
     $('.left').css('transform', 'translate(0, 0)');  
 }
 function right_released() {
+    send_update(actionsEnum.FAST_FORWARD);
     $('.right').removeClass('pressed'); 
     $('.righttext').text(''); 
     $('.right').css('transform', 'translate(0, 0)');

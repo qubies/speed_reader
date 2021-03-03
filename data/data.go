@@ -5,11 +5,13 @@ package data
 //     USER
 //     SYSTEM
 // Depends on Stories as they are returned by the system
+// interactions are done through system NOT USER.
+// User is exported only for storage in session
 import (
     "fmt"
     "database/sql"
     _ "github.com/mattn/go-sqlite3"
-    "github.com/Pallinder/go-randomdata"
+    "github.com/qubies/go-randomdata"
     "log"
     "strings"
     "github.com/qubies/speed_reader/stories"
@@ -23,7 +25,7 @@ import (
 // the generic user representation
 type User struct {
     User_ID string
-    Password string
+    password string
     Group int
     Current_Story_Index int
     Current_Quiz_Index int
@@ -92,7 +94,7 @@ func create_db(location string) *sql.DB{
 
     schema := `
     PRAGMA foreign_keys = ON;
-    create table IF NOT EXISTS Users (User_ID text not null primary key, Password text, Group_ID integer not null, Current_Story_Index integer default 0, Current_Quiz_Index integer default 0);
+    create table IF NOT EXISTS Users (User_ID text not null primary key, password text, Group_ID integer not null, Current_Story_Index integer default 0, Current_Quiz_Index integer default 0);
     create table IF NOT EXISTS Stories (Story_ID integer primary key autoincrement, Date integer not null, wpm REAL, Story_Name text, User_ID text, Score REAL,FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
     create table IF NOT EXISTS StoryActions (Action_ID integer primary key autoincrement, Date integer not null, Story_ID integer, Action integer not null, User_ID text not null, FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID), FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
     `
@@ -159,12 +161,12 @@ func (S* System) Create_user() *User{
     if err != nil {
         log.Fatal(err)
     }
-    stmt, err := tx.Prepare(`INSERT into Users(User_ID, Password, Group_ID) values (?,?,?)`) 
+    stmt, err := tx.Prepare(`INSERT into Users(User_ID, password, Group_ID) values (?,?,?)`) 
     if err != nil {
         log.Fatal(err)
     }
     defer stmt.Close()
-    _, err = stmt.Exec(new_user.User_ID, new_user.Password, new_user.Group)
+    _, err = stmt.Exec(new_user.User_ID, new_user.password, new_user.Group)
     if err != nil {
         log.Fatal(err)
     }
@@ -175,7 +177,7 @@ func (S* System) Create_user() *User{
 
 func (S *System) Validate_User(U *User) bool {
     var count int
-    rows, err := S.Database.Query(fmt.Sprintf("select count(*) from Users where User_ID='%s' and Password='%s';",U.User_ID, U.Password))
+    rows, err := S.Database.Query(fmt.Sprintf("select count(*) from Users where User_ID='%s' and password='%s';",U.User_ID, U.password))
     if err != nil {
         log.Fatal("count query error: ", err)
     }
@@ -208,7 +210,7 @@ func (S *System) User_From_ID(user_id string) (*User, error) {
     if !S.User_exists(user_id) {
         return nil, errors.New("User does not exist")
     }
-    rows, err := S.Database.Query(fmt.Sprintf("select User_ID, Password, Group_ID, Current_Story_Index, Current_Quiz_Index from Users where User_ID='%s';",user_id))
+    rows, err := S.Database.Query(fmt.Sprintf("select User_ID, password, Group_ID, Current_Story_Index, Current_Quiz_Index from Users where User_ID='%s' limit 1;",user_id))
 
     if err != nil {
 		return nil, err
@@ -217,7 +219,7 @@ func (S *System) User_From_ID(user_id string) (*User, error) {
 
     u := new(User)
     for rows.Next() {
-        err = rows.Scan(&u.User_ID, &u.Password, &u.Group, &u.Current_Story_Index, &u.Current_Quiz_Index)
+        err = rows.Scan(&u.User_ID, &u.password, &u.Group, &u.Current_Story_Index, &u.Current_Quiz_Index)
     }
     return u, nil
 }

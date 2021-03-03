@@ -49,7 +49,7 @@ func TestSystem(t *testing.T) {
 	if !data_system.Validate_User(new_user) {
 		t.Error("Unable to validate created user", new_user)
 	}
-	new_user.Password = "r"
+	new_user.password = "r"
 	if data_system.Validate_User(new_user) {
 		t.Error("Validated with incorrect password")
 	}
@@ -132,6 +132,22 @@ func TestSystem(t *testing.T) {
 		t.Error("System should have reached the end")
 	}
 
+
+    // Test user creation system with loading....
+    for x:=0; x < 1000; x++ {
+        u := data_system.Create_user()
+
+        if !data_system.Validate_User(u) {
+            t.Error("unable to validate user...:", u)
+        }
+
+        u_2, _ := data_system.User_From_ID(u.User_ID)
+        if !reflect.DeepEqual(u, u_2) {
+            t.Error("System inequaility in returned user from generated user")
+        }
+        
+
+    }
 
 
 

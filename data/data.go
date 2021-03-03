@@ -43,9 +43,14 @@ func (U *User) Complete_Reading(){
 }
 
 // advances to the next story
-func (U *User) Complete_Quiz() {
+func (U *User) Complete_Quiz() error {
+	
+	if !U.Has_Read_Story() {
+		return errors.New("user attempted quiz before story was read")
+	}
 	U.Current_Story_Index += 1
 	U.HasReadStory = false
+	return nil
 }
 
 type System struct {
@@ -190,4 +195,8 @@ func (S *System) GetStory(U *User) (*stories.Story, error){
 		return &S.Stories[U.get_story_id()], nil
 	}
 	return nil, errors.New("No Stories Left")
+}
+
+func (S *System) User_Complete(U *User) bool {
+	return U.get_story_id() >= len(S.Stories)
 }

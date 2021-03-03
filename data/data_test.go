@@ -21,7 +21,7 @@ func TestGenerator(t *testing.T) {
 
 func TestSystem(t *testing.T) {
 	db_file := "./test.db"
-	story_dir := "../stories/stories"
+	story_dir := "../stories/test_folder"
 	wordfile_location := "../data/common_words.json"
 	os.Remove(db_file) 
 
@@ -66,14 +66,74 @@ func TestSystem(t *testing.T) {
 		t.Error("New User has read first story")
 	}
 	
+	if user.Complete_Quiz() == nil {
+		t.Error("User was allowed to complete quiz before reading")
+	}
+
+	// make sure it returns the first story_location
+	s, err := data_system.GetStory(user)
+	if err != nil {
+		t.Error("System returned an error", err)
+	}
+	if s.Name != "../stories/test_folder/return_me.json" {
+		t.Error("first story is wrong", s.Name)
+	}
+	
+	// complete the reading
 	user.Complete_Reading()
+
+	// the story should still be the same because you havent finished the test
+
+	s, err = data_system.GetStory(user)
+	if err != nil {
+		t.Error("System returned an error", err)
+	}
+	if s.Name != "../stories/test_folder/return_me.json" {
+		t.Error("first story is wrong", s.Name)
+	}
+	
+	//but they should have read the story
+
 	if !user.Has_Read_Story() || user.get_story_id() != 0 {
 		t.Error("User should have read story")
 	}
+
+	// now that they complete the quiz...
 
 	user.Complete_Quiz()
 	if user.Has_Read_Story() || user.get_story_id() != 1 {
 		t.Error("User was not progressed to the next story")
 	}
+
+	// they should move on to the next story
+
+
+	s, err = data_system.GetStory(user)
+	if err != nil {
+		t.Error("System returned an error", err)
+	}
+	if s.Name != "../stories/test_folder/return_me_2.json" {
+		t.Error("first story is wrong", s.Name)
+	}
+
+	// because there are 2 stories, this should put the user at the end...
+	if data_system.User_Complete(user) {
+		t.Error("System failed to recognize the user was not done")
+	}
+
+	user.Complete_Reading()
+	user.Complete_Quiz()
+
+	if !data_system.User_Complete(user) {
+		t.Error("System failed to recognize completion")
+	}
+	s, err = data_system.GetStory(user)
+	if err == nil {
+		t.Error("System should have reached the end")
+	}
+
+
+
+
 
 }

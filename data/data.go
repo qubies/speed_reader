@@ -31,6 +31,11 @@ type User struct {
     Current_Quiz_Index int
 }
 
+type Record_Update struct {
+    Action int
+    Date int
+}
+
 func (U *User) get_story_id() int {
 	return U.Current_Story_Index
 }
@@ -74,6 +79,14 @@ func load_common_words(filename string) []string {
     return common_words
 }
 
+func (S *System) Add_Story(index int, name string) error {
+
+    sqlStmt := "INSERT INTO  Stories(Story_ID ,Story_Name) Values ($1, $2);"
+    _, err := S.Database.Exec(sqlStmt, index, name)
+
+    return err
+}
+
 func Build_System(database_location, story_location, wordfile_location string, number_of_groups int) *System {
     S := new(System)
     S.Database = create_db(database_location)
@@ -81,6 +94,12 @@ func Build_System(database_location, story_location, wordfile_location string, n
     S.Aborts = append(S.Aborts, make(chan struct{}))
     S.Group_Generator = generate_group(S.Aborts[0], number_of_groups)
     S.Stories = stories.Load_Stories(story_location)
+    for i, s := range(S.Stories) {
+        err := S.Add_Story(i, s.Name)
+        if err != nil {
+            panic("Unable to add stories: " + err.Error())
+        }
+    }
 	S.CommonWords = load_common_words(wordfile_location)
 
     return S
@@ -94,9 +113,16 @@ func create_db(location string) *sql.DB{
 
     schema := `
     PRAGMA foreign_keys = ON;
+
     create table IF NOT EXISTS Users (User_ID text not null primary key, password text, Group_ID integer not null, Current_Story_Index integer default 0, Current_Quiz_Index integer default 0);
-    create table IF NOT EXISTS Stories (Story_ID integer primary key autoincrement, Date integer not null, wpm REAL, Story_Name text, User_ID text, Score REAL,FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
-    create table IF NOT EXISTS StoryActions (Action_ID integer primary key autoincrement, Date integer not null, Story_ID integer, Action integer not null, User_ID text not null, FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID), FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
+
+    create table IF NOT EXISTS Stories (Story_ID integer primary key, Story_Name text not null);
+
+    create table IF NOT EXISTS Reading_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, wpm REAL, Story_ID integer, User_ID text, FOREIGN KEY(User_ID) REFERENCES Users(User_ID), FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID));
+
+    create table IF NOT EXISTS Test_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, Story_ID integer, User_ID text, Score REAL, FOREIGN KEY(User_ID) REFERENCES Users(User_ID), FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID));
+
+    create table IF NOT EXISTS StoryActions (Action_ID integer primary key autoincrement, Date integer not null, Story_ID integer not null, In_Quiz boolean, Action integer not null, User_ID text not null, FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID), FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
     `
     _, err = db.Exec(schema)
     if err != nil {
@@ -198,7 +224,7 @@ func (S *System) GetStory(U *User) (*stories.Story, error){
 	return nil, errors.New("No Stories Left")
 }
 
-func (S *System) User_Complete(U *User) bool {
+func (S *System) Is_User_Complete(U *User) bool {
 	return U.get_story_id() >= len(S.Stories)
 }
 
@@ -222,4 +248,16 @@ func (S *System) User_From_ID(user_id string) (*User, error) {
         err = rows.Scan(&u.User_ID, &u.password, &u.Group, &u.Current_Story_Index, &u.Current_Quiz_Index)
     }
     return u, nil
+}
+
+
+// actions
+
+func (S *System) Record_Action(U *User, action int, date int) error {
+
+    sqlStmt := "INSERT INTO  StoryActions(Date ,Story_ID, User_ID, In_Quiz, Action) Values ($1, $2, $3, $4, $5);"
+    // note that we use the current quiz index because if the story has advanced, the user is still doing the quiz for that story. we capture the state of the story that they are currently workin on in either quiz or reading
+    _, err := S.Database.Exec(sqlStmt, date, U.Current_Quiz_Index, U.User_ID, U.hasReadStory(), action)
+
+    return err
 }

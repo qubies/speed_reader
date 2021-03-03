@@ -117,14 +117,14 @@ func TestSystem(t *testing.T) {
 	}
 
 	// because there are 2 stories, this should put the user at the end...
-	if data_system.User_Complete(user) {
+	if data_system.Is_User_Complete(user) {
 		t.Error("System failed to recognize the user was not done")
 	}
 
 	user.completeReading()
 	user.completeQuiz()
 
-	if !data_system.User_Complete(user) {
+	if !data_system.Is_User_Complete(user) {
 		t.Error("System failed to recognize completion")
 	}
 	s, err = data_system.GetStory(user)
@@ -145,10 +145,16 @@ func TestSystem(t *testing.T) {
         if !reflect.DeepEqual(u, u_2) {
             t.Error("System inequaility in returned user from generated user")
         }
-        
-
     }
 
+    u:= data_system.Create_user()
+
+    for i := 0; i<10; i++ {
+        err := data_system.Record_Action(u, i, 0)
+        if err != nil {
+            t.Error("Error encoundered updating records", err)
+        }
+    }
 
 
 

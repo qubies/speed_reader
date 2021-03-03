@@ -213,24 +213,6 @@ func add_record(record *Record) {
     }
 }
 
-func get_user_info(user string) (*User, bool) {
-    if !user_exists(user) {
-        return new(User), false
-    }
-    rows, err := db.Query(fmt.Sprintf("select User_ID, Password, Group_ID from Users where User_ID='%s';",user))
-
-    if err != nil {
-        log.Fatal("Unable to query users: ", err)
-    }
-    defer rows.Close()
-
-    u := new(User)
-
-    for rows.Next() {
-        err = rows.Scan(&u.User_ID, &u.Password, &u.Group)
-    }
-    return u, true
-}
 
 
 func login(c *gin.Context) {

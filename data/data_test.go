@@ -62,11 +62,11 @@ func TestSystem(t *testing.T) {
 
 	// Test User Progression
 	user := data_system.Create_user()
-	if user.Has_Read_Story() || user.get_story_id() != 0 {
+	if user.hasReadStory() || user.get_story_id() != 0 {
 		t.Error("New User has read first story")
 	}
 	
-	if user.Complete_Quiz() == nil {
+	if user.completeQuiz() == nil {
 		t.Error("User was allowed to complete quiz before reading")
 	}
 
@@ -80,28 +80,28 @@ func TestSystem(t *testing.T) {
 	}
 	
 	// complete the reading
-	user.Complete_Reading()
+	user.completeReading()
 
-	// the story should still be the same because you havent finished the test
+	// the story should be onto the next
 
 	s, err = data_system.GetStory(user)
 	if err != nil {
 		t.Error("System returned an error", err)
 	}
-	if s.Name != "../stories/test_folder/return_me.json" {
+	if s.Name != "../stories/test_folder/return_me_2.json" {
 		t.Error("first story is wrong", s.Name)
 	}
 	
 	//but they should have read the story
 
-	if !user.Has_Read_Story() || user.get_story_id() != 0 {
+	if !user.hasReadStory() || user.get_story_id() != 1 {
 		t.Error("User should have read story")
 	}
 
 	// now that they complete the quiz...
 
-	user.Complete_Quiz()
-	if user.Has_Read_Story() || user.get_story_id() != 1 {
+	user.completeQuiz()
+	if user.hasReadStory() || user.get_story_id() != 1 {
 		t.Error("User was not progressed to the next story")
 	}
 
@@ -121,8 +121,8 @@ func TestSystem(t *testing.T) {
 		t.Error("System failed to recognize the user was not done")
 	}
 
-	user.Complete_Reading()
-	user.Complete_Quiz()
+	user.completeReading()
+	user.completeQuiz()
 
 	if !data_system.User_Complete(user) {
 		t.Error("System failed to recognize completion")

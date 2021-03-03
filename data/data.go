@@ -26,7 +26,7 @@ type User struct {
     Password string
     Group int
     Current_Story_Index int
-	HasReadStory bool
+    Current_Quiz_Index int
 }
 
 func (U *User) get_story_id() int {
@@ -34,22 +34,21 @@ func (U *User) get_story_id() int {
 }
 
 // a user can read the story, and complete the quiz
-func (U *User) Has_Read_Story() bool {
-	return U.HasReadStory
+func (U *User) hasReadStory() bool {
+	return U.Current_Story_Index > U.Current_Quiz_Index
 }
 
-func (U *User) Complete_Reading(){
-	U.HasReadStory = true
+func (U *User) completeReading(){
+	U.Current_Story_Index += 1
 }
 
 // advances to the next story
-func (U *User) Complete_Quiz() error {
+func (U *User) completeQuiz() error {
 	
-	if !U.Has_Read_Story() {
+	if !U.hasReadStory() {
 		return errors.New("user attempted quiz before story was read")
 	}
-	U.Current_Story_Index += 1
-	U.HasReadStory = false
+	U.Current_Quiz_Index += 1
 	return nil
 }
 
@@ -93,7 +92,7 @@ func create_db(location string) *sql.DB{
 
     schema := `
     PRAGMA foreign_keys = ON;
-    create table IF NOT EXISTS Users (User_ID text not null primary key, Password text, Group_ID integer not null);
+    create table IF NOT EXISTS Users (User_ID text not null primary key, Password text, Group_ID integer not null, Current_Story_Index integer default 0, Current_Quiz_Index integer default 0);
     create table IF NOT EXISTS Stories (Story_ID integer primary key autoincrement, Date integer not null, wpm REAL, Story_Name text, User_ID text, Score REAL,FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
     create table IF NOT EXISTS StoryActions (Action_ID integer primary key autoincrement, Date integer not null, Story_ID integer, Action integer not null, User_ID text not null, FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID), FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
     `
@@ -155,7 +154,7 @@ func (S* System) Create_user() *User{
         user_id, password = generate_user_id_and_password()
     }
 
-    new_user := &User{user_id, password, S.choose_group(), 0, false}
+    new_user := &User{user_id, password, S.choose_group(), 0, 0}
     tx, err := S.Database.Begin()
     if err != nil {
         log.Fatal(err)
@@ -199,4 +198,26 @@ func (S *System) GetStory(U *User) (*stories.Story, error){
 
 func (S *System) User_Complete(U *User) bool {
 	return U.get_story_id() >= len(S.Stories)
+}
+
+func (S *System) Complete_Reading_For(U *User) {
+	U.completeReading()
+}
+
+func (S *System) User_From_ID(user_id string) (*User, error) {
+    if !S.User_exists(user_id) {
+        return nil, errors.New("User does not exist")
+    }
+    rows, err := S.Database.Query(fmt.Sprintf("select User_ID, Password, Group_ID, Current_Story_Index, Current_Quiz_Index from Users where User_ID='%s';",user_id))
+
+    if err != nil {
+		return nil, err
+    }
+    defer rows.Close()
+
+    u := new(User)
+    for rows.Next() {
+        err = rows.Scan(&u.User_ID, &u.Password, &u.Group, &u.Current_Story_Index, &u.Current_Quiz_Index)
+    }
+    return u, nil
 }

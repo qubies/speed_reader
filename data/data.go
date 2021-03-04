@@ -128,7 +128,7 @@ func create_db(location string) *sql.DB{
 
     create table IF NOT EXISTS Test_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, Story_ID integer, User_ID text, Score REAL, FOREIGN KEY(User_ID) REFERENCES Users(User_ID), FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID));
 
-    create table IF NOT EXISTS StoryActions (Action_ID integer primary key autoincrement, Date integer not null, Story_ID integer not null, In_Quiz boolean, Action integer not null, User_ID text not null, FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID), FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
+    create table IF NOT EXISTS Actions (Action_ID integer primary key autoincrement, Date integer not null, Story_ID integer not null, In_Quiz boolean, Action integer not null, User_ID text not null, FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID), FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
     `
     _, err = db.Exec(schema)
     if err != nil {
@@ -265,7 +265,7 @@ func (S *System) User_From_ID(user_id string) (*User, error) {
 
 func (S *System) Record_Action(U *User, action int, date int) error {
 
-    sqlStmt := "INSERT INTO  StoryActions(Date ,Story_ID, User_ID, In_Quiz, Action) Values ($1, $2, $3, $4, $5);"
+    sqlStmt := "INSERT INTO  Actions(Date ,Story_ID, User_ID, In_Quiz, Action) Values ($1, $2, $3, $4, $5);"
     // note that we use the current quiz index because if the story has advanced, the user is still doing the quiz for that story. we capture the state of the story that they are currently workin on in either quiz or reading
     _, err := S.Database.Exec(sqlStmt, date, U.Current_Quiz_Index, U.User_ID, U.hasReadStory(), action)
 

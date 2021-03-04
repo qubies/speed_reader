@@ -161,8 +161,8 @@ func storyEndRoute(c *gin.Context) {
 }
 
 type actionPost struct {
-    action int
-    date int
+    Action int
+    Date int
 }
 
 func actionRoute(c *gin.Context) {
@@ -175,8 +175,8 @@ func actionRoute(c *gin.Context) {
         c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
         return
     }
-    system.Record_Action(user, data.action, data.date)
-    fmt.Println("updated", user.User_ID, data.action)
+    system.Record_Action(user, data.Action, data.Date)
+    fmt.Println("updated", user.User_ID, data.Action)
 }
 
 

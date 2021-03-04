@@ -7,7 +7,7 @@ function send_post(url, data) {
 }
 
 function send_update(action) {
-    send_post("/private/update_story", {"Date":Date.now(), "Action":action})
+    send_post("/private/action", {"Date":Date.now(), "Action":action})
 }
 //ENUM for actions table
 const actionsEnum = {

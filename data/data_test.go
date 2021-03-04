@@ -3,6 +3,7 @@ import (
 	"testing"
 	"os"
 	"reflect"
+    "math/rand"
 )
 
 func TestGenerator(t *testing.T) {
@@ -147,8 +148,10 @@ func TestSystem(t *testing.T) {
         }
     }
 
+    // this part shows how the API should be used....
     u:= data_system.Create_user()
 
+    // record some actions as the user works.
     for i := 0; i<10; i++ {
         err := data_system.Record_Action(u, i, 0)
         if err != nil {
@@ -156,6 +159,22 @@ func TestSystem(t *testing.T) {
         }
     }
 
+    // when the user finishes reading the text:
+    for !data_system.Is_User_Complete(u) {
+        err = data_system.Finish_Reading(u, 0,0,rand.Float32()*100)
+        if err != nil{
+            t.Error("Error returned from Finish marking: ", err)
+        }
+        if !u.hasReadStory(){
+            t.Error("Not finished story after marking")
+        }
 
-
+        err = data_system.Finish_Quiz(u, 0,0,rand.Float32())
+        if err != nil{
+            t.Error("Error returned from Finishing Quiz: ", err)
+        }
+        if u.hasReadStory() {
+            t.Error("Not finished quiz after marking")
+        }
+    }
 }

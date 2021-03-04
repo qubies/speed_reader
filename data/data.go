@@ -225,7 +225,7 @@ func (S *System) GetStory(U *User) (*stories.Story, error){
 }
 
 func (S *System) Is_User_Complete(U *User) bool {
-	return U.get_story_id() >= len(S.Stories)
+	return U.Current_Quiz_Index >= len(S.Stories)
 }
 
 func (S *System) Complete_Reading_For(U *User) {
@@ -261,3 +261,29 @@ func (S *System) Record_Action(U *User, action int, date int) error {
 
     return err
 }
+
+
+// call this function to terminate and record the reading event
+func (S *System) Finish_Reading(U *User, start_date, end_date int, wpm float32) error {
+
+    sqlStmt := "INSERT INTO  Reading_Results(Start_Date, End_Date, Story_ID, User_ID, wpm) Values ($1, $2, $3, $4, $5);"
+    _, err := S.Database.Exec(sqlStmt, start_date, end_date, U.Current_Story_Index, U.User_ID, wpm)
+    if err != nil{
+        return err
+    }
+    U.completeReading()
+    return nil
+}
+
+// call this function to terminate and record the quiz event
+func (S *System) Finish_Quiz(U *User, start_date, end_date int, score float32) error {
+
+    sqlStmt := "INSERT INTO  Test_Results(Start_Date, End_Date, Story_ID, User_ID, Score) Values ($1, $2, $3, $4, $5);"
+    _, err := S.Database.Exec(sqlStmt, start_date, end_date, U.Current_Quiz_Index, U.User_ID, score)
+    if err != nil{
+        return err
+    }
+    U.completeQuiz()
+    return nil
+}
+// create table IF NOT EXISTS Test_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, Story_ID integer, User_ID text, Score REAL, FOREIGN KEY(User_ID) REFERENCES Users(User_ID), FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID));

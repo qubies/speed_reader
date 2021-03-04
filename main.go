@@ -1,22 +1,27 @@
 package main
 
 import (
-    "errors"
-    "strings"
-    "log"
-    // "io/ioutil"
-    "html/template"
-    "os"
-    "github.com/joho/godotenv"
-    // "encoding/json"
-    "github.com/gin-gonic/gin"
+	"errors"
+	"log"
+	"strings"
 
-    "fmt"
-    // "math/rand"
-    "net/http"
-    "github.com/gin-gonic/contrib/sessions"
-    data "github.com/qubies/speed_reader/data"
-    "encoding/gob"
+	// "io/ioutil"
+	"html/template"
+	"os"
+
+	"github.com/joho/godotenv"
+
+	// "encoding/json"
+	"github.com/gin-gonic/gin"
+
+	"fmt"
+	// "math/rand"
+	"encoding/gob"
+	"net/http"
+
+	"github.com/gin-gonic/contrib/sessions"
+	data "github.com/qubies/speed_reader/data"
+	"github.com/qubies/speed_reader/stories"
 )
 
 const (
@@ -179,38 +184,26 @@ func actionRoute(c *gin.Context) {
     fmt.Println("updated", user.User_ID, data.Action)
 }
 
+type QuizStruct struct {
+    Questions []stories.Question
+    Name string
+}
 
-// func quizStartRoute(c *gin.Context) {
-//     session := sessions.Default(c)
-//     story := session.Get("story").(string)
+func quizStartRoute(c *gin.Context) {
+    user, err := validateUser(c); if err != nil {
+        return
+    }
+    s, err := system.GetQuiz(user)
+    if err != nil {
+        return
+    }
 
+    quiz := new(QuizStruct)
+    quiz.Questions = s.Questions
+    quiz.Name = s.Name
 
-//     jsonFile, _ := os.Open("data/"+story)
-//     defer jsonFile.Close()
-//     byteValue, _ := ioutil.ReadAll(jsonFile)
-
-//     var result StoryJson
-//     json.Unmarshal([]byte(byteValue), &result)
-
-//     var q_list []*Question
-//     var correct_answer string
-//     for _,q := range result.Questions {
-//     var wrong_list []string
-//         list :=[]string {"a", "b", "c", "d"}
-//     options :=[]string {q.A, q.B, q.C, q.D}
-//         for i,o := range list {
-//             if o != q.Answer {
-//                 wrong_list = append(wrong_list, options[i])
-//             } else {
-//                 correct_answer = options[i]
-//             }
-//         }
-//         new_q :=new_question(q.Q_text, correct_answer, wrong_list)
-//         q_list = append(q_list, new_q)
-//     }
-//     quiz:= Quiz{"", q_list}
-//     c.HTML(200, "quiz.html", &quiz)
-// }
+    c.HTML(200, "quiz.html", &quiz)
+}
 
 
 
@@ -272,7 +265,7 @@ func main() {
     {
         private.GET("/story", storyStartRoute)
         private.POST("/storyend",storyEndRoute)
-        // private.GET("/quiz", quizStartRoute)
+        private.GET("/quiz", quizStartRoute)
         // private.GET("/quizend", quizEndRoute)
         private.POST("/action", actionRoute)
     }

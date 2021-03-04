@@ -92,14 +92,7 @@ Quiz.prototype.render = function(container) {
         // Display the score with the appropriate message
         var percentage = score / self.questions.length;
         console.log(percentage);
-        var message;
-        if (percentage === 1) {
-            message = 'Great job!'
-        } else if (percentage >= .75) {
-            message = 'Great job!'
-        } else {
-            message = 'Maybe try a little slower :)'
-        }
+        var message = 'Great job, Please continue :)'
         $('#quiz-results-message').text(message);
         $('#quiz-results-score').html('You got <b>' + score + '/' + self.questions.length + '</b> questions correct.');
         $('#quiz-results').slideDown();
@@ -130,29 +123,27 @@ Quiz.prototype.render = function(container) {
 function getRandom(min, max) {
     return Math.floor(Math.random() * (max-0.000000001 - min) + min);
 }
-var Question = function(question_string, correct_choice, wrong_choices) {
+/* Randomize array in-place using Durstenfeld shuffle algorithm */
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
+var Question = function(question_string, answer, choices) {
+    let a = choices[answer];
+    shuffleArray(choices);
     // Private fields for an instance of a Question object.
     this.question_string = question_string;
-    this.choices = [];
+    this.choices = choices;
     this.user_choice_index = null; // Index of the user's choice selection
 
-    // Random assign the correct choice an index
-    this.correct_choice_index = getRandom(0, wrong_choices.length + 1);
+    // Random assign the correct choice index to the var again
+    this.correct_choice_index = choices.indexOf(a);
 
-  // Fill in this.choices with the choices
-  var number_of_choices = wrong_choices.length + 1;
-  for (var i = 0; i < number_of_choices; i++) {
-    if (i === this.correct_choice_index) {
-      this.choices[i] = correct_choice;
-    } else {
-      // Randomly pick a wrong choice to put in this index
-      var wrong_choice_index = Math.floor(Math.random(0, wrong_choices.length));
-      this.choices[i] = wrong_choices[wrong_choice_index];
-      // Remove the wrong choice from the wrong choice array so that we don't pick it again
-      wrong_choices.splice(wrong_choice_index, 1);
-    }
   }
-}
 
 // A function that you can enact on an instance of a question object. This function is called render() and takes in a variable called the container, which is the <div> that I will render the question in. This question will "return" with the score when the question has been answered.
 Question.prototype.render = function(container) {
@@ -212,7 +203,7 @@ $(document).ready(function() {
   // Create Question objects from all_questions and add them to the Quiz object
   for (var i = 0; i < all_questions.length; i++) {
     // Create a new Question object
-    var question = new Question(all_questions[i].question_string, all_questions[i].choices.correct, all_questions[i].choices.wrong);
+    var question = new Question(all_questions[i].Text, all_questions[i].Answer, all_questions[i].Choices);
     
     // Add the question to the instance of the Quiz object that we created previously
     quiz.add_question(question);

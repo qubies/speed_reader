@@ -1,13 +1,14 @@
 
 function send_post(url, data) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify(data));
+    return fetch(url, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {"Content-type": "application/json; charset=UTF-8"}
+    });
 }
 
 function send_update(action) {
-    send_post("/private/action", {"Date":Date.now(), "Action":action})
+    send_post("/private/action", {"Date":Date.now(), "Action":action});
 }
 //ENUM for actions table
 const actionsEnum = {

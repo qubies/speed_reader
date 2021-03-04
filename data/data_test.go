@@ -50,7 +50,7 @@ func TestSystem(t *testing.T) {
 	if !data_system.Validate_User(new_user) {
 		t.Error("Unable to validate created user", new_user)
 	}
-	new_user.password = "r"
+	new_user.Password = "r"
 	if data_system.Validate_User(new_user) {
 		t.Error("Validated with incorrect password")
 	}
@@ -76,7 +76,7 @@ func TestSystem(t *testing.T) {
 	if err != nil {
 		t.Error("System returned an error", err)
 	}
-	if s.Name != "../stories/test_folder/return_me.json" {
+	if s.Name != "Beyonce" {
 		t.Error("first story is wrong", s.Name)
 	}
 	
@@ -89,8 +89,8 @@ func TestSystem(t *testing.T) {
 	if err != nil {
 		t.Error("System returned an error", err)
 	}
-	if s.Name != "../stories/test_folder/return_me_2.json" {
-		t.Error("first story is wrong", s.Name)
+	if s.Name != "Sino-Tibetan_relations_during_the_Ming_dynasty" {
+		t.Error("second story is wrong", s.Name)
 	}
 	
 	//but they should have read the story
@@ -113,7 +113,7 @@ func TestSystem(t *testing.T) {
 	if err != nil {
 		t.Error("System returned an error", err)
 	}
-	if s.Name != "../stories/test_folder/return_me_2.json" {
+	if s.Name != "Sino-Tibetan_relations_during_the_Ming_dynasty" {
 		t.Error("first story is wrong", s.Name)
 	}
 

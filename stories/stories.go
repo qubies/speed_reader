@@ -9,19 +9,15 @@ import (
 )
 
 type Question struct {
-    Q_num string `json:"q_num"`
-    Q_text string	`json:"q_text"`
-    Answer string	`json:"answer"`
-    A string	`json:"a."`
-    B string	`json:"b."`
-    C string	`json:"c."`
-    D string	`json:"d." `
+    Text string	`json:"Text"`
+    Answer int	`json:"Answer"`
+    Choices []string `json:"Choices"`
 }
 
 type Story struct {
-    Story [][]string		`json:"story"`
-    Spans [][]int		`json:"spans"`
-    Questions []Question	`json:"questions"`
+    Story [][]string		`json:"Text"`
+    Spans [][]int		`json:"Spans"`
+    Questions []Question	`json:"Questions"`
     Name string		`json:"name,omitempty"`
 }
 func get_json_from_dir(dir string) []string {
@@ -54,7 +50,6 @@ func Load_Stories(story_dir string) []Story {
         if err != nil {
             panic("Unable to load stories: "+ err.Error())
         }
-        s.Name = story_file
         stories[i] =s
     }
     return stories

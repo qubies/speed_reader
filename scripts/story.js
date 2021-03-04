@@ -124,10 +124,12 @@ async function presentStory() {
     // console.log(`wpm:${t.wpm()}`);
     
     let results = t.stop();
-    var wpm = t.wpm();
-    var start_time = t.start_time;
-    send_update(actionsEnum.START_QUIZ)
-    window.location.replace(`/private/quiz?wpm=${wpm}`);
+    let data = {"startDate":t.start_time, "endDate":t.stop_time, "wpm":t.wpm()}
+    console.log(data)
+    await send_post("/private/storyend", data);
+    await send_update(actionsEnum.START_QUIZ);
+    
+    window.location.replace(`/private/quiz`);
 }
 
 function up_pressed() {

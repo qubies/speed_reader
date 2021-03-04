@@ -234,6 +234,13 @@ func (S *System) GetStory(U *User) (*stories.Story, error){
 	return nil, errors.New("No Stories Left")
 }
 
+func (S *System) GetQuiz(U *User) (*stories.Story, error){
+	if U.Current_Quiz_Index < len(S.Stories) {
+		return &S.Stories[U.Current_Quiz_Index], nil
+	}
+	return nil, errors.New("No Stories Left")
+}
+
 func (S *System) Is_User_Complete(U *User) bool {
 	return U.Current_Quiz_Index >= len(S.Stories)
 }

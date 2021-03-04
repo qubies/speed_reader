@@ -169,7 +169,7 @@ func TestSystem(t *testing.T) {
             t.Error("Not finished story after marking")
         }
 
-        err = data_system.Finish_Quiz(u, 0,0,rand.Float32())
+        err = data_system.Finish_Quiz(u, 0,0,rand.Int())
         if err != nil{
             t.Error("Error returned from Finishing Quiz: ", err)
         }

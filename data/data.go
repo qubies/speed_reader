@@ -25,7 +25,7 @@ import (
 // the generic user representation
 type User struct {
     User_ID string
-    password string
+    Password string
     Group int
     Current_Story_Index int
     Current_Quiz_Index int
@@ -81,7 +81,7 @@ func load_common_words(filename string) []string {
 
 func (S *System) Add_Story(index int, name string) error {
 
-    sqlStmt := "INSERT INTO  Stories(Story_ID ,Story_Name) Values ($1, $2);"
+    sqlStmt := "INSERT INTO  Stories(Story_ID ,Story_Name) select $1, $2 WHERE NOT EXISTS ( SELECT Story_ID, Story_Name FROM Stories WHERE Story_ID=$1 AND Story_Name=$2);"
     _, err := S.Database.Exec(sqlStmt, index, name)
 
     return err
@@ -103,6 +103,12 @@ func Build_System(database_location, story_location, wordfile_location string, n
 	S.CommonWords = load_common_words(wordfile_location)
 
     return S
+}
+
+func (S *System) Close() {
+    for _, ch := range( S.Aborts) {
+        ch<-struct{}{}
+    }
 }
 
 func create_db(location string) *sql.DB{
@@ -192,7 +198,7 @@ func (S* System) Create_user() *User{
         log.Fatal(err)
     }
     defer stmt.Close()
-    _, err = stmt.Exec(new_user.User_ID, new_user.password, new_user.Group)
+    _, err = stmt.Exec(new_user.User_ID, new_user.Password, new_user.Group)
     if err != nil {
         log.Fatal(err)
     }
@@ -203,7 +209,7 @@ func (S* System) Create_user() *User{
 
 func (S *System) Validate_User(U *User) bool {
     var count int
-    rows, err := S.Database.Query(fmt.Sprintf("select count(*) from Users where User_ID='%s' and password='%s';",U.User_ID, U.password))
+    rows, err := S.Database.Query(fmt.Sprintf("select count(*) from Users where User_ID='%s' and password='%s';",U.User_ID, U.Password))
     if err != nil {
         log.Fatal("count query error: ", err)
     }
@@ -215,6 +221,10 @@ func (S *System) Validate_User(U *User) bool {
         }
     }
     return count>0
+}
+
+func (S *System) ValidatePassword(U *User, password string) bool {
+    return U.Password == password
 }
 
 func (S *System) GetStory(U *User) (*stories.Story, error){
@@ -245,7 +255,7 @@ func (S *System) User_From_ID(user_id string) (*User, error) {
 
     u := new(User)
     for rows.Next() {
-        err = rows.Scan(&u.User_ID, &u.password, &u.Group, &u.Current_Story_Index, &u.Current_Quiz_Index)
+        err = rows.Scan(&u.User_ID, &u.Password, &u.Group, &u.Current_Story_Index, &u.Current_Quiz_Index)
     }
     return u, nil
 }

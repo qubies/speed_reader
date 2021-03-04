@@ -1,31 +1,33 @@
 package main
 
 import (
+    "errors"
     "strings"
     "log"
-    "io/ioutil"
+    // "io/ioutil"
     "html/template"
     "os"
     "github.com/joho/godotenv"
-    "encoding/json"
+    // "encoding/json"
     "github.com/gin-gonic/gin"
 
     "fmt"
-    "math/rand"
+    // "math/rand"
     "net/http"
-    "time"
     "github.com/gin-gonic/contrib/sessions"
     data "github.com/qubies/speed_reader/data"
+    "encoding/gob"
 )
 
-// the session var that holds the user's info
 const (
+    // the session var that holds the user's info
     userkey = "user"
+    NUMBER_OF_GROUPS = 1
 )
 
 // globals 
 var templates *template.Template
-var system *data.System
+var system = data.Build_System("./data/focused_reader.db", "./stories/stories", "./data/common_words.json", NUMBER_OF_GROUPS)
 
 
 type StoryPage struct {
@@ -55,165 +57,29 @@ type StoryPage struct {
 //     Questions []*Question
 // }
 
-type Story_Record struct {
-    User_ID string
-    Story_Name string
-    Results *Quiz_Results
+func sendInvalid(c *gin.Context) {
+    c.JSON(401, gin.H{"code": "UNAUTHORIZED", "message": "There was a problem with your login, please verify that you are logged in."})
 }
 
-type Quiz_Results struct {
-    Date int
-    Score float64
-    Wpm float64
-}
-
-type Record_Update struct {
-    Action int
-    Date int
-}
-
-func handle_request(c *gin.Context) {
-
+func validateUser(c* gin.Context) (*data.User, error) {
     session := sessions.Default(c)
-    name := session.Get(userkey).(string)
-    user, _ := get_user_info(name)
-
-    // check if they are done all the stories
-    if user.Story_ID >= len(data.Stories) {
-        fmt.Println("all done stories")
-        c.HTML(200, "all_done.html", nil)
-        return
+    user := session.Get(userkey).(*data.User)
+    if !system.Validate_User(user) {
+        sendInvalid(c)
+        return nil, errors.New("User is invaild")
     }
-
-    session.Set("story", files[id]) 
-    session.Set("story_id", id)
-    if err := session.Save(); err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
-        return
-    }
-
-
-    if user.Group == "Control" {
-        result.Spans = [][]int{}
-        fmt.Println("Control")
-    }
-
-    SP := StoryPage {files[id], "user", common_words, result.Story, result.Spans}
-    c.HTML(200, "story.html", SP)
-
+    return user, nil
 }
 
-func finish_story(c *gin.Context) {
-    session := sessions.Default(c)
-    name := session.Get(userkey).(string)
-    story := session.Get("story").(string)
-    fmt.Println(name, story, "in thing")
-    record := Record{name, story, new(Quiz_Results)}
-    if err := c.ShouldBindJSON(record.Results); err != nil {
-        fmt.Println("Error: ", err)
-        c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
-        return
-    }
-    fmt.Println(record)
-    add_record(&record)
-}
-
-func story_update(data *Record_Update) {
-
-    //insert Record into dbStoryActions (Action_ID integer primary key autoincrement, Date integer not null, Story_ID integer, Action integer not null, User_ID text not null, FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID), FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
-    sqlStmt := "INSERT INTO  StoryActions(Date,Story_ID, User_ID, Score) Values ($1, $2, $3, $4, $5);"
-    fmt.Println(sqlStmt)
-    _, err := db.Exec(sqlStmt, record.Results.Date, record.Results.Wpm, record.Story_Name, record.User_ID, record.Results.Score)
-    if err != nil {
-        fmt.Println("Error encountered in adding record: '", err, "'")
-    }
-}
-
-func update_story(c *gin.Context) {
-    // collect session vars
-    session := sessions.Default(c)
-    name := session.Get(userkey).(string)
-    story := session.Get("story").(string)
-
-    // collect post data
-    var data Record_Update
-    if err := c.ShouldBindJSON(&data); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
-        return
-    }
-    fmt.Println("updated", data, name, story)
-}
-
+// Routes
 func introHandler(c *gin.Context) {
     c.HTML(200, "intro.html", nil)
 }
 
-func quizHandler(c *gin.Context) {
-    session := sessions.Default(c)
-    story := session.Get("story").(string)
-
-
-    jsonFile, _ := os.Open("data/"+story)
-    defer jsonFile.Close()
-    byteValue, _ := ioutil.ReadAll(jsonFile)
-
-    var result StoryJson
-    json.Unmarshal([]byte(byteValue), &result)
-
-    var q_list []*Question
-    var correct_answer string
-    for _,q := range result.Questions {
-        var wrong_list []string
-        list :=[]string {"a", "b", "c", "d"}
-	options :=[]string {q.A, q.B, q.C, q.D}
-        for i,o := range list {
-            if o != q.Answer {
-                wrong_list = append(wrong_list, options[i])
-            } else {
-                correct_answer = options[i]
-            }
-        }
-        new_q :=new_question(q.Q_text, correct_answer, wrong_list)
-        q_list = append(q_list, new_q)
-    }
-    quiz:= Quiz{"", q_list}
-    c.HTML(200, "quiz.html", &quiz)
-}
-
-func new_handler(c *gin.Context) {
-    u := add_user()
+func newAccount(c *gin.Context) {
+    u := system.Create_user()
     c.HTML(200, "new_user.html", u)
 }
-
-
-
-func get_story_info(user string) ([]string) {
-    rows, err := db.Query(fmt.Sprintf("select Story_Name from Stories where User_ID='%s';",user))
-    if err != nil {
-        log.Fatal("Unable to query stories: ", err)
-    }
-    defer rows.Close()
-    var stories []string
-    for rows.Next() {
-        var str string
-        err = rows.Scan(&str)
-        stories = append(stories, str)
-    }
-    return stories
-}
-
-func add_record(record *Record) {
-
-    //insert Record into db
-    sqlStmt := "INSERT INTO stories (Date, wpm, Story_Name, User_ID, Score) Values ($1, $2, $3, $4, $5);"
-    fmt.Println(sqlStmt)
-    _, err := db.Exec(sqlStmt, record.Results.Date, record.Results.Wpm, record.Story_Name, record.User_ID, record.Results.Score)
-    if err != nil {
-        fmt.Println("Error encountered in adding record: '", err, "'")
-    }
-}
-
-
 
 func login(c *gin.Context) {
     username := strings.TrimSpace(c.PostForm("username"))
@@ -225,23 +91,21 @@ func login(c *gin.Context) {
         return
     }
 
-    U := new(User)
-    U.User_ID = username
-    U.Password = password
-    U.Current_Story_Index = 0
-    if U.Validate() {
-        session.Set("user", U)
-        if err := session.Save(); err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
-            return
-        }
-        c.Redirect(http.StatusFound, "/private/story")
-    } else {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+    user, err := system.User_From_ID(username)
+    if err != nil || !system.ValidatePassword(user, password) {
+        sendInvalid(c)
         return
     }
 
+    session.Set(userkey, user)
+    if err := session.Save(); err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
+        fmt.Println(err)
+        return
+    }
+    c.Redirect(http.StatusFound, "/private/story")
 }
+
 func logout(c *gin.Context) {
     session := sessions.Default(c)
     user := session.Get(userkey)
@@ -257,7 +121,101 @@ func logout(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{"message": "Successfully logged out"})
 }
 
-// AuthRequired is a simple middleware to check the session
+func storyStartRoute(c *gin.Context) {
+    user, err := validateUser(c); if err != nil {
+        return
+    }
+
+    // check if they are done all the stories
+    userStory, err := system.GetStory(user)
+    if err != nil || system.Is_User_Complete(user) {
+        c.HTML(200, "experimentComplete.html", nil)
+        return
+    }
+
+    //TODO this needs a switch statement to determine the presentation type for the user's group
+
+    SP := StoryPage {userStory.Name, user.User_ID, system.CommonWords, userStory.Story, userStory.Spans}
+    c.HTML(200, "story.html", SP)
+}
+
+type storyEndPost struct {
+    startDate int
+    endDate int
+    wpm float32
+}
+
+func storyEndRoute(c *gin.Context) {
+    user, err := validateUser(c); if err != nil {
+        return
+    }
+    
+    record := new(storyEndPost)
+    if err := c.ShouldBindJSON(record); err != nil {
+        fmt.Println("Error: ", err)
+        c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
+        return
+    }
+    system.Finish_Reading(user, record.startDate, record.endDate, record.wpm)
+    fmt.Println(record)
+}
+
+type actionPost struct {
+    action int
+    date int
+}
+
+func actionRoute(c *gin.Context) {
+    user, err := validateUser(c); if err != nil {
+        return
+    }
+    // collect post data
+    var data actionPost
+    if err := c.ShouldBindJSON(&data); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
+        return
+    }
+    system.Record_Action(user, data.action, data.date)
+    fmt.Println("updated", user.User_ID, data.action)
+}
+
+
+// func quizStartRoute(c *gin.Context) {
+//     session := sessions.Default(c)
+//     story := session.Get("story").(string)
+
+
+//     jsonFile, _ := os.Open("data/"+story)
+//     defer jsonFile.Close()
+//     byteValue, _ := ioutil.ReadAll(jsonFile)
+
+//     var result StoryJson
+//     json.Unmarshal([]byte(byteValue), &result)
+
+//     var q_list []*Question
+//     var correct_answer string
+//     for _,q := range result.Questions {
+//     var wrong_list []string
+//         list :=[]string {"a", "b", "c", "d"}
+//     options :=[]string {q.A, q.B, q.C, q.D}
+//         for i,o := range list {
+//             if o != q.Answer {
+//                 wrong_list = append(wrong_list, options[i])
+//             } else {
+//                 correct_answer = options[i]
+//             }
+//         }
+//         new_q :=new_question(q.Q_text, correct_answer, wrong_list)
+//         q_list = append(q_list, new_q)
+//     }
+//     quiz:= Quiz{"", q_list}
+//     c.HTML(200, "quiz.html", &quiz)
+// }
+
+
+
+
+// AuthRequired is a middleware to check the session
 func AuthRequired(c *gin.Context) {
     session := sessions.Default(c)
     user := session.Get(userkey)
@@ -272,28 +230,32 @@ func AuthRequired(c *gin.Context) {
 
 // do all of the goodness setup stuffs
 func init() {
+    //rand.Seed(time.Now().Unix())
+    
     // loads values from .env into the system
-    rand.Seed(time.Now().Unix())
-    create_db()
-    common_words = get_common_words()
     if err := godotenv.Load(); err != nil {
         log.Print("No .env file found")
     }
+
+    //load in all of the template files
     templates = template.Must(template.ParseGlob("pages/*"))
 
 }
 
 func main() {
-    defer db.Close()
+    defer system.Close() // shutdown the threads
+    
+    gob.Register(new(data.User)) //teach it to serialize
     PORT := os.Getenv("PORT")
     if PORT == "" {
         PORT = "80"
     }
+
     app := gin.Default()
-    app.Use(sessions.Sessions("speed_reading", sessions.NewCookieStore([]byte("secret"))))
+    app.Use(sessions.Sessions("focus", sessions.NewCookieStore([]byte("secret"))))
     app.SetHTMLTemplate(templates)
 
-    //routing
+    // static routing
     app.Static("/css","./css")
     app.Static("/scripts","./scripts")
 
@@ -301,17 +263,18 @@ func main() {
     // app.Static("/images","./images")
 
     app.GET("/", introHandler)
-    app.GET("/new_account", new_handler)
+    app.GET("/newaccount", newAccount)
     app.POST("/login", login)
     app.GET("/logout", logout)
 
     private := app.Group("/private")
     private.Use(AuthRequired) 
     {
-        private.GET("/story", handle_request)
-        private.GET("/quiz", quizHandler)
-        private.POST("/record",finish_story)
-        private.POST("/update_story", update_story)
+        private.GET("/story", storyStartRoute)
+        private.POST("/storyend",storyEndRoute)
+        // private.GET("/quiz", quizStartRoute)
+        // private.GET("/quizend", quizEndRoute)
+        private.POST("/action", actionRoute)
     }
     app.Run(":"+PORT)
 }

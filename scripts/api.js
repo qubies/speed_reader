@@ -8,7 +8,29 @@ function send_post(url, data) {
 }
 
 function send_update(action) {
-    send_post("/private/action", {"Date":Date.now(), "Action":action});
+    return send_post("/private/action", {"Date":Date.now(), "Action":action});
+}
+
+class Timer {
+    constructor() {
+        this.start_time = Date.now();
+        this.reset_time = Date.now();
+        this.stop_time = Date.now();
+        this.running = true;
+    }
+    elapsed() {
+        return Date.now() - this.reset_time;
+    }
+    reset() {
+        this.reset_time = Date.now();
+    }
+    stop() {
+        if (this.running) {
+            this.stop_time= Date.now();
+            this.running = false
+        }
+        return {"started":this.start_time, ["stopped"]:this.stop_time};
+    }
 }
 //ENUM for actions table
 const actionsEnum = {

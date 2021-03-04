@@ -126,7 +126,7 @@ func create_db(location string) *sql.DB{
 
     create table IF NOT EXISTS Reading_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, wpm REAL, Story_ID integer, User_ID text, FOREIGN KEY(User_ID) REFERENCES Users(User_ID), FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID));
 
-    create table IF NOT EXISTS Test_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, Story_ID integer, User_ID text, Score REAL, FOREIGN KEY(User_ID) REFERENCES Users(User_ID), FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID));
+    create table IF NOT EXISTS Test_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, Story_ID integer, User_ID text, Score integer, FOREIGN KEY(User_ID) REFERENCES Users(User_ID), FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID));
 
     create table IF NOT EXISTS Actions (Action_ID integer primary key autoincrement, Date integer not null, Story_ID integer not null, In_Quiz boolean, Action integer not null, User_ID text not null, FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID), FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
     `
@@ -134,8 +134,6 @@ func create_db(location string) *sql.DB{
     if err != nil {
         log.Fatal("Unable to create DB: ", err)
     }
-    sqlStmt := "INSERT INTO Groups(Group_ID) Values ('Experimental'), ('Control');"
-    db.Exec(sqlStmt)
     return db
 }
 
@@ -164,7 +162,12 @@ func generate_user_id_and_password() (string, string) {
 
 func (S* System) User_exists(user string) (bool) {
     var count int
-    rows, err := S.Database.Query(fmt.Sprintf("select count(*) from Users where User_ID='%s';",user))
+    stmt, err := S.Database.Prepare("select count(*) from Users where User_ID=?;")
+    if err != nil {
+        log.Fatal("count prepare query error: ", err)
+    }
+    defer stmt.Close()
+    rows, err := stmt.Query(user)
     if err != nil {
         log.Fatal("count query error: ", err)
     }
@@ -209,7 +212,12 @@ func (S* System) Create_user() *User{
 
 func (S *System) Validate_User(U *User) bool {
     var count int
-    rows, err := S.Database.Query(fmt.Sprintf("select count(*) from Users where User_ID='%s' and password='%s';",U.User_ID, U.Password))
+    stmt, err := S.Database.Prepare("select count(*) from Users where User_ID=? and password=?;")
+    if err != nil {
+        log.Fatal("count prepare query error: ", err)
+    }
+    defer stmt.Close()
+    rows, err := stmt.Query(U.User_ID, U.Password)
     if err != nil {
         log.Fatal("count query error: ", err)
     }
@@ -245,16 +253,13 @@ func (S *System) Is_User_Complete(U *User) bool {
 	return U.Current_Quiz_Index >= len(S.Stories)
 }
 
-func (S *System) Complete_Reading_For(U *User) {
-	U.completeReading()
-}
-
 func (S *System) User_From_ID(user_id string) (*User, error) {
     if !S.User_exists(user_id) {
         return nil, errors.New("User does not exist")
     }
-    rows, err := S.Database.Query(fmt.Sprintf("select User_ID, password, Group_ID, Current_Story_Index, Current_Quiz_Index from Users where User_ID='%s' limit 1;",user_id))
-
+    
+    sqlStmt := "select User_ID, password, Group_ID, Current_Story_Index, Current_Quiz_Index from Users where User_ID=? limit 1;"
+    rows, err := S.Database.Query(sqlStmt, user_id)
     if err != nil {
 		return nil, err
     }
@@ -289,11 +294,16 @@ func (S *System) Finish_Reading(U *User, start_date, end_date int, wpm float32) 
         return err
     }
     U.completeReading()
+    sqlStmt = "UPDATE Users SET Current_Story_Index=? where User_ID=?;"
+    _, err = S.Database.Exec(sqlStmt, U.Current_Story_Index, U.User_ID)
+    if err != nil {
+        fmt.Println(err)
+    }
     return nil
 }
 
 // call this function to terminate and record the quiz event
-func (S *System) Finish_Quiz(U *User, start_date, end_date int, score float32) error {
+func (S *System) Finish_Quiz(U *User, start_date, end_date int, score int) error {
 
     sqlStmt := "INSERT INTO  Test_Results(Start_Date, End_Date, Story_ID, User_ID, Score) Values ($1, $2, $3, $4, $5);"
     _, err := S.Database.Exec(sqlStmt, start_date, end_date, U.Current_Quiz_Index, U.User_ID, score)
@@ -301,6 +311,11 @@ func (S *System) Finish_Quiz(U *User, start_date, end_date int, score float32) e
         return err
     }
     U.completeQuiz()
+    sqlStmt = "UPDATE Users SET Current_Quiz_Index=? where User_ID=?;"
+    _, err = S.Database.Exec(sqlStmt, U.Current_Quiz_Index, U.User_ID)
+    if err != nil {
+        fmt.Println(err)
+    }
     return nil
 }
 // create table IF NOT EXISTS Test_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, Story_ID integer, User_ID text, Score REAL, FOREIGN KEY(User_ID) REFERENCES Users(User_ID), FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID));

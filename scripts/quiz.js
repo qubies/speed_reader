@@ -31,6 +31,8 @@ function getParameterByName(name, url = window.location.href) {
 Quiz.prototype.render = function(container) {
     // For when we're out of scope
     var self = this;
+    send_update(actionsEnum.START_QUIZ)
+    let t = new Timer();
 
     // Hide the quiz results modal
     $('#quiz-results').hide();
@@ -65,6 +67,7 @@ Quiz.prototype.render = function(container) {
 
     // Add listener for the previous question button
     $('#prev-question-button').click(function() {
+        send_update(actionsEnum.PREVIOUS_QUESTION)
         if (current_question_index > 0) {
             current_question_index--;
             change_question();
@@ -73,6 +76,7 @@ Quiz.prototype.render = function(container) {
 
     // Add listener for the next question button
     $('#next-question-button').click(function() {
+        send_update(actionsEnum.NEXT_QUESTION)
         if (current_question_index < self.questions.length - 1) {
             current_question_index++;
             change_question();
@@ -81,6 +85,8 @@ Quiz.prototype.render = function(container) {
 
     // Add listener for the submit answers button
     $('#submit-button').click(function() {
+        t.stop();
+        send_update(actionsEnum.END_QUIZ)
         // Determine how many questions the user got right
         var score = 0;
         for (var i = 0; i < self.questions.length; i++) {
@@ -88,10 +94,17 @@ Quiz.prototype.render = function(container) {
                 score++;
             }
         }
+        $('#quiz-retry-button').click(function(reset) {
+                window.location.replace('/private/story');
+        });
+
 
         // Display the score with the appropriate message
         var percentage = score / self.questions.length;
         console.log(percentage);
+        let data = {"StartDate":t.start_time, "EndDate":t.stop_time, "Score":score}
+        console.log(data)
+        send_post("/private/quizend", data);
         var message = 'Great job, Please continue :)'
         $('#quiz-results-message').text(message);
         $('#quiz-results-score').html('You got <b>' + score + '/' + self.questions.length + '</b> questions correct.');
@@ -100,9 +113,6 @@ Quiz.prototype.render = function(container) {
         $('#next-question-button').slideUp();
         $('#prev-question-button').slideUp();
         $('#quiz-retry-button').slideDown();
-        let data = {"Date":Date.now(), "Score":percentage, "Wpm":parseFloat(getParameterByName('wpm'))}
-        console.log(data)
-        send_post('/private/record', data);
     });
     
 

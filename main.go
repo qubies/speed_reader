@@ -131,6 +131,12 @@ func storyStartRoute(c *gin.Context) {
         return
     }
 
+    //check if the user has an unfinished quiz
+    if user.Current_Quiz_Index < user.Current_Story_Index {
+        fmt.Println("Moving user back to quiz")
+        c.Redirect(http.StatusFound, "/private/quiz")
+    }
+
     // check if they are done all the stories
     userStory, err := system.GetStory(user)
     if err != nil || system.Is_User_Complete(user) {
@@ -145,9 +151,9 @@ func storyStartRoute(c *gin.Context) {
 }
 
 type storyEndPost struct {
-    startDate int
-    endDate int
-    wpm float32
+    StartDate int
+    EndDate int
+    Wpm float32
 }
 
 func storyEndRoute(c *gin.Context) {
@@ -155,14 +161,24 @@ func storyEndRoute(c *gin.Context) {
         return
     }
     
-    record := new(storyEndPost)
-    if err := c.ShouldBindJSON(record); err != nil {
+    var record storyEndPost
+    if err := c.ShouldBindJSON(&record); err != nil {
         fmt.Println("Error: ", err)
         c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
         return
     }
-    system.Finish_Reading(user, record.startDate, record.endDate, record.wpm)
-    fmt.Println(record)
+    system.Finish_Reading(user, record.StartDate, record.EndDate, record.Wpm)
+    update_user(user,c)
+}
+
+func update_user(user *data.User, c *gin.Context) {
+    session := sessions.Default(c)
+    session.Set(userkey, user)
+    if err := session.Save(); err != nil {
+        fmt.Println(err)
+    }
+    nu, _ := system.User_From_ID(user.User_ID) //lazy refresh of counters
+    *user = *nu
 }
 
 type actionPost struct {
@@ -193,6 +209,10 @@ func quizStartRoute(c *gin.Context) {
     user, err := validateUser(c); if err != nil {
         return
     }
+    if user.Current_Quiz_Index == user.Current_Story_Index {
+        fmt.Println("Moving user back to story")
+        c.Redirect(http.StatusFound, "/private/story")
+    }
     s, err := system.GetQuiz(user)
     if err != nil {
         return
@@ -206,6 +226,27 @@ func quizStartRoute(c *gin.Context) {
 }
 
 
+type quizEndPost struct {
+    StartDate int
+    EndDate int
+    Score int
+}
+
+func quizEndRoute(c *gin.Context) {
+    user, err := validateUser(c); if err != nil {
+        return
+    }
+    
+    var record quizEndPost
+    if err := c.ShouldBindJSON(&record); err != nil {
+        fmt.Println("Error: ", err)
+        c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
+        return
+    }
+    fmt.Println("quiz record:",record)
+    system.Finish_Quiz(user, record.StartDate, record.EndDate, record.Score)
+    update_user(user, c)
+}
 
 
 // AuthRequired is a middleware to check the session
@@ -266,7 +307,7 @@ func main() {
         private.GET("/story", storyStartRoute)
         private.POST("/storyend",storyEndRoute)
         private.GET("/quiz", quizStartRoute)
-        // private.GET("/quizend", quizEndRoute)
+        private.POST("/quizend", quizEndRoute)
         private.POST("/action", actionRoute)
     }
     app.Run(":"+PORT)

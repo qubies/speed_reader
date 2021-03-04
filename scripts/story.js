@@ -16,30 +16,10 @@ let running = false;
 let story_length = flatten(story).length;
 let line = 0;
 
-class Timer {
-    constructor() {
-        this.start_time = Date.now();
-        this.reset_time = Date.now();
-        this.stop_time = Date.now();
-        this.running = true;
-    }
-    elapsed() {
-        return Date.now() - this.reset_time;
-    }
-    reset() {
-        this.reset_time = Date.now();
-    }
-    stop() {
-        if (this.running) {
-            this.stop_time= Date.now();
-            this.running = false
-        }
-        return {"started":this.start_time, ["stopped"]:this.stop_time};
-    }
-    wpm() {
-        this.stop();
-        return story_length/((this.stop_time-this.start_time)/1000/60);
-    }
+
+function wpm(t) {
+    t.stop();
+    return story_length/((t.stop_time-t.start_time)/1000/60);
 }
 
 function wpmToSeconds(wpm) {
@@ -78,6 +58,7 @@ function calculate_pause_time(word, line_index, word_index) {
 }
 
 async function presentStory() {
+    send_update(actionsEnum.START_STORY)
     let t = new Timer();
     start_button = document.getElementById('start_button')
     start_button.style.display="none";
@@ -124,10 +105,10 @@ async function presentStory() {
     // console.log(`wpm:${t.wpm()}`);
     
     let results = t.stop();
-    let data = {"startDate":t.start_time, "endDate":t.stop_time, "wpm":t.wpm()}
+    let data = {"StartDate":t.start_time, "EndDate":t.stop_time, "Wpm":wpm(t)}
     console.log(data)
     await send_post("/private/storyend", data);
-    await send_update(actionsEnum.START_QUIZ);
+    await send_update(actionsEnum.END_STORY)
     
     window.location.replace(`/private/quiz`);
 }

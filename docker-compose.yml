@@ -5,7 +5,6 @@ services:
         build: .
         environment:
             - PORT=${PORT}
-            - STORY_PATH=${STORY_PATH}
         ports:
             - ${PORT}:${PORT}
         volumes:

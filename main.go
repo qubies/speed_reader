@@ -1,27 +1,29 @@
 package main
 
 import (
-	"errors"
-	"log"
-	"strings"
+    "encoding/json"
+    "errors"
+    "log"
+    "math/rand"
+    "strings"
 
-	// "io/ioutil"
-	"html/template"
-	"os"
+    // "io/ioutil"
+    "html/template"
+    "os"
 
-	"github.com/joho/godotenv"
+    "github.com/joho/godotenv"
 
-	// "encoding/json"
-	"github.com/gin-gonic/gin"
+    // "encoding/json"
+    "github.com/gin-gonic/gin"
 
-	"fmt"
-	// "math/rand"
-	"encoding/gob"
-	"net/http"
+    "fmt"
+    // "math/rand"
+    "encoding/gob"
+    "net/http"
 
-	"github.com/gin-gonic/contrib/sessions"
-	data "github.com/qubies/speed_reader/data"
-	"github.com/qubies/speed_reader/stories"
+    "github.com/gin-gonic/contrib/sessions"
+    data "github.com/qubies/speed_reader/data"
+    "github.com/qubies/speed_reader/stories"
 )
 
 const (
@@ -41,26 +43,8 @@ type StoryPage struct {
     CommonWords []string
     Story [][]string
     Spans [][]int
+    Version int
 }
-
-// type Choice struct {
-//     Correct string   `json:"correct"`
-//     Wrong   []string `json:"wrong"`
-// }
-
-// type Question struct {
-//     QuestionString string `json:"question_string"`
-//     Choices Choice `json:"choices"`
-// }
-
-// func new_question(question string, correct_answer string, wrong_answer []string) *Question {
-//     return &Question{question, Choice{correct_answer, wrong_answer}}
-// }
-
-// type Quiz struct {
-//     Name string
-//     Questions []*Question
-// }
 
 func sendInvalid(c *gin.Context) {
     c.JSON(401, gin.H{"code": "UNAUTHORIZED", "message": "There was a problem with your login, please verify that you are logged in."})
@@ -146,7 +130,7 @@ func storyStartRoute(c *gin.Context) {
 
     //TODO this needs a switch statement to determine the presentation type for the user's group
 
-    SP := StoryPage {userStory.Name, user.User_ID, system.CommonWords, userStory.Story, userStory.Spans}
+    SP := StoryPage {userStory.Name, user.User_ID, system.CommonWords, userStory.Story, userStory.Spans, rand.Int()}
     c.HTML(200, "story.html", SP)
 }
 
@@ -203,15 +187,26 @@ func actionRoute(c *gin.Context) {
 type QuizStruct struct {
     Questions []stories.Question
     Name string
+    Answers []int
+    Version int
+}
+
+// DeepCopy deepcopies a to b using json marshaling
+func DeepCopy(a, b interface{}) {
+    byt, _ := json.Marshal(a)
+    json.Unmarshal(byt, b)
 }
 
 func quizStartRoute(c *gin.Context) {
+    session := sessions.Default(c)
+    session.Delete("Answers")
     user, err := validateUser(c); if err != nil {
         return
     }
     if user.Current_Quiz_Index == user.Current_Story_Index {
         fmt.Println("Moving user back to story")
         c.Redirect(http.StatusFound, "/private/story")
+        return
     }
     s, err := system.GetQuiz(user)
     if err != nil {
@@ -219,9 +214,33 @@ func quizStartRoute(c *gin.Context) {
     }
 
     quiz := new(QuizStruct)
-    quiz.Questions = s.Questions
+    // copy the questions from the quiz to the struct
+    DeepCopy(s.Questions, &quiz.Questions)
+    //shuffle the question order
+    rand.Shuffle(len(quiz.Questions), func(i, j int) { quiz.Questions[i], quiz.Questions[j] = quiz.Questions[j], quiz.Questions[i] })
     quiz.Name = s.Name
-
+    fmt.Println("Initial Answers:", quiz.Answers)
+    for i := range(quiz.Questions) {
+        qs := quiz.Questions[i].Choices
+        ans_index := quiz.Questions[i].Answer
+        ans := quiz.Questions[i].Choices[ans_index]
+        rand.Shuffle(len(qs), func(i, j int) { qs[i], qs[j] = qs[j], qs[i] })
+        for i, q := range(qs) {
+            if q == ans {
+                quiz.Answers = append(quiz.Answers, i)
+                break
+            }
+        }
+    }
+    fmt.Println("Middle Answers:", quiz.Answers)
+    session.Set("Answers", quiz.Answers)
+    if err := session.Save(); err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
+        fmt.Println(err)
+        return
+    }
+    quiz.Version = rand.Int()
+    fmt.Println("Quiz", quiz)
     c.HTML(200, "quiz.html", &quiz)
 }
 
@@ -229,7 +248,7 @@ func quizStartRoute(c *gin.Context) {
 type quizEndPost struct {
     StartDate int
     EndDate int
-    Score int
+    ChosenAnswers []int
 }
 
 func quizEndRoute(c *gin.Context) {
@@ -243,9 +262,23 @@ func quizEndRoute(c *gin.Context) {
         c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
         return
     }
+    session := sessions.Default(c)
+    expected := session.Get("Answers").([]int)
+    score := 0
+    if len(expected) != len(record.ChosenAnswers) {
+        fmt.Println("error, expected answers length different from recieved")
+    }
+    for i := range(expected) {
+        if expected[i] == record.ChosenAnswers[i] {
+            score += 1
+        }
+    }
     fmt.Println("quiz record:",record)
-    system.Finish_Quiz(user, record.StartDate, record.EndDate, record.Score)
+    fmt.Println("expected", expected)
+    fmt.Println("Score:", score)
+    system.Finish_Quiz(user, record.StartDate, record.EndDate, score)
     update_user(user, c)
+    c.JSON(http.StatusOK,score)
 }
 
 

@@ -47,3 +47,5 @@ const actionsEnum = {
     "PREVIOUS_QUESTION": 10
 }
 Object.freeze(actionsEnum)
+
+var version = (new Date()).getTime();

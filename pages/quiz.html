@@ -1,7 +1,8 @@
 <head>
     {{template "preamble.html" .}}
     <link href="/css/quiz.css" rel="stylesheet">
-    <script type="text/javascript" src="/scripts/api.js"></script> 
+    <script type="text/javascript" src="/scripts/api.js"></script>
+
 </head>
 <div id="quiz">
   <h1 id="quiz-name"></h1>
@@ -17,7 +18,8 @@
     
   </div>
 </div>
-<script src="/scripts/quiz.js"></script>
+
+<script src="/scripts/quiz.js?{{.Version}}"></script>
 <script>
     let all_questions = {{.Questions}};
 </script>

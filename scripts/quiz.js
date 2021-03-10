@@ -13,8 +13,7 @@ var Quiz = function(quiz_name) {
 // A function that you can enact on an instance of a quiz object. This function is called add_question() and takes in a Question object which it will add to the questions field.
 Quiz.prototype.add_question = function(question) {
     // Randomly choose where to add question
-    var index_to_add_question = Math.floor(Math.random() * this.questions.length);
-    this.questions.splice(index_to_add_question, 0, question);
+    this.questions.push(question);
 }
 
 function getParameterByName(name, url = window.location.href) {
@@ -84,15 +83,14 @@ Quiz.prototype.render = function(container) {
     });
 
     // Add listener for the submit answers button
-    $('#submit-button').click(function() {
+    $('#submit-button').click(async function() {
         t.stop();
         send_update(actionsEnum.END_QUIZ)
         // Determine how many questions the user got right
         var score = 0;
+        var answers = [];
         for (var i = 0; i < self.questions.length; i++) {
-            if (self.questions[i].user_choice_index === self.questions[i].correct_choice_index) {
-                score++;
-            }
+            answers.push(self.questions[i].user_choice_index)
         }
         $('#quiz-retry-button').click(function(reset) {
                 window.location.replace('/private/story');
@@ -102,9 +100,12 @@ Quiz.prototype.render = function(container) {
         // Display the score with the appropriate message
         var percentage = score / self.questions.length;
         console.log(percentage);
-        let data = {"StartDate":t.start_time, "EndDate":t.stop_time, "Score":score}
+        let data = {"StartDate":t.start_time, "EndDate":t.stop_time, "ChosenAnswers":answers}
         console.log(data)
-        send_post("/private/quizend", data);
+        var score = await send_post("/private/quizend", data);
+        score = await  score.json(function(data) {return data.value});
+        console.log("Score:", score);
+
         var message = 'Great job, Please continue :)'
         $('#quiz-results-message').text(message);
         $('#quiz-results-score').html('You got <b>' + score + '/' + self.questions.length + '</b> questions correct.');
@@ -142,16 +143,12 @@ function shuffleArray(array) {
         array[j] = temp;
     }
 }
-var Question = function(question_string, answer, choices) {
-    let a = choices[answer];
-    shuffleArray(choices);
+var Question = function(question_string, choices) {
+
     // Private fields for an instance of a Question object.
     this.question_string = question_string;
     this.choices = choices;
     this.user_choice_index = null; // Index of the user's choice selection
-
-    // Random assign the correct choice index to the var again
-    this.correct_choice_index = choices.indexOf(a);
 
   }
 
@@ -209,14 +206,14 @@ Question.prototype.render = function(container) {
 // "Main method" which will create all the objects and render the Quiz.
 $(document).ready(function() {
   // Create an instance of the Quiz object
-  
+
   // Create Question objects from all_questions and add them to the Quiz object
   for (var i = 0; i < all_questions.length; i++) {
     // Create a new Question object
-    var question = new Question(all_questions[i].Text, all_questions[i].Answer, all_questions[i].Choices);
-    
+    var question = new Question(all_questions[i].Text, all_questions[i].Choices);
+
     // Add the question to the instance of the Quiz object that we created previously
-    quiz.add_question(question);
+    quiz.questions.push(question);
   }
   
   // Render the quiz

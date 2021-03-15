@@ -1,6 +1,6 @@
 package data
 
-// Contains all of the setup and control of the storage. 
+// Contains all of the setup and control of the storage.
 // Owns structs that are in storage:
 //     USER
 //     SYSTEM
@@ -8,19 +8,22 @@ package data
 // interactions are done through system NOT USER.
 // User is exported only for storage in session
 import (
-    "fmt"
-    "database/sql"
-    _ "github.com/mattn/go-sqlite3"
-    "github.com/qubies/go-randomdata"
-    "log"
-    "strings"
-    "github.com/qubies/speed_reader/stories"
-	"os"
+	"bytes"
+	"database/sql"
+	"encoding/gob"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
-)
+	"log"
+	"math/rand"
+	"os"
+	"strings"
 
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/qubies/go-randomdata"
+	"github.com/qubies/speed_reader/stories"
+)
 
 // the generic user representation
 type User struct {
@@ -29,6 +32,7 @@ type User struct {
     Group int
     Current_Story_Index int
     Current_Quiz_Index int
+    Story_List []int
 }
 
 type Record_Update struct {
@@ -120,7 +124,7 @@ func create_db(location string) *sql.DB{
     schema := `
     PRAGMA foreign_keys = ON;
 
-    create table IF NOT EXISTS Users (User_ID text not null primary key, password text, Group_ID integer not null, Current_Story_Index integer default 0, Current_Quiz_Index integer default 0);
+    create table IF NOT EXISTS Users (User_ID text not null primary key, password text, Group_ID integer not null, Current_Story_Index integer default 0, Current_Quiz_Index integer default 0, Story_List BLOB);
 
     create table IF NOT EXISTS Stories (Story_ID integer primary key, Story_Name text not null);
 
@@ -184,6 +188,23 @@ func (S *System) choose_group() int {
     return <-S.Group_Generator
 }
 
+func encode_slice(s []int) (encoded []byte, err error) {
+    var encoding_buffer bytes.Buffer
+    enc := gob.NewEncoder(&encoding_buffer)
+    err = enc.Encode(s)
+    if err != nil {
+        return
+    }
+    encoded=encoding_buffer.Bytes()
+    return
+}
+
+func decode_silce(encoded_buffer []byte) (s []int, err error) {
+    dec := gob.NewDecoder(bytes.NewBuffer(encoded_buffer))
+    dec.Decode(&s)
+    return
+}
+
 func (S* System) Create_user() *User{
     user_id := "" 
     password := ""
@@ -191,17 +212,20 @@ func (S* System) Create_user() *User{
         user_id, password = generate_user_id_and_password()
     }
 
-    new_user := &User{user_id, password, S.choose_group(), 0, 0}
+    new_user := &User{user_id, password, S.choose_group(), 0, 0, rand.Perm(len(S.Stories))}
     tx, err := S.Database.Begin()
     if err != nil {
         log.Fatal(err)
     }
-    stmt, err := tx.Prepare(`INSERT into Users(User_ID, password, Group_ID) values (?,?,?)`) 
+    stmt, err := tx.Prepare(`INSERT into Users(User_ID, password, Group_ID, Story_List) values (?,?,?,?)`) 
     if err != nil {
         log.Fatal(err)
     }
+
     defer stmt.Close()
-    _, err = stmt.Exec(new_user.User_ID, new_user.Password, new_user.Group)
+
+    blob, err := encode_slice(new_user.Story_List)
+    _, err = stmt.Exec(new_user.User_ID, new_user.Password, new_user.Group, blob)
     if err != nil {
         log.Fatal(err)
     }
@@ -237,14 +261,14 @@ func (S *System) ValidatePassword(U *User, password string) bool {
 
 func (S *System) GetStory(U *User) (*stories.Story, error){
 	if U.get_story_id() < len(S.Stories) {
-		return &S.Stories[U.get_story_id()], nil
+		return &S.Stories[U.Story_List[U.get_story_id()]], nil
 	}
 	return nil, errors.New("No Stories Left")
 }
 
 func (S *System) GetQuiz(U *User) (*stories.Story, error){
 	if U.Current_Quiz_Index < len(S.Stories) {
-		return &S.Stories[U.Current_Quiz_Index], nil
+		return &S.Stories[U.Story_List[U.Current_Quiz_Index]], nil
 	}
 	return nil, errors.New("No Stories Left")
 }
@@ -258,7 +282,7 @@ func (S *System) User_From_ID(user_id string) (*User, error) {
         return nil, errors.New("User does not exist")
     }
     
-    sqlStmt := "select User_ID, password, Group_ID, Current_Story_Index, Current_Quiz_Index from Users where User_ID=? limit 1;"
+    sqlStmt := "select User_ID, password, Group_ID, Current_Story_Index, Current_Quiz_Index, Story_List from Users where User_ID=? limit 1;"
     rows, err := S.Database.Query(sqlStmt, user_id)
     if err != nil {
 		return nil, err
@@ -266,8 +290,13 @@ func (S *System) User_From_ID(user_id string) (*User, error) {
     defer rows.Close()
 
     u := new(User)
+    var raw_data []byte
     for rows.Next() {
-        err = rows.Scan(&u.User_ID, &u.Password, &u.Group, &u.Current_Story_Index, &u.Current_Quiz_Index)
+        err = rows.Scan(&u.User_ID, &u.Password, &u.Group, &u.Current_Story_Index, &u.Current_Quiz_Index, &raw_data)
+    }
+    u.Story_List, err = decode_silce(raw_data)
+    if err != nil {
+        return nil, err
     }
     return u, nil
 }

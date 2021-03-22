@@ -1,6 +1,5 @@
 #whole_page {
     margin:0;
-    /* background-color:#dddddd; */
     padding:0;
     height: 100%;
 }
@@ -22,7 +21,6 @@ h3 {
     background-color:#fff;
     margin:0 8% 0 8%;
     padding: 2%;
-    /* box-shadow: #666 10px 10px 20px; */
 }
 
 .hide {
@@ -37,12 +35,6 @@ h3 {
     justify-content: center;
     align-items: center;
     vertical-align: top;
-}
-
-.display_position_text {
-    color: #AAA;
-    font-size: 1.4em;
-    text-align: center;
 }
 
 #WORD {
@@ -72,14 +64,7 @@ h3 {
 }
 
 .emphasis {
-    /* color: red; */
     color:#737272;
-    /* background-color:transparent;
-    font-weight: 600 */;
-}
-
-#current_word {
-    color: red;
 }
 
 body {
@@ -114,19 +99,11 @@ H1 {
     }
 }
 
-
-#story-text {
+.story-text {
     width: 50%;
     text-align: justify;
     color: #AAA;
-    font-size: 1.5em;
     vertical-align: top;
     height: 180px;
-    overflow: scroll;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
-
-#story-text::-webkit-scrollbar {
-    display: none;
+    font-size: 1.5em;
 }

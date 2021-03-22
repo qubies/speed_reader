@@ -128,23 +128,18 @@ async function presentStory() {
 function up_pressed() {
     $('.up').addClass('pressed');
     $('.uptext').text('FASTER');
-    $('.left').css('transform', 'translate(0, 2px)');
-    $('.down').css('transform', 'translate(0, 2px)');
-    $('.right').css('transform', 'translate(0, 2px)');
     wpm_base += wpm_increment;
     pause_time = wpmToSeconds(wpm_base);
 }
 function left_pressed() {
     $('.left').addClass('pressed');
     $('.lefttext').text('PREVIOUS LINE');
-    $('.left').css('transform', 'translate(0, 2px)');
     line-=1;
     line = Math.max(line, 0);
 }
 function down_pressed() {
     $('.down').addClass('pressed');
     $('.downtext').text('SLOWER');
-    $('.down').css('transform', 'translate(0, 2px)');
     wpm_base -= wpm_increment;
     wpm_base = Math.max(wpm_increment, wpm_base);
     pause_time = wpmToSeconds(wpm_base);
@@ -160,27 +155,21 @@ function up_released() {
     send_update(actionsEnum.SPEED_UP);
     $('.up').removeClass('pressed');
     $('.uptext').text('');
-    $('.left').css('transform', 'translate(0, 0)');
-    $('.down').css('transform', 'translate(0, 0)');
-    $('.right').css('transform', 'translate(0, 0)');
 }
 function down_released() {
     send_update(actionsEnum.SLOW_DOWN);
     $('.down').removeClass('pressed');
     $('.downtext').text('');
-    $('.down').css('transform', 'translate(0, 0)');
 }
 function left_released() {
     send_update(actionsEnum.REWIND);
     $('.left').removeClass('pressed');
     $('.lefttext').text('');
-    $('.left').css('transform', 'translate(0, 0)');
 }
 function right_released() {
     send_update(actionsEnum.FAST_FORWARD);
     $('.right').removeClass('pressed');
     $('.righttext').text('');
-    $('.right').css('transform', 'translate(0, 0)');
 }
 
 

@@ -68,7 +68,6 @@ async function move_on(t) {
 async function presentStory() {
     send_update(actionsEnum.START_STORY)
     let t = new Timer();
-    
     if (group == groupsEnum.READ || group == groupsEnum.READH) {
         start_button = document.getElementById('start_button')
         start_button.style.display="none";
@@ -123,7 +122,7 @@ async function presentStory() {
         // console.log("Timer =", t.elapsed(), "Started =", t.start_time, "Stopped =", t.stop_time);
         // console.log("Timer =", t.elapsed(), "Started =", results["started"], "Stopped =", results["stopped"]);
         // console.log(`wpm:${t.wpm()}`);
-        
+
 }
 
 function up_pressed() {
@@ -136,7 +135,7 @@ function up_pressed() {
     pause_time = wpmToSeconds(wpm_base);
 }
 function left_pressed() {
-    $('.left').addClass('pressed'); 
+    $('.left').addClass('pressed');
     $('.lefttext').text('PREVIOUS LINE');
     $('.left').css('transform', 'translate(0, 2px)');
     line-=1;
@@ -152,8 +151,8 @@ function down_pressed() {
 }
 function right_pressed() {
     $('.right').addClass('pressed');
-    $('.righttext').text('NEXT LINE'); 
-    $('.right').css('transform', 'translate(0, 2px)'); 
+    $('.righttext').text('NEXT LINE');
+    $('.right').css('transform', 'translate(0, 2px)');
     line+=1;
     line = Math.min(line, story.length-1);
 }
@@ -174,13 +173,13 @@ function down_released() {
 function left_released() {
     send_update(actionsEnum.REWIND);
     $('.left').removeClass('pressed');
-    $('.lefttext').text('');   
-    $('.left').css('transform', 'translate(0, 0)');  
+    $('.lefttext').text('');
+    $('.left').css('transform', 'translate(0, 0)');
 }
 function right_released() {
     send_update(actionsEnum.FAST_FORWARD);
-    $('.right').removeClass('pressed'); 
-    $('.righttext').text(''); 
+    $('.right').removeClass('pressed');
+    $('.righttext').text('');
     $('.right').css('transform', 'translate(0, 0)');
 }
 
@@ -206,7 +205,7 @@ $(document).keyup(function(e) {
       right_released();
   } else if (e.which==40) {
       down_released();
-  } 
+  }
 });
 
 $('.left').mousedown(function() {

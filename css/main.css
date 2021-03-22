@@ -1,6 +1,6 @@
 #whole_page {
     margin:0;
-    background-color:#dddddd;
+    /* background-color:#dddddd; */
     padding:0;
     height: 100%;
 }
@@ -22,7 +22,7 @@ h3 {
     background-color:#fff;
     margin:0 8% 0 8%;
     padding: 2%;
-    box-shadow: #666 10px 10px 20px;
+    /* box-shadow: #666 10px 10px 20px; */
 }
 
 .hide {
@@ -31,7 +31,14 @@ h3 {
 .position_text_box {
     position: relative;
     height: 30%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    vertical-align: top;
 }
+
 .display_position_text {
     color: #AAA;
     font-size: 1.4em;
@@ -64,14 +71,17 @@ h3 {
     margin:1em 10%;
 }
 
-mark {
-    color:red;
-    background-color:transparent;
-    font-weight: 600;
+.emphasis {
+    /* color: red; */
+    color:#737272;
+    /* background-color:transparent;
+    font-weight: 600 */;
 }
+
 #current_word {
     color: red;
 }
+
 body {
     height:100%;
     width:100%;
@@ -102,4 +112,21 @@ H1 {
     .position_text_box {
         font-size: 0.5em;
     }
+}
+
+
+#story-text {
+    width: 50%;
+    text-align: justify;
+    color: #AAA;
+    font-size: 1.5em;
+    vertical-align: top;
+    height: 180px;
+    overflow: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+#story-text::-webkit-scrollbar {
+    display: none;
 }

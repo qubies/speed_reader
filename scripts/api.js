@@ -48,4 +48,13 @@ const actionsEnum = {
 }
 Object.freeze(actionsEnum)
 
+//ENUM for actions table
+const groupsEnum = {
+    "READ":1,
+    "READH":2,
+    "RSVP":0,
+    "RSVPI":3,
+}
+Object.freeze(groupsEnum)
+
 var version = (new Date()).getTime();

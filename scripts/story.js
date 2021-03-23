@@ -57,60 +57,73 @@ function calculate_pause_time(word, line_index, word_index) {
     return base
 }
 
+
+async function move_on(t) {
+    let results = t.stop();
+    let data = {"StartDate":t.start_time, "EndDate":t.stop_time, "Wpm":wpm(t)}
+    await send_post("/private/storyend", data);
+    await send_update(actionsEnum.END_STORY)
+    window.location.replace(`/private/quiz`);
+}
 async function presentStory() {
     send_update(actionsEnum.START_STORY)
     let t = new Timer();
-    start_button = document.getElementById('start_button')
-    start_button.style.display="none";
-    arrow_box = document.getElementById('arrow_box');
-    arrow_box.style.display="inherit";
-    console.log(start_button);
-    let previous_lrne = document.getElementById('previous_line');
-    let current_line = document.getElementById('current_line');
-    let next_line = document.getElementById('next_line');
-    let wp = document.getElementById('WORD');
+    
+    if (group == groupsEnum.READ || group == groupsEnum.READH) {
+        start_button = document.getElementById('start_button')
+        start_button.style.display="none";
+        story_div = document.getElementById('plainstory');
+        story_div.className = "story";
+        done_button = document.getElementById('done_button');
+        done_button.style.display="inline";
+        done_button.onclick=function(){move_on(t);};
+    }
+    else if (group == groupsEnum.RSVP || group == groupsEnum.RSVPI) {
+        start_button = document.getElementById('start_button')
+        start_button.style.display="none";
+        arrow_box = document.getElementById('arrow_box');
+        arrow_box.style.display="inherit";
+        let previous_lrne = document.getElementById('previous_line');
+        let current_line = document.getElementById('current_line');
+        let next_line = document.getElementById('next_line');
+        let wp = document.getElementById('WORD');
 
-    //while (true) {
-        for (; line < story.length;line++){
-            let lp=line;
-            if (lp === 0) {
-                previous_line.innerHTML = "<br>";
-            }
-            if (lp > 0) {
-                let prev_start = Math.max(lp-pre_range,0);
-                let lines = story.slice(prev_start,lp);
-                if (lines.length > 0) {
-                    lines = lines.map(function(x) {
-                        return x.join(" ");
-                    });
+        //while (true) {
+            for (; line < story.length;line++){
+                let lp=line;
+                if (lp === 0) {
+                    previous_line.innerHTML = "<br>";
                 }
-                previous_line.innerHTML = lines.join("<br>");
-            }
-            if (lp != story.length -1) {
-                next_line.innerHTML = story[lp+1].join(" ");
-            } else {
-                next_line.innerHTML = "<br>";
-            }
-            for (word=0; word < story[lp].length; word++){
-                if (lp != line) {
-                    break;
+                if (lp > 0) {
+                    let prev_start = Math.max(lp-pre_range,0);
+                    let lines = story.slice(prev_start,lp);
+                    if (lines.length > 0) {
+                        lines = lines.map(function(x) {
+                            return x.join(" ");
+                        });
+                    }
+                    previous_line.innerHTML = lines.join("<br>");
                 }
-                current_line.innerHTML = story[lp].slice(0,word).join(" ") + "<mark> " +story[lp][word] + " </mark>" + story[lp].slice(word+1, story[lp].length).join(" ");
-                wp.innerHTML = story[lp][word];
-                await sleep(calculate_pause_time(story[lp][word], lp, word));
+                if (lp != story.length -1) {
+                    next_line.innerHTML = story[lp+1].join(" ");
+                } else {
+                    next_line.innerHTML = "<br>";
+                }
+                for (word=0; word < story[lp].length; word++){
+                    if (lp != line) {
+                        break;
+                    }
+                    current_line.innerHTML = story[lp].slice(0,word).join(" ") + "<mark> " +story[lp][word] + " </mark>" + story[lp].slice(word+1, story[lp].length).join(" ");
+                    wp.innerHTML = story[lp][word];
+                    await sleep(calculate_pause_time(story[lp][word], lp, word));
+                }
             }
-        }
-    // console.log("Timer =", t.elapsed(), "Started =", t.start_time, "Stopped =", t.stop_time);
-    // console.log("Timer =", t.elapsed(), "Started =", results["started"], "Stopped =", results["stopped"]);
-    // console.log(`wpm:${t.wpm()}`);
-    
-    let results = t.stop();
-    let data = {"StartDate":t.start_time, "EndDate":t.stop_time, "Wpm":wpm(t)}
-    console.log(data)
-    await send_post("/private/storyend", data);
-    await send_update(actionsEnum.END_STORY)
-    
-    window.location.replace(`/private/quiz`);
+        move_on(t);
+    }
+        // console.log("Timer =", t.elapsed(), "Started =", t.start_time, "Stopped =", t.stop_time);
+        // console.log("Timer =", t.elapsed(), "Started =", results["started"], "Stopped =", results["stopped"]);
+        // console.log(`wpm:${t.wpm()}`);
+        
 }
 
 function up_pressed() {

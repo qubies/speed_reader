@@ -29,7 +29,7 @@ import (
 const (
     // the session var that holds the user's info
     userkey = "user"
-    NUMBER_OF_GROUPS = 1
+    NUMBER_OF_GROUPS = 2
 )
 
 // globals 
@@ -44,6 +44,7 @@ type StoryPage struct {
     Story [][]string
     Spans [][]int
     Version int
+    Group int
 }
 
 func sendInvalid(c *gin.Context) {
@@ -130,7 +131,7 @@ func storyStartRoute(c *gin.Context) {
 
     //TODO this needs a switch statement to determine the presentation type for the user's group
 
-    SP := StoryPage {userStory.Name, user.User_ID, system.CommonWords, userStory.Story, userStory.Spans, rand.Int()}
+    SP := StoryPage {userStory.Name, user.User_ID, system.CommonWords, userStory.Story, userStory.Spans, rand.Int(), user.Group}
     c.HTML(200, "story.html", SP)
 }
 

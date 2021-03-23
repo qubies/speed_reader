@@ -24,6 +24,10 @@ h3 {
     padding: 2%;
     box-shadow: #666 10px 10px 20px;
 }
+
+.hide {
+    display: none;
+}
 .position_text_box {
     position: relative;
     height: 30%;

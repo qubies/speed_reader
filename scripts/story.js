@@ -127,49 +127,48 @@ async function presentStory() {
 
 function up_pressed() {
     $('.up').addClass('pressed');
-    $('.uptext').text('FASTER');
+    $('.arrowtext').text('FASTER');
     wpm_base += wpm_increment;
     pause_time = wpmToSeconds(wpm_base);
 }
 function left_pressed() {
     $('.left').addClass('pressed');
-    $('.lefttext').text('PREVIOUS LINE');
+    $('.arrowtext').text('PREVIOUS LINE');
     line-=1;
     line = Math.max(line, 0);
 }
 function down_pressed() {
     $('.down').addClass('pressed');
-    $('.downtext').text('SLOWER');
+    $('.arrowtext').text('SLOWER');
     wpm_base -= wpm_increment;
     wpm_base = Math.max(wpm_increment, wpm_base);
     pause_time = wpmToSeconds(wpm_base);
 }
 function right_pressed() {
     $('.right').addClass('pressed');
-    $('.righttext').text('NEXT LINE');
-    $('.right').css('transform', 'translate(0, 2px)');
+    $('.arrowtext').text('NEXT LINE');
     line+=1;
     line = Math.min(line, story.length-1);
 }
 function up_released() {
     send_update(actionsEnum.SPEED_UP);
     $('.up').removeClass('pressed');
-    $('.uptext').text('');
+    $('.arrowtext').text('');
 }
 function down_released() {
     send_update(actionsEnum.SLOW_DOWN);
     $('.down').removeClass('pressed');
-    $('.downtext').text('');
+    $('.arrowtext').text('');
 }
 function left_released() {
     send_update(actionsEnum.REWIND);
     $('.left').removeClass('pressed');
-    $('.lefttext').text('');
+    $('.arrowtext').text('');
 }
 function right_released() {
     send_update(actionsEnum.FAST_FORWARD);
     $('.right').removeClass('pressed');
-    $('.righttext').text('');
+    $('.arrowtext').text('');
 }
 
 

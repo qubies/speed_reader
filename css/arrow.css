@@ -20,26 +20,26 @@ html {
   height: 25px;
   text-align: center;
   line-height: 50px;
-  background: transparent;
-  color: #AAA;
+  background: white;
   font-size: 25px;
-  border-right: 10px solid darken(grey, 20);
-  border-bottom: 10px solid darken(grey, 20);
-  border-left: 10px solid darken(grey, 15);
-  border-top: 10px solid darken(grey, 10);
   display: inline-block;
-  margin: 5px;
+  margin: 4px;
+  border-radius: 10px;
   transition: all .05s linear;
   user-select: none;
+  border: solid 2px;
+  border-color: #AAA;
+  border-radius: 5px;
 }
 
 .up {
   position: relative;
+  top: -2px;
 }
 
 .down {
   position: relative;
-  top: 2px;
+  top: -2px;
 }
 
 .names {
@@ -48,5 +48,36 @@ html {
   font-family: 'Lato', sans-serif;
   text-align: center;
   color: #AAA;
-  margin-top:5px;
+  height: 10px;
+}
+
+.arrow {
+  border: solid #AAA;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.ar-right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  margin-right: 3px;
+}
+
+.ar-left {
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  margin-left: 3px;
+}
+
+.ar-up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+  margin-top: 3px;
+}
+
+.ar-down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  margin-bottom: 3px;
 }

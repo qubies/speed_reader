@@ -1,12 +1,12 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:300);
 
 html {
-  background: radial-gradient(#000, #111); 
+  background: radial-gradient(#000, #111);
   height: 100%;
 }
 
 .keys {
-  font-family: 'Lato', sans-serif;    
+  font-family: 'Lato', sans-serif;
   text-align: center;
   margin: auto;
 }
@@ -15,45 +15,69 @@ html {
     display:none;
 }
 .arr {
-  cursor: pointer;
+  cursor: not-allowed;
   width: 25px;
   height: 25px;
   text-align: center;
   line-height: 50px;
-  background: grey;
-  color: white;
+  background: white;
   font-size: 25px;
-  border-right: 10px solid darken(grey, 20);
-  border-bottom: 10px solid darken(grey, 20);
-  border-left: 10px solid darken(grey, 15);
-  border-top: 10px solid darken(grey, 10);  
   display: inline-block;
-  margin: 5px;
+  margin: 4px;
+  border-radius: 10px;
   transition: all .05s linear;
-  &:active {
-    border-bottom: 8px solid darken(grey, 20);
-    text-shadow: 0 0 10px white, 0 0 10px white, 0 0 20px white;    
-    transform: translate(0, 2px);
-  }
   user-select: none;
+  border: solid 2px;
+  border-color: #AAA;
+  border-radius: 3px;
 }
 
 .up {
   position: relative;
-  top: -4px;
+  top: -2px;
 }
 
-.pressed {
-  border-bottom: 8px solid darken(grey, 20);
-  text-shadow: 0 0 10px white;
-  transform: translate(0, 2px);
+.down {
+  position: relative;
+  top: -2px;
 }
 
 .names {
-  font-size: 18px;  
-  font-family: 'Lato', sans-serif;    
+  font-size: 14px;
+  font-weight: light;
+  font-family: 'Lato', sans-serif;
   text-align: center;
-  color: #333;
-  text-shadow: 0 0 10px #999;
-  margin-top:5px;
+  color: #AAA;
+  height: 10px;
+}
+
+.arrow {
+  border: solid #AAA;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.ar-right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  margin-right: 3px;
+}
+
+.ar-left {
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  margin-left: 3px;
+}
+
+.ar-up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+  margin-top: 3px;
+}
+
+.ar-down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  margin-bottom: 3px;
 }

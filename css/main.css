@@ -1,8 +1,10 @@
 #whole_page {
     margin:0;
-    background-color:#dddddd;
     padding:0;
     height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 html, body, #presentation_column{
     overflow: auto;
@@ -20,9 +22,9 @@ h3 {
     width: 80%;
     height: 100%;
     background-color:#fff;
-    margin:0 8% 0 8%;
+    align-items: center;
+    justify-content: center;
     padding: 2%;
-    box-shadow: #666 10px 10px 20px;
 }
 
 .hide {
@@ -31,14 +33,15 @@ h3 {
 .position_text_box {
     position: relative;
     height: 30%;
-}
-.display_position_text {
-    color: #AAA;
-    font-size: 1.4em;
-    text-align: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    vertical-align: top;
 }
 
-#WORD {
+#word {
     font-size: 5em;
     transition-timing-function: linear;
 }
@@ -55,7 +58,7 @@ h3 {
     margin: auto;
 }
 
-.WORD_BOX {
+.word-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -64,14 +67,10 @@ h3 {
     margin:1em 10%;
 }
 
-mark {
-    color:red;
-    background-color:transparent;
-    font-weight: 600;
+.emphasis {
+    color:#737272;
 }
-#current_word {
-    color: red;
-}
+
 body {
     height:100%;
     width:100%;
@@ -102,4 +101,27 @@ H1 {
     .position_text_box {
         font-size: 0.5em;
     }
+}
+
+.story-text {
+    width: 50%;
+    text-align: justify;
+    color: #AAA;
+    vertical-align: top;
+    height: 180px;
+    font-size: 1.5em;
+}
+
+.icon-align {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+#display-story {
+    display: none;
+    width: 100%;
+    height: 100%;
 }

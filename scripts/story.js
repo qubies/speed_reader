@@ -65,10 +65,11 @@ async function move_on(t) {
     await send_update(actionsEnum.END_STORY)
     window.location.replace(`/private/quiz`);
 }
+
 async function presentStory() {
+    document.getElementById('display-story').style.display = 'flex';
     send_update(actionsEnum.START_STORY)
     let t = new Timer();
-    
     if (group == groupsEnum.READ || group == groupsEnum.READH) {
         start_button = document.getElementById('start_button')
         start_button.style.display="none";
@@ -83,10 +84,10 @@ async function presentStory() {
         start_button.style.display="none";
         arrow_box = document.getElementById('arrow_box');
         arrow_box.style.display="inherit";
-        let previous_lrne = document.getElementById('previous_line');
+        let previous_line = document.getElementById('previous_line');
         let current_line = document.getElementById('current_line');
         let next_line = document.getElementById('next_line');
-        let wp = document.getElementById('WORD');
+        let wp = document.getElementById('word');
 
         //while (true) {
             for (; line < story.length;line++){
@@ -102,18 +103,18 @@ async function presentStory() {
                             return x.join(" ");
                         });
                     }
-                    previous_line.innerHTML = lines.join("<br>");
+                    previous_line.innerHTML = lines.join(" ");
                 }
                 if (lp != story.length -1) {
                     next_line.innerHTML = story[lp+1].join(" ");
                 } else {
-                    next_line.innerHTML = "<br>";
+                    next_line.innerHTML = " ";
                 }
                 for (word=0; word < story[lp].length; word++){
                     if (lp != line) {
                         break;
                     }
-                    current_line.innerHTML = story[lp].slice(0,word).join(" ") + "<mark> " +story[lp][word] + " </mark>" + story[lp].slice(word+1, story[lp].length).join(" ");
+                    current_line.innerHTML = story[lp].slice(0,word).join(" ") + "<span class='emphasis'> " + story[lp][word] + " </span>" + story[lp].slice(word+1, story[lp].length).join(" ");
                     wp.innerHTML = story[lp][word];
                     await sleep(calculate_pause_time(story[lp][word], lp, word));
                 }
@@ -123,120 +124,83 @@ async function presentStory() {
         // console.log("Timer =", t.elapsed(), "Started =", t.start_time, "Stopped =", t.stop_time);
         // console.log("Timer =", t.elapsed(), "Started =", results["started"], "Stopped =", results["stopped"]);
         // console.log(`wpm:${t.wpm()}`);
-        
+
 }
 
 function up_pressed() {
     $('.up').addClass('pressed');
-    $('.uptext').text('FASTER');
-    $('.left').css('transform', 'translate(0, 2px)');
-    $('.down').css('transform', 'translate(0, 2px)');
-    $('.right').css('transform', 'translate(0, 2px)');
+    $('.arrowtext').text('FASTER');
     wpm_base += wpm_increment;
     pause_time = wpmToSeconds(wpm_base);
 }
 function left_pressed() {
-    $('.left').addClass('pressed'); 
-    $('.lefttext').text('PREVIOUS LINE');
-    $('.left').css('transform', 'translate(0, 2px)');
+    $('.left').addClass('pressed');
+    $('.arrowtext').text('PREVIOUS LINE');
     line-=1;
     line = Math.max(line, 0);
 }
 function down_pressed() {
     $('.down').addClass('pressed');
-    $('.downtext').text('SLOWER');
-    $('.down').css('transform', 'translate(0, 2px)');
+    $('.arrowtext').text('SLOWER');
     wpm_base -= wpm_increment;
     wpm_base = Math.max(wpm_increment, wpm_base);
     pause_time = wpmToSeconds(wpm_base);
 }
 function right_pressed() {
     $('.right').addClass('pressed');
-    $('.righttext').text('NEXT LINE'); 
-    $('.right').css('transform', 'translate(0, 2px)'); 
+    $('.arrowtext').text('NEXT LINE');
     line+=1;
     line = Math.min(line, story.length-1);
 }
 function up_released() {
     send_update(actionsEnum.SPEED_UP);
     $('.up').removeClass('pressed');
-    $('.uptext').text('');
-    $('.left').css('transform', 'translate(0, 0)');
-    $('.down').css('transform', 'translate(0, 0)');
-    $('.right').css('transform', 'translate(0, 0)');
+    $('.arrowtext').text('');
 }
 function down_released() {
     send_update(actionsEnum.SLOW_DOWN);
     $('.down').removeClass('pressed');
-    $('.downtext').text('');
-    $('.down').css('transform', 'translate(0, 0)');
+    $('.arrowtext').text('');
 }
 function left_released() {
     send_update(actionsEnum.REWIND);
     $('.left').removeClass('pressed');
-    $('.lefttext').text('');   
-    $('.left').css('transform', 'translate(0, 0)');  
+    $('.arrowtext').text('');
 }
 function right_released() {
     send_update(actionsEnum.FAST_FORWARD);
-    $('.right').removeClass('pressed'); 
-    $('.righttext').text(''); 
-    $('.right').css('transform', 'translate(0, 0)');
+    $('.right').removeClass('pressed');
+    $('.arrowtext').text('');
 }
 
+$('.arr').mouseover(function () {
+    $('.arrowtext').text('Use arrow keys');
+})
+
+$('.arr').mouseout(function () {
+    $('.arrowtext').text('');
+})
 
 $(document).keydown(function(e) {
-  if (e.which==37) {
+  if (e.which==37 || e.which==65) {
       left_pressed();
-  } else if (e.which==38) {
+  } else if (e.which==38 || e.which==87) {
       up_pressed();
-  } else if (e.which==39) {
+  } else if (e.which==39 || e.which==68 ) {
       right_pressed();
-  } else if (e.which==40) {
+  } else if (e.which==40 || e.which==83) {
       down_pressed();
   }
 });
 
 $(document).keyup(function(e) {
-  if (e.which==37) {
+  if (e.which==37 || e.which==65) {
       left_released();
-  } else if (e.which==38) {
+  } else if (e.which==38 || e.which==87) {
       up_released();
-  } else if (e.which==39) {
+  } else if (e.which==39 || e.which==68) {
       right_released();
-  } else if (e.which==40) {
+  } else if (e.which==40 || e.which==83) {
       down_released();
-  } 
-});
-
-$('.left').mousedown(function() {
-    left_pressed();
-});
-
-$('.left').mouseup(function() {
-    left_released();
-});
-
-$('.right').mousedown(function() {
-    right_pressed();
-});
-
-$('.right').mouseup(function() {
-    right_released();
-});
-
-$('.up').mousedown(function() {
-    up_pressed();
-});
-
-$('.up').mouseup(function() {
-    up_released();
-});
-
-$('.down').mousedown(function() {
-    down_pressed();
-});
-
-$('.down').mouseup(function() {
-    down_released();
+  }
 });

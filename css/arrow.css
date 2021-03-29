@@ -15,7 +15,7 @@ html {
     display:none;
 }
 .arr {
-  cursor: pointer;
+  cursor: not-allowed;
   width: 25px;
   height: 25px;
   text-align: center;

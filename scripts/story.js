@@ -173,59 +173,34 @@ function right_released() {
     $('.arrowtext').text('');
 }
 
+$('.keys').mouseover(function () {
+    $('.arrowtext').text('Use arrow keys');
+})
+
+$('.keys').mouseout(function () {
+    $('.arrowtext').text('');
+})
 
 $(document).keydown(function(e) {
-  if (e.which==37) {
+  if (e.which==37 || e.which==65) {
       left_pressed();
-  } else if (e.which==38) {
+  } else if (e.which==38 || e.which==87) {
       up_pressed();
-  } else if (e.which==39) {
+  } else if (e.which==39 || e.which==68 ) {
       right_pressed();
-  } else if (e.which==40) {
+  } else if (e.which==40 || e.which==83) {
       down_pressed();
   }
 });
 
 $(document).keyup(function(e) {
-  if (e.which==37) {
+  if (e.which==37 || e.which==65) {
       left_released();
-  } else if (e.which==38) {
+  } else if (e.which==38 || e.which==87) {
       up_released();
-  } else if (e.which==39) {
+  } else if (e.which==39 || e.which==68) {
       right_released();
-  } else if (e.which==40) {
+  } else if (e.which==40 || e.which==83) {
       down_released();
   }
-});
-
-$('.left').mousedown(function() {
-    left_pressed();
-});
-
-$('.left').mouseup(function() {
-    left_released();
-});
-
-$('.right').mousedown(function() {
-    right_pressed();
-});
-
-$('.right').mouseup(function() {
-    right_released();
-});
-
-$('.up').mousedown(function() {
-    up_pressed();
-});
-
-$('.up').mouseup(function() {
-    up_released();
-});
-
-$('.down').mousedown(function() {
-    down_pressed();
-});
-
-$('.down').mouseup(function() {
-    down_released();
 });

@@ -173,11 +173,11 @@ function right_released() {
     $('.arrowtext').text('');
 }
 
-$('.keys').mouseover(function () {
+$('.arr').mouseover(function () {
     $('.arrowtext').text('Use arrow keys');
 })
 
-$('.keys').mouseout(function () {
+$('.arr').mouseout(function () {
     $('.arrowtext').text('');
 })
 

@@ -65,7 +65,9 @@ async function move_on(t) {
     await send_update(actionsEnum.END_STORY)
     window.location.replace(`/private/quiz`);
 }
+
 async function presentStory() {
+    document.getElementById('display-story').style.display = 'flex';
     send_update(actionsEnum.START_STORY)
     let t = new Timer();
     if (group == groupsEnum.READ || group == groupsEnum.READH) {
@@ -82,10 +84,10 @@ async function presentStory() {
         start_button.style.display="none";
         arrow_box = document.getElementById('arrow_box');
         arrow_box.style.display="inherit";
-        let previous_lrne = document.getElementById('previous_line');
+        let previous_line = document.getElementById('previous_line');
         let current_line = document.getElementById('current_line');
         let next_line = document.getElementById('next_line');
-        let wp = document.getElementById('WORD');
+        let wp = document.getElementById('word');
 
         //while (true) {
             for (; line < story.length;line++){
@@ -101,18 +103,18 @@ async function presentStory() {
                             return x.join(" ");
                         });
                     }
-                    previous_line.innerHTML = lines.join("<br>");
+                    previous_line.innerHTML = lines.join(" ");
                 }
                 if (lp != story.length -1) {
                     next_line.innerHTML = story[lp+1].join(" ");
                 } else {
-                    next_line.innerHTML = "<br>";
+                    next_line.innerHTML = " ";
                 }
                 for (word=0; word < story[lp].length; word++){
                     if (lp != line) {
                         break;
                     }
-                    current_line.innerHTML = story[lp].slice(0,word).join(" ") + "<mark> " +story[lp][word] + " </mark>" + story[lp].slice(word+1, story[lp].length).join(" ");
+                    current_line.innerHTML = story[lp].slice(0,word).join(" ") + "<span class='emphasis'> " + story[lp][word] + " </span>" + story[lp].slice(word+1, story[lp].length).join(" ");
                     wp.innerHTML = story[lp][word];
                     await sleep(calculate_pause_time(story[lp][word], lp, word));
                 }

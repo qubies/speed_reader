@@ -41,7 +41,7 @@ h3 {
     vertical-align: top;
 }
 
-#WORD {
+#word {
     font-size: 5em;
     transition-timing-function: linear;
 }
@@ -58,7 +58,7 @@ h3 {
     margin: auto;
 }
 
-.WORD_BOX {
+.word-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -118,4 +118,10 @@ H1 {
     align-items: center;
     justify-content: center;
     width: 100%;
+}
+
+#display-story {
+    display: none;
+    width: 100%;
+    height: 100%;
 }

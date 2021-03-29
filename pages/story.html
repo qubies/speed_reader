@@ -13,13 +13,15 @@
     <script type="text/javascript" src="/scripts/api.js"></script>
     <div id=whole_page>
         <div id=presentation_column>
-            <button onclick="presentStory();", class="btn btn-primary", id="start_button"> START </button>
-            {{if (eq .Group 0)}}
-                {{template "rsvp.html" .}}
-            {{end}}
-            {{if (eq .Group 1)}}
-                {{template "plainstory.html" .}}
-            {{end}}
+            <button onclick="presentStory();" class="btn btn-primary" id="start_button"> START </button>
+            <div id="display-story">
+                {{if (eq .Group 0)}}
+                    {{template "rsvp.html" .}}
+                {{end}}
+                {{if (eq .Group 1)}}
+                    {{template "plainstory.html" .}}
+                {{end}}
+            </div>
         </div>
     </div>
 

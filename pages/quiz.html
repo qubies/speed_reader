@@ -10,17 +10,19 @@
 <div id="quiz">
   <div id="quiz-buttons" class=row>
     <div class="col-md-8 float-left">
-      <button type="button" class="btn btn-md btn-link pull-left" id="next-question-button">Next Question</button>
-      <button type="button" class="btn btn-md btn-link pull-left" id="prev-question-button">Previous</button>
+      <button class="btn btn-md btn-link pull-left" id="next-question-button">Next question</button>
+      <button class="btn btn-md btn-link pull-left" id="prev-question-button">Previous</button>
     </div>
     <div class="col-md-4">
-      <button type="button" class="btn btn-md btn-link pull-right" id="submit-button">Submit Answers</button>
+      <button class="btn btn-md btn-link pull-right" id="submit-button">Submit answers</button>
     </div>
   </div>
   <div id="quiz-results">
-    <p id="quiz-results-message"></p>
     <p id="quiz-results-score"></p>
-    <button id="quiz-retry-button">- Continue -</button>
+    <p id="quiz-results-message"></p>
+    <div class="row">
+      <button id="quiz-retry-button" class="btn btn-md btn-primary">Continue</button>
+    </div>
   </div>
 </div>
 

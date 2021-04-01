@@ -102,15 +102,12 @@ Quiz.prototype.render = function(container) {
         var score = await send_post("/private/quizend", data);
         score = await  score.json(function(data) {return data.value});
         console.log("Score:", score);
-
-        var message = 'Great job, Please continue :)'
+        $('#question').hide();
+        $('#quiz-buttons').hide();
+        var message = 'Great job, please continue :)'
         $('#quiz-results-message').text(message);
-        $('#quiz-results-score').html('You got <b>' + score + '/' + self.questions.length + '</b> questions correct.');
-        $('#quiz-results').slideDown();
-        $('#submit-button').slideUp();
-        $('#next-question-button').slideUp();
-        $('#prev-question-button').slideUp();
-        $('#quiz-retry-button').slideDown();
+        $('#quiz-results-score').html('You got <b>' + score + '</b> out of <b>' + self.questions.length + '</b> questions correct.');
+        $('#quiz-results').show();
     });
 
     // Add a listener on the questions container to listen for user select changes. This is for determining whether we can submit answers or not.

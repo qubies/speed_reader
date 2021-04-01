@@ -31,7 +31,7 @@ html, body {
     display: none;
 }
 
-#quiz button {
+#quiz-buttons button {
     margin: 5px;
     color: #737272;
 }
@@ -45,7 +45,7 @@ html, body {
 
 #question h2 {
     margin-bottom: 16px;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 24px;
     color: #737272;
 }
@@ -80,40 +80,30 @@ html, body {
     flex-direction: column;
     justify-content: center;
     position: absolute;
-    top: 44px;
     left: 0px;
-    background: #FAFAFA;
     width: 100%;
     height: calc(100% - 44px);
 }
 
 #quiz-results-message {
     display: block;
-    color: #333;
+    color: #737272;
     font-size: 20px;
     font-weight: bold;
 }
 
 #quiz-results-score {
     display: block;
-    color: #333;
+    color: #737272;
     font-size: 20px;
 }
 
 #quiz-results-score b {
-    color: #333;
+    color: #737272;
     font-weight: 600;
     font-size: 20px;
 }
 
-#quiz-retry-button {
-    float: left;
-    margin: 8px 0px 0px 8px;
-    padding: 4px 8px;
-    background: #9ACFCC;
-    color: #00403C;
-    font-size: 14px;
-    cursor: pointer;
-    outline: none;
-
+#quiz-results button {
+    margin: 10px;
 }

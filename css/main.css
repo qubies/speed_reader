@@ -84,7 +84,7 @@ H1 {
     color: #ddd;
 }
 @media only screen and (max-width: 1200px) {
-    #WORD {
+    #word {
         font-size: 3em;
         transition-timing-function: linear;
     }
@@ -94,7 +94,7 @@ H1 {
 }
 
 @media only screen and (max-width: 600px) {
-    #WORD {
+    #word {
         font-size: 2em;
         transition-timing-function: linear;
     }

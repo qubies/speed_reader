@@ -300,10 +300,10 @@
                 "Text": "Who decided to place Beyonce's group in Star Search the talent show?",
                 "Answer": 0,
                 "Choices": [
-                    "Arne frager",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "Arne Frager",
+                    "Beyonc\u00e9's father",
+                    "Beyonc\u00e9's mother",
+                    "LaTavia Roberson"
                 ]
             },
             {
@@ -311,29 +311,29 @@
                 "Answer": 0,
                 "Choices": [
                     "Beyonc\u00e9's father",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "Arne frager",
+                    "Beyonc\u00e9's mother",
+                    "Kelly Rowland"
                 ]
             },
             {
                 "Text": "Who was the first record label to give the girls a record deal?",
                 "Answer": 0,
                 "Choices": [
-                    "Elektra records",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "Elektra Records",
+                    "Star Search",
+                    "Columbia Records",
+                    "Sony Music"
                 ]
             },
             {
                 "Text": "Who brought Beyonce to California and enter her group in Star Search?",
                 "Answer": 0,
                 "Choices": [
-                    "Arne frager",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "Arne Frager",
+                    "Kelly Rowland",
+                    "Beyonc\u00e9's mother",
+                    "LaTavia Roberson"
                 ]
             },
             {
@@ -341,29 +341,29 @@
                 "Answer": 0,
                 "Choices": [
                     "1995",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "1996",
+                    "1994",
+                    "1997"
                 ]
             },
             {
                 "Text": "What large record company recorded Beyonce's group's first album?",
                 "Answer": 0,
                 "Choices": [
-                    "Sony music",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "Sony Music",
+                    "Star Search",
+                    "Elektra Records",
+                    "Atlanta Records"
                 ]
             },
             {
                 "Text": "What record company first signed Beyonce's group and later cut them?",
                 "Answer": 0,
                 "Choices": [
-                    "Elektra records",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "Elektra Records",
+                    "Star Search",
+                    "Columbia Records",
+                    "Dwayne Wiggins's Grass Roots Entertainment"
                 ]
             },
             {
@@ -371,9 +371,9 @@
                 "Answer": 0,
                 "Choices": [
                     "Age eight",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "Age ten",
+                    "Age eleven",
+                    "Age seven"
                 ]
             },
             {
@@ -381,49 +381,49 @@
                 "Answer": 0,
                 "Choices": [
                     "Eight",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "Twelve",
+                    "Nine",
+                    "Ten"
                 ]
             },
             {
                 "Text": "What was the name of the first group Beyonc\u00e9 was a part of?",
                 "Answer": 0,
                 "Choices": [
-                    "Girl's tyme",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "Girl's Tyme",
+                    "Star Search",
+                    "Dwayne Wiggins's Grass Roots Entertainment",
+                    "The Knowles Family"
                 ]
             },
             {
                 "Text": "Who placed Girl's Tyme in Star Search?",
                 "Answer": 0,
                 "Choices": [
-                    "Arne frager",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "Arne Frager",
+                    "Beyonc\u00e9's father",
+                    "Beyonc\u00e9's mother",
+                    "Beyonc\u00e9"
                 ]
             },
             {
-                "Text": "When did Beyonc\u00e9 begin to manage the girl group?",
+                "Text": "When did Beyonc\u00e9's father begin to manage the girl group?",
                 "Answer": 0,
                 "Choices": [
                     "1995",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "1997",
+                    "1993",
+                    "1996"
                 ]
             },
             {
                 "Text": "Who signed the girl group on October 5, 1995?",
                 "Answer": 0,
                 "Choices": [
-                    "Dwayne wiggins's grass roots entertainment",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "Dwayne Wiggins's Grass Roots Entertainment",
+                    "Sony Music",
+                    "Elektra Records",
+                    "Columbia Records"
                 ]
             }
         ]

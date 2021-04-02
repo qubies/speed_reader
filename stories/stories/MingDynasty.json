@@ -300,20 +300,20 @@
                 "Text": "Who did the the Chinese Ming dynasty fall to?",
                 "Answer": 0,
                 "Choices": [
-                    "The rebellion of li zicheng",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "The rebellion of Li Zicheng",
+                    "The Mongolian Khans and Princes",
+                    "The Dalai Lama",
+                    "The Shun dynasty"
                 ]
             },
             {
                 "Text": "According to Kolma\u0161 who accepted an invite from a Manchu to send envoys to the capital at Mukden?",
                 "Answer": 0,
                 "Choices": [
-                    "The dalai lama",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "The Dalai Lama",
+                    "Li Zicheng",
+                    "Wu Sangui",
+                    "The Shunzhi Emperor"
                 ]
             },
             {
@@ -321,9 +321,9 @@
                 "Answer": 0,
                 "Choices": [
                     "Shunzhi",
-                    "wrong_1",
-                    "wrong_2",
-                    "wrong_3"
+                    "The Qing Emperor",
+                    "Patterson",
+                    "The Mongolian Khans and Princes"
                 ]
             }
         ]

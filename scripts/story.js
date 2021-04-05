@@ -49,7 +49,7 @@ function calculate_pause_time(word, line_index, word_index) {
         base += uncommon_boost * pause_time;
     }
     for (i=0; i<spans.length; i++) {
-        if (spans[i][0] == line_index && spans[i][1]<=word_index && spans[i][2]>word_index) {
+        if (group == 2 && spans[i][0] == line_index && spans[i][1]<=word_index && spans[i][2]>word_index) {
             base += ai_boost * pause_time;
             break;
         }

@@ -51,9 +51,9 @@ Object.freeze(actionsEnum)
 //ENUM for actions table
 const groupsEnum = {
     "READ":1,
-    "READH":2,
+    "READH":3,
     "RSVP":0,
-    "RSVPI":3,
+    "RSVPI":2,
 }
 Object.freeze(groupsEnum)
 

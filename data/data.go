@@ -85,7 +85,7 @@ func load_common_words(filename string) []string {
 
 func (S *System) Add_Story(index int, name string) error {
 
-    sqlStmt := "INSERT INTO  Stories(Story_ID ,Story_Name) select $1, $2 WHERE NOT EXISTS ( SELECT Story_ID, Story_Name FROM Stories WHERE Story_ID=$1 AND Story_Name=$2);"
+    sqlStmt := "INSERT INTO  Stories(Story_ID ,Story_Name) select $1, $2 WHERE NOT EXISTS (SELECT Story_ID, Story_Name FROM Stories WHERE Story_ID=$1 AND Story_Name=$2);"
     _, err := S.Database.Exec(sqlStmt, index, name)
 
     return err

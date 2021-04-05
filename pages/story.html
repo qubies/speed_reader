@@ -15,11 +15,15 @@
         <div id=presentation_column>
             <button onclick="presentStory();" class="btn btn-primary" id="start_button"> START </button>
             <div id="display-story">
+                <div class="setting">{{ .Group }}</div>
                 {{if (eq .Group 0)}}
                     {{template "rsvp.html" .}}
                 {{end}}
                 {{if (eq .Group 1)}}
                     {{template "plainstory.html" .}}
+                {{end}}
+                {{if (eq .Group 2)}}
+                    {{template "rsvp.html" .}}
                 {{end}}
             </div>
         </div>

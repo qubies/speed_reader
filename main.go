@@ -29,10 +29,10 @@ import (
 const (
     // the session var that holds the user's info
     userkey = "user"
-    NUMBER_OF_GROUPS = 2
+    NUMBER_OF_GROUPS = 3
 )
 
-// globals 
+// globals
 var templates *template.Template
 var system = data.Build_System("./data/focused_reader.db", "./stories/stories", "./data/common_words.json", NUMBER_OF_GROUPS)
 
@@ -145,7 +145,7 @@ func storyEndRoute(c *gin.Context) {
     user, err := validateUser(c); if err != nil {
         return
     }
-    
+
     var record storyEndPost
     if err := c.ShouldBindJSON(&record); err != nil {
         fmt.Println("Error: ", err)
@@ -256,7 +256,7 @@ func quizEndRoute(c *gin.Context) {
     user, err := validateUser(c); if err != nil {
         return
     }
-    
+
     var record quizEndPost
     if err := c.ShouldBindJSON(&record); err != nil {
         fmt.Println("Error: ", err)
@@ -299,7 +299,7 @@ func AuthRequired(c *gin.Context) {
 // do all of the goodness setup stuffs
 func init() {
     //rand.Seed(time.Now().Unix())
-    
+
     // loads values from .env into the system
     if err := godotenv.Load(); err != nil {
         log.Print("No .env file found")
@@ -312,7 +312,7 @@ func init() {
 
 func main() {
     defer system.Close() // shutdown the threads
-    
+
     gob.Register(new(data.User)) //teach it to serialize
     PORT := os.Getenv("PORT")
     if PORT == "" {
@@ -336,7 +336,7 @@ func main() {
     app.GET("/logout", logout)
 
     private := app.Group("/private")
-    private.Use(AuthRequired) 
+    private.Use(AuthRequired)
     {
         private.GET("/story", storyStartRoute)
         private.POST("/storyend",storyEndRoute)

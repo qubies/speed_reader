@@ -130,6 +130,17 @@ H1 {
     height: 100%;
 }
 
+.setting {
+    font-size: 16px;
+    color: #AAA;
+}
+
+#plainstory_text {
+    color:#737272;
+    font-size: 1.25em;
+    text-align: justify;
+    margin: 10px;
+}
 #experiment-complete {
     width: 100%;
     height: 100%;

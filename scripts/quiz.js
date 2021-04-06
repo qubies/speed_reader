@@ -181,18 +181,32 @@ Question.prototype.render = function(container) {
     var choice_label = $('<label>')
       .text(this.choices[i])
       .attr('for', 'choices-' + i)
+      .attr('tabindex', 0)
       .appendTo(container);
   }
 
   // Add a listener for the radio button to change which one the user has clicked on
   $('input[name=choices]').change(function(index) {
     var selected_radio_button_value = $('input[name=choices]:checked').val();
-
     // Change the user choice index
     self.user_choice_index = parseInt(selected_radio_button_value.substr(selected_radio_button_value.length - 1, 1));
 
     // Trigger a user-select-change
     container.trigger('user-select-change');
+  });
+
+  $('label').on("keypress", function(e) {
+    var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+    if(key == 13) {
+        var selected_radio_button_value = $('label:focus')[0].htmlFor;
+        $('#' + selected_radio_button_value).prop('checked', true);
+
+        // Change the user choice index
+        self.user_choice_index = parseInt(selected_radio_button_value.substr(selected_radio_button_value.length - 1, 1));
+
+        // Trigger a user-select-change
+        container.trigger('user-select-change');
+    }
   });
 }
 

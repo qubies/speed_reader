@@ -55,7 +55,7 @@ func (U *User) completeReading(){
 
 // advances to the next story
 func (U *User) completeQuiz() error {
-	
+
 	if !U.hasReadStory() {
 		return errors.New("user attempted quiz before story was read")
 	}
@@ -149,7 +149,7 @@ func generate_group(abort <-chan struct{}, max int) <-chan int {
         for {
             select {
                 case ch <- i:
-                case <-abort: 
+                case <-abort:
                     return
             }
             i += 1
@@ -206,7 +206,7 @@ func decode_silce(encoded_buffer []byte) (s []int, err error) {
 }
 
 func (S* System) Create_user() *User{
-    user_id := "" 
+    user_id := ""
     password := ""
     for user_id == "" || S.User_exists(user_id) {
         user_id, password = generate_user_id_and_password()
@@ -217,7 +217,7 @@ func (S* System) Create_user() *User{
     if err != nil {
         log.Fatal(err)
     }
-    stmt, err := tx.Prepare(`INSERT into Users(User_ID, password, Group_ID, Story_List) values (?,?,?,?)`) 
+    stmt, err := tx.Prepare(`INSERT into Users(User_ID, password, Group_ID, Story_List) values (?,?,?,?)`)
     if err != nil {
         log.Fatal(err)
     }
@@ -281,7 +281,7 @@ func (S *System) User_From_ID(user_id string) (*User, error) {
     if !S.User_exists(user_id) {
         return nil, errors.New("User does not exist")
     }
-    
+
     sqlStmt := "select User_ID, password, Group_ID, Current_Story_Index, Current_Quiz_Index, Story_List from Users where User_ID=? limit 1;"
     rows, err := S.Database.Query(sqlStmt, user_id)
     if err != nil {

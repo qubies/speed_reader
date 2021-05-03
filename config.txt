@@ -1,0 +1,49 @@
+squares:
+	- Treatments: [1, 2, 3, 4]
+	  Stories: [1, 3, 4, 2]
+	  Users:
+	- Treatments: [1, 2, 3, 4]
+	  Stories: [2, 4, 3, 1]
+	  Users:
+	- Treatments: [1, 2, 3, 4]
+	  Stories: [3, 1, 2, 4]
+	  Users:
+	- Treatments: [1, 2, 3, 4]
+	  Stories: [4, 2, 1, 3]
+	  Users:
+	- Treatments: [2, 1, 4, 3]
+	  Stories: [1, 3, 4, 2]
+	  Users:
+	- Treatments: [2, 1, 4, 3]
+	  Stories: [2, 4, 3, 1]
+	  Users:
+	- Treatments: [2, 1, 4, 3]
+	  Stories: [3, 1, 2, 4]
+	  Users:
+	- Treatments: [2, 1, 4, 3]
+	  Stories: [4, 2, 1, 3]
+	  Users:
+	- Treatments: [3, 4, 1, 2]
+	  Stories: [1, 3, 4, 2]
+	  Users:
+	- Treatments: [3, 4, 1, 2]
+	  Stories: [2, 4, 3, 1]
+	  Users:
+	- Treatments: [3, 4, 1, 2]
+	  Stories: [3, 1, 2, 4]
+	  Users:
+	- Treatments: [3, 4, 1, 2]
+	  Stories: [4, 2, 1, 3]
+	  Users:
+	- Treatments: [4, 3, 2, 1]
+	  Stories: [1, 3, 4, 2]
+	  Users:
+	- Treatments: [4, 3, 2, 1]
+	  Stories: [2, 4, 3, 1]
+	  Users:
+	- Treatments: [4, 3, 2, 1]
+	  Stories: [3, 1, 2, 4]
+	  Users:
+	- Treatments: [4, 3, 2, 1]
+	  Stories: [4, 2, 1, 3]
+	  Users:

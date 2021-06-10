@@ -22,9 +22,9 @@ func TestGenerator(t *testing.T) {
 
 func TestSystem(t *testing.T) {
 	db_file := "./test.db"
-	story_dir := "../stories/test_folder"
+	story_dir := "../stories/stories"
 	wordfile_location := "../data/common_words.json"
-	os.Remove(db_file) 
+	os.Remove(db_file)
 
 	//test user creation
 	number_of_groups := 3
@@ -36,7 +36,7 @@ func TestSystem(t *testing.T) {
 		} else if test_user.Group != 0 && x == number_of_groups {
 			t.Error("Incorrect Group ID, expected 0: ", test_user.Group)
 		}
-		
+
 		if (!data_system.User_exists(test_user.User_ID)) {
 			t.Error("User not verified in system...", test_user)
 		}
@@ -66,7 +66,7 @@ func TestSystem(t *testing.T) {
 	if user.hasReadStory() || user.get_story_id() != 0 {
 		t.Error("New User has read first story")
 	}
-	
+
 	if user.completeQuiz() == nil {
 		t.Error("User was allowed to complete quiz before reading")
 	}
@@ -79,7 +79,7 @@ func TestSystem(t *testing.T) {
 	if s.Name != "Beyonce" {
 		t.Error("first story is wrong", s.Name)
 	}
-	
+
 	// complete the reading
 	user.completeReading()
 
@@ -92,7 +92,7 @@ func TestSystem(t *testing.T) {
 	if s.Name != "Sino-Tibetan_relations_during_the_Ming_dynasty" {
 		t.Error("second story is wrong", s.Name)
 	}
-	
+
 	//but they should have read the story
 
 	if !user.hasReadStory() || user.get_story_id() != 1 {

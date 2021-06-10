@@ -14,6 +14,7 @@ html {
     float:right;
     display:none;
 }
+
 .arr {
   cursor: not-allowed;
   width: 25px;
@@ -80,4 +81,33 @@ html {
   transform: rotate(45deg);
   -webkit-transform: rotate(45deg);
   margin-bottom: 3px;
+}
+
+.intro-arrows {
+  float: left;
+  margin-left: 15px;
+}
+
+.intro-arrows .arr {
+  border-color: #333;
+  cursor: default;
+}
+
+.intro-arrows .arrow {
+  border: solid #333;
+  border-width: 0 2px 2px 0;
+}
+
+.arr-letter {
+  font-size: 12px;
+  font-weight: bold;
+  color: #333;
+}
+
+.intro-arrows .up {
+  right: 2px;
+}
+
+.letters {
+  padding-left: 15px;
 }

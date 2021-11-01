@@ -8,9 +8,7 @@ package data
 // interactions are done through system NOT USER.
 // User is exported only for storage in session
 import (
-	"bytes"
 	"database/sql"
-	"encoding/gob"
 	"encoding/json"
      yaml "gopkg.in/yaml.v2"
 	// "errors"
@@ -22,7 +20,6 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/qubies/go-randomdata"
-	"github.com/qubies/speed_reader/stories"
 )
 
 const (
@@ -54,11 +51,11 @@ type Stories struct {
     Data []Story `yaml:"Stories"`
 }
 
-func load_stories(p string) *Stories {
-    log.Printf("Loading Stories from %v", p)
+func load_stories() *Stories {
+    log.Printf("Loading Stories from %v", STORY_FILE)
 
     st := new(Stories)
-    yamlFile, err := ioutil.ReadFile(p)
+    yamlFile, err := ioutil.ReadFile(STORY_FILE)
     if err != nil {
         panic(err)
     }
@@ -188,16 +185,6 @@ func loadGroups() *Groups {
     return groupData
 }
 
-    // So this creates the users, now you need to dump them in latin square format:
-    // Reading(1) RSVP(2) Heuristics(3) AI(4)
-    // AI(2) Heuristics(1) RSVP(4) Reading(3)
-    // RSVP(3) Reading(4) AI(1) Heuristics(2)
-    // Heuristics(4) AI(3) Reading(2) RSVP(1)
-
-    
-
-
-
 type Record_Update struct {
     Action int
     Date int
@@ -229,9 +216,10 @@ type Record_Update struct {
 
 type System struct {
     Database *sql.DB
-    Group_Generator <-chan int
+    Groups *Groups
+    Users map[string]*User
+    Stories *Stories
     Aborts []chan struct{}
-    Stories []stories.Story
 	CommonWords []string
 }
 
@@ -247,31 +235,24 @@ func load_common_words(filename string) []string {
     return common_words
 }
 
-func (S *System) Add_Story(index int, name string) error {
-
-    sqlStmt := "INSERT INTO  Stories(Story_ID ,Story_Name) select $1, $2 WHERE NOT EXISTS ( SELECT Story_ID, Story_Name FROM Stories WHERE Story_ID=$1 AND Story_Name=$2);"
-    _, err := S.Database.Exec(sqlStmt, index, name)
-
-    return err
-}
-
-func Build_System(database_location, story_location, wordfile_location string, number_of_groups int) *System {
+func Build_System(database_location, wordfile_location string) *System {
     S := new(System)
     S.Database = create_db(database_location)
     S.Aborts = make([]chan struct{},0)
     S.Aborts = append(S.Aborts, make(chan struct{}))
-    S.Group_Generator = generate_group(S.Aborts[0], number_of_groups)
-    S.Stories = stories.Load_Stories(story_location)
-    for i, s := range(S.Stories) {
-        err := S.Add_Story(i, s.Name)
-        if err != nil {
-            panic("Unable to add stories: " + err.Error())
+    S.Stories = load_stories()
+	S.CommonWords = load_common_words(wordfile_location)
+    S.Groups = loadGroups()
+    S.Users = make(map[string]*User)
+
+    for _, group := range(S.Groups.Data) {
+        for _, user := range(group.Users){
+            S.Users[user.User_ID]=&user
         }
     }
-	S.CommonWords = load_common_words(wordfile_location)
-
     return S
 }
+
 
 func (S *System) Close() {
     for _, ch := range( S.Aborts) {
@@ -288,13 +269,13 @@ func create_db(location string) *sql.DB{
     schema := `
     PRAGMA foreign_keys = ON;
 
-    create table IF NOT EXISTS Users (User_ID text not null primary key, password text, Group_ID integer not null, Current_Story_Index integer default 0, Current_Quiz_Index integer default 0, Story_List BLOB);
+    create table IF NOT EXISTS Users (User_ID, Current_Place integer default 0);
 
-    create table IF NOT EXISTS Reading_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, wpm REAL, Story_ID integer, User_ID text, FOREIGN KEY(User_ID) REFERENCES Users(User_ID), FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID));
+    create table IF NOT EXISTS Reading_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, wpm REAL, User_ID text, Current_Place integer, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
 
-    create table IF NOT EXISTS Test_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, Story_ID integer, User_ID text, Score integer, FOREIGN KEY(User_ID) REFERENCES Users(User_ID), FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID));
-
-    create table IF NOT EXISTS Actions (Action_ID integer primary key autoincrement, Date integer not null, Story_ID integer not null, In_Quiz boolean, Action integer not null, User_ID text not null, FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID), FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
+    create table IF NOT EXISTS Test_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, User_ID text, Score integer, Current_Place integer, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
+  
+    create table IF NOT EXISTS Actions (Action_ID integer primary key autoincrement, Date integer not null, Current_Place integer not null, Action string not null, User_ID text not null, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
     `
     _, err = db.Exec(schema)
     if err != nil {
@@ -303,94 +284,21 @@ func create_db(location string) *sql.DB{
     return db
 }
 
-func generate_group(abort <-chan struct{}, max int) <-chan int {
-    ch := make(chan int,10) // the generator is buffered becuase we never want to wait on it
-    go func() {
-        i := 0
-        defer close(ch)
-        for {
-            select {
-                case ch <- i:
-                case <-abort: 
-                    return
-            }
-            i += 1
-            i %= max
-        }
-    }()
-    return ch
-}
-
 
 func generate_user_id_and_password() (string, string) {
     return strings.ReplaceAll(randomdata.FullName(randomdata.RandomGender), " ", "_"), strings.ReplaceAll(randomdata.SillyName(), " ", "_")
 }
 
 func (S* System) User_exists(user string) (bool) {
-    var count int
-    stmt, err := S.Database.Prepare("select count(*) from Users where User_ID=?;")
-    if err != nil {
-        log.Fatal("count prepare query error: ", err)
-    }
-    defer stmt.Close()
-    rows, err := stmt.Query(user)
-    if err != nil {
-        log.Fatal("count query error: ", err)
-    }
-    for rows.Next() {
-        err:= rows.Scan(&count)
-        if err != nil {
-            log.Fatal("ooopse")
-        }
-    }
-    return count>0
+    _, ok := S.Users[user]
+    return ok
 }
-
-func (S *System) choose_group() int {
-    return <-S.Group_Generator
-}
-
-func encode_slice(s []int) (encoded []byte, err error) {
-    var encoding_buffer bytes.Buffer
-    enc := gob.NewEncoder(&encoding_buffer)
-    err = enc.Encode(s)
-    if err != nil {
-        return
-    }
-    encoded=encoding_buffer.Bytes()
-    return
-}
-
-func decode_silce(encoded_buffer []byte) (s []int, err error) {
-    dec := gob.NewDecoder(bytes.NewBuffer(encoded_buffer))
-    dec.Decode(&s)
-    return
-}
-
 
 func (S *System) Validate_User(U *User) bool {
-    var count int
-    stmt, err := S.Database.Prepare("select count(*) from Users where User_ID=? and password=?;")
-    if err != nil {
-        log.Fatal("count prepare query error: ", err)
+    if !S.User_exists(U.User_ID) {
+        return false
     }
-    defer stmt.Close()
-    rows, err := stmt.Query(U.User_ID, U.Password)
-    if err != nil {
-        log.Fatal("count query error: ", err)
-    }
-
-    for rows.Next() {
-        err:= rows.Scan(&count)
-        if err != nil {
-            log.Fatal("ooopse")
-        }
-    }
-    return count>0
-}
-
-func (S *System) ValidatePassword(U *User, password string) bool {
-    return U.Password == password
+    return S.Users[U.User_ID].Password == U.Password
 }
 
 // func (S *System) GetStory(U *User) (*stories.Story, error){

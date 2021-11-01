@@ -1,0 +1,141 @@
+Groups:
+- id: 0
+  users:
+  - ID: Alva_Madru
+    password: Houndstump
+  - ID: Tanya_Quince
+    password: Touchsilk
+  - ID: Louie_Whiteis
+    password: Elfdaffodil
+  - ID: Doris_Gazaille
+    password: Parrotrampant
+  - ID: Willene_Mcgaughy
+    password: Seedperidot
+  - ID: Hazel_Jaman
+    password: Gazelleiris
+  - ID: Kay_Delmolino
+    password: Ravenmeteor
+  - ID: Verdie_Puderbaugh
+    password: Whalebranch
+  - ID: Rod_Sutliffe
+    password: Palmcrack
+  - ID: Marylou_Babadzhanov
+    password: Stonechecker
+  - ID: Forest_Sengstock
+    password: Skinnerplaid
+  - ID: Valeria_Mades
+    password: Dolphinlunar
+  TreatmentOrder:
+  - - 0
+    - 0
+  - - 1
+    - 1
+  - - 2
+    - 2
+  - - 3
+    - 3
+- id: 1
+  users:
+  - ID: Mervin_Guyon
+    password: Whalefortune
+  - ID: Ferdinand_Brychta
+    password: Whimseyevening
+  - ID: Monroe_Ravellette
+    password: Coyotelong
+  - ID: Lucien_Hansbro
+    password: Scarermercury
+  - ID: Cecilia_Lamirand
+    password: Speakerregal
+  - ID: Harriett_Ridener
+    password: Crestfierce
+  - ID: Erma_Aristilde
+    password: Bellyshag
+  - ID: Gail_Brownley
+    password: Roverbevel
+  - ID: Joelle_Ungarischer
+    password: Roachstripe
+  - ID: Phoebe_Mautner
+    password: Swallowtopaz
+  - ID: Garry_Fogelman
+    password: Voicespring
+  - ID: Adelaide_Anto
+    password: Ninjafierce
+  TreatmentOrder:
+  - - 3
+    - 1
+  - - 2
+    - 0
+  - - 1
+    - 3
+  - - 0
+    - 2
+- id: 2
+  users:
+  - ID: Jim_Holl
+    password: Pegasusmango
+  - ID: Roe_Mccurtis
+    password: Swallowhoneysuckle
+  - ID: Roscoe_Sgroi
+    password: Snarlfrill
+  - ID: Marla_Nickley
+    password: Lordvine
+  - ID: Leonardo_Kennison
+    password: Goosestump
+  - ID: Ocie_Judie
+    password: Bonefire
+  - ID: Ernestine_Etu
+    password: Marefrill
+  - ID: John_Mazzone
+    password: Llamarift
+  - ID: Nola_Jurak
+    password: Snakequasar
+  - ID: Cornell_Mehmeti
+    password: Goosenight
+  - ID: Eileen_Corriea
+    password: Foefire
+  - ID: Tana_Stenmark
+    password: Gorillafate
+  TreatmentOrder:
+  - - 1
+    - 2
+  - - 0
+    - 3
+  - - 3
+    - 0
+  - - 2
+    - 1
+- id: 3
+  users:
+  - ID: Charlie_Hajjar
+    password: Followeroil
+  - ID: Jailene_Secody
+    password: Forgervenom
+  - ID: Lewis_Urcino
+    password: Chopperwild
+  - ID: Jimmy_Marchelletta
+    password: Spikebead
+  - ID: Latrice_Forgy
+    password: Salmontime
+  - ID: Calvin_Hejna
+    password: Oxcandle
+  - ID: Della_Cupak
+    password: Burndenim
+  - ID: Rosalind_Sharrai
+    password: Singersnow
+  - ID: Patrice_Henslee
+    password: Chantercrazy
+  - ID: Clark_Mcgraw
+    password: Weaverfoul
+  - ID: Olen_Sabatine
+    password: Pegasusshallow
+  - ID: Garnett_Eschliman
+    password: Legtabby
+  TreatmentOrder:
+  - - 2
+    - 3
+  - - 3
+    - 2
+  - - 0
+    - 1
+  - - 1
+    - 0

@@ -1,13 +1,21 @@
 package data
 import (
 	"testing"
-	// "os"
+    "os"
+    "log"
 	// "reflect"
     // "math/rand"
 )
 
+func removeFile(name string) {
+    e := os.Remove(name)
+    if e != nil {
+        log.Fatal(e)
+    }
+}
+
 func TestLoadStories(t *testing.T) {
-    stories := *load_stories("stories.yaml")
+    stories := *load_stories()
     t.Log(stories.Data[0])
 }
 
@@ -17,6 +25,12 @@ func TestUserGenerator(t *testing.T) {
 func TestGroupGenerator(t *testing.T) {
     t.Log("testing Groups")
     loadGroups()
+}
+
+func TestBuildSystem(t *testing.T) {
+    testDB:="test_db.sql"
+    Build_System(testDB,  "./common_words.json")
+    removeFile(testDB)
 }
 
 // func TestGenerator(t *testing.T) {

@@ -160,8 +160,8 @@ func loadGroups() (*Groups, map[string]*User) {
 			user_count++
 		}
 
-		if user_count+1 != USER_COUNT {
-			log.Fatal("User counts don't match")
+		if user_count != USER_COUNT {
+			log.Fatal("User counts don't match. Expected ", USER_COUNT, "got ", user_count)
 		}
 		// save it for later
 		writeYaml(groupData, GROUP_FILE)
@@ -179,8 +179,7 @@ func loadGroups() (*Groups, map[string]*User) {
 			}
 		}
 		if len(currentUsers) != USER_COUNT {
-			log.Fatal("User counts don't match")
-
+			log.Fatal("User counts don't match. Expected ", USER_COUNT, "got ", len(currentUsers))
 		}
 	}
 
@@ -298,7 +297,7 @@ func (S *System) Record_Action(U *User, action int, date int) error {
 
 	// create table IF NOT EXISTS Actions (Action_ID integer primary key autoincrement, Date integer not null, Story integer not null, Treatment integer not null, Action string not null, User_ID text not null, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
 
-	sqlStmt := "INSERT INTO  Actions(Date ,Story_Num, Treatment_Num, Action, User_ID) Values ($1, $2, $3, $4, $5);"
+	sqlStmt := "INSERT INTO  Actions(Date, Story_Num, Treatment_Num, Action, User_ID) Values ($1, $2, $3, $4, $5);"
 	// note that we use the current quiz index because if the story has advanced, the user is still doing the quiz for that story. we capture the state of the story that they are currently workin on in either quiz or reading
 	treatment, story := U.getTreatmentAndStory()
 	_, err := S.database.Exec(sqlStmt, date, story, treatment, action, U.User_ID)

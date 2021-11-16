@@ -2,3 +2,5 @@
 src/*
 speed_reader
 data/*.db
+.DS_Store
+stories/.DS_Store

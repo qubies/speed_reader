@@ -16,6 +16,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	yaml "gopkg.in/yaml.v2"
 
@@ -244,6 +245,14 @@ func Build_System(database_location, wordfile_location string) *System {
 	S.CommonWords = load_common_words(wordfile_location)
 	S.Groups, S.Users = loadGroups()
 
+	for _, user := range S.Users {
+		var err error
+		user.position, err = S.GetPosition(user)
+		if err != nil {
+			log.Fatal("Error loading position for ", user, " ", err)
+		}
+	}
+
 	return S
 }
 
@@ -293,7 +302,7 @@ func (S *System) Validate_User(U *User) bool {
 	return S.Users[U.User_ID].Password == U.Password
 }
 
-func (S *System) Record_Action(U *User, action int, date int) error {
+func (S *System) Record_Action(U *User, action string, date int64) error {
 
 	// create table IF NOT EXISTS Actions (Action_ID integer primary key autoincrement, Date integer not null, Story integer not null, Treatment integer not null, Action string not null, User_ID text not null, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
 
@@ -330,8 +339,21 @@ func (S *System) GetPosition(U *User) (int, error) {
 	return U.position, nil
 }
 
-// func (S *System) AdvanceUser(U *User) error {
-// }
+func (S *System) AdvanceUser(U *User) error {
+	S.Record_Action(U, "Advance Position", time.Now().Unix())
+	sqlStmt := "UPDATE Users set position=$1 where User_ID=$2;"
+	// note that we use the current quiz index because if the story has advanced, the user is still doing the quiz for that story. we capture the state of the story that they are currently workin on in either quiz or reading
+	_, err := S.database.Exec(sqlStmt, U.position+1, U.User_ID)
+	if err != nil {
+		return err
+	}
+
+	// update succeeded
+	U.position += 1
+	return nil
+
+}
+
 // func (S *System) GetStory(U *User) (*stories.Story, error){
 //     if U.get_story_id() < len(S.Stories) {
 //         return &S.Stories[U.Story_List[U.get_story_id()]], nil

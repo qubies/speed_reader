@@ -38,7 +38,9 @@ func TestUserFunctions(t *testing.T) {
 	defer removeFile(testDB)
 
 	// make sure that the users are created correctly
-	t.Log(len(system.Users))
+	if len(system.Users) != USER_COUNT {
+		t.Errorf("User Count incorrect, expected %d got %d", USER_COUNT, len(system.Users))
+	}
 	originalUsers := make(map[string]*Status)
 
 	for _, u := range system.Users {
@@ -77,7 +79,7 @@ func TestUserFunctions(t *testing.T) {
 		} else if u.position != 1 {
 			t.Error("Position not saved after update expected 1, got ", u.position, " for user ", u.User_ID)
 		}
-		originalUsers[u.User_ID] = system.GetCurrentEvent(u)
+		originalUsers[u.User_ID] = system.GetCurrentEvent(u) // this is needed to restore the story addresses
 	}
 
 	//test to see if users advance story correctly

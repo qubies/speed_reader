@@ -122,12 +122,37 @@ func TestUserFunctions(t *testing.T) {
 			if stat.treatmentType == prior.treatmentType {
 				t.Errorf("Treatment Type did not advance: %d got %d", prior.treatmentType, stat.treatmentType)
 			}
-			err := system.AdvanceUser(u)
-			if err != nil {
-				t.Error("Advance failed: ", err)
+			if x == 3 {
+				if !stat.completed {
+					t.Error("Expected routine to finish at the end of loop 3...")
+				}
+
+			} else {
+				if stat.completed == true && x != 3 {
+					t.Error("Finished too soon on loop ", x)
+				}
+				err := system.AdvanceUser(u)
+				if err != nil {
+					t.Error("Advance failed: ", err)
+				}
+
 			}
 			originalUsers[u.User_ID] = stat
 		}
+	}
+	// now we need to check if the users are marked done.
+	for _, u := range system.Users {
+		stat := system.GetCurrentEvent(u)
+		prior := originalUsers[u.User_ID]
+		prior.completed = true
+		prior.storyIndex = -1
+		prior.treatmentType = -1
+
+		if *stat != *prior {
+			t.Errorf("User final state changed incorrectly, wanted: %+v got %+v", prior, stat)
+		}
+
+		originalUsers[u.User_ID] = stat
 	}
 }
 

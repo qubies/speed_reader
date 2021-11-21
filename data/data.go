@@ -328,11 +328,11 @@ func (S *System) User_exists(user string) bool {
 	return ok
 }
 
-func (S *System) Validate_User(U *User) bool {
-	if !S.User_exists(U.User_ID) {
+func (S *System) Validate_User(User_ID, password string) bool {
+	if !S.User_exists(User_ID) {
 		return false
 	}
-	return S.Users[U.User_ID].Password == U.Password
+	return S.Users[User_ID].Password == password
 }
 
 func (S *System) Record_Action(U *User, action string, date int64) error {
@@ -395,9 +395,9 @@ func (S *System) initUser(U *User) error {
 type Status struct {
 	storyIndex    int
 	treatmentType int
-	event         string
-	completed     bool
-	story         *Story
+	Event         string
+	Completed     bool
+	Story         *Story
 }
 
 func (S *System) GetCurrentEvent(U *User) *Status {
@@ -416,98 +416,10 @@ func (S *System) GetCurrentEvent(U *User) *Status {
 
 	completed := pos >= max_pos
 	if !completed {
-		return &Status{storyIndex: storyIndex, treatmentType: treatment, completed: completed, event: event,
-			story: &S.Stories.Data[storyIndex]}
+		return &Status{storyIndex: storyIndex, treatmentType: treatment, Completed: completed, Event: event,
+			Story: &S.Stories.Data[storyIndex]}
 	} else {
-		return &Status{storyIndex: storyIndex, treatmentType: treatment, completed: completed, event: event,
-			story: nil}
+		return &Status{storyIndex: storyIndex, treatmentType: treatment, Completed: completed, Event: event,
+			Story: nil}
 	}
 }
-
-// func (S *System) GetStory(U *User) (*stories.Story, error){
-//     if U.get_story_id() < len(S.Stories) {
-//         return &S.Stories[U.Story_List[U.get_story_id()]], nil
-//     }
-//     return nil, errors.New("No Stories Left")
-// }
-
-// func (S *System) GetQuiz(U *User) (*stories.Story, error){
-//     if U.Current_Quiz_Index < len(S.Stories) {
-//         return &S.Stories[U.Story_List[U.Current_Quiz_Index]], nil
-//     }
-//     return nil, errors.New("No Stories Left")
-// }
-
-// func (S *System) Is_User_Complete(U *User) bool {
-//     return U.Current_Quiz_Index >= len(S.Stories)
-// }
-
-// func (S *System) User_From_ID(user_id string) (*User, error) {
-//     if !S.User_exists(user_id) {
-//         return nil, errors.New("User does not exist")
-//     }
-
-//     sqlStmt := "select User_ID, password, Group_ID, Current_Story_Index, Current_Quiz_Index, Story_List from Users where User_ID=? limit 1;"
-//     rows, err := S.Database.Query(sqlStmt, user_id)
-//     if err != nil {
-//         return nil, err
-//     }
-//     defer rows.Close()
-
-//     u := new(User)
-//     var raw_data []byte
-//     for rows.Next() {
-//         err = rows.Scan(&u.User_ID, &u.Password, &u.Group, &u.Current_Story_Index, &u.Current_Quiz_Index, &raw_data)
-//     }
-//     u.Story_List, err = decode_silce(raw_data)
-//     if err != nil {
-//         return nil, err
-//     }
-//     return u, nil
-// }
-
-// actions
-
-// func (S *System) Record_Action(U *User, action int, date int) error {
-
-//     sqlStmt := "INSERT INTO  Actions(Date ,Story_ID, User_ID, In_Quiz, Action) Values ($1, $2, $3, $4, $5);"
-//     // note that we use the current quiz index because if the story has advanced, the user is still doing the quiz for that story. we capture the state of the story that they are currently workin on in either quiz or reading
-//     _, err := S.Database.Exec(sqlStmt, date, U.Current_Quiz_Index, U.User_ID, U.hasReadStory(), action)
-
-//     return err
-// }
-
-// // call this function to terminate and record the reading event
-// func (S *System) Finish_Reading(U *User, start_date, end_date int, wpm float32) error {
-
-//     sqlStmt := "INSERT INTO  Reading_Results(Start_Date, End_Date, Story_ID, User_ID, wpm) Values ($1, $2, $3, $4, $5);"
-//     _, err := S.Database.Exec(sqlStmt, start_date, end_date, U.Current_Story_Index, U.User_ID, wpm)
-//     if err != nil{
-//         return err
-//     }
-//     U.completeReading()
-//     sqlStmt = "UPDATE Users SET Current_Story_Index=? where User_ID=?;"
-//     _, err = S.Database.Exec(sqlStmt, U.Current_Story_Index, U.User_ID)
-//     if err != nil {
-//         fmt.Println(err)
-//     }
-//     return nil
-// }
-
-// // call this function to terminate and record the quiz event
-// func (S *System) Finish_Quiz(U *User, start_date, end_date int, score int) error {
-
-//     sqlStmt := "INSERT INTO  Test_Results(Start_Date, End_Date, Story_ID, User_ID, Score) Values ($1, $2, $3, $4, $5);"
-//     _, err := S.Database.Exec(sqlStmt, start_date, end_date, U.Current_Quiz_Index, U.User_ID, score)
-//     if err != nil{
-//         return err
-//     }
-//     U.completeQuiz()
-//     sqlStmt = "UPDATE Users SET Current_Quiz_Index=? where User_ID=?;"
-//     _, err = S.Database.Exec(sqlStmt, U.Current_Quiz_Index, U.User_ID)
-//     if err != nil {
-//         fmt.Println(err)
-//     }
-//     return nil
-// }
-// // create table IF NOT EXISTS Test_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, Story_ID integer, User_ID text, Score REAL, FOREIGN KEY(User_ID) REFERENCES Users(User_ID), FOREIGN KEY(Story_ID) REFERENCES Stories(Story_ID));

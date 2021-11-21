@@ -79,20 +79,20 @@ func TestUserFunctions(t *testing.T) {
 		} else if u.position != 1 {
 			t.Error("Position not saved after update expected 1, got ", u.position, " for user ", u.User_ID)
 		}
-		originalUsers[u.User_ID] = system.GetCurrentEvent(u) // this is needed to restore the story addresses
+		originalUsers[u.User_ID] = system.GetCurrentEvent(u) // this is needed to restore the Story addresses
 	}
 
-	//test to see if users advance story correctly
+	//test to see if users advance Story correctly
 	//settings should be the same as they were, except they should be on the quiz
 	for x := 0; x < 4; x++ {
 
 		for _, u := range system.Users {
 			stat := system.GetCurrentEvent(u)
 			prior := originalUsers[u.User_ID]
-			prior.event = "quiz"
+			prior.Event = "quiz"
 
 			if *stat != *prior {
-				t.Errorf("User state changed incorrectly, wanted: %+v got %+v on loop %d, %s, %s", prior, stat, x, prior.story.Title, stat.story.Title)
+				t.Errorf("User state changed incorrectly, wanted: %+v got %+v on loop %d, %s, %s", prior, stat, x, prior.Story.Title, stat.Story.Title)
 			}
 			err := system.AdvanceUser(u)
 			if err != nil {
@@ -103,7 +103,7 @@ func TestUserFunctions(t *testing.T) {
 		for _, u := range system.Users {
 			stat := system.GetCurrentEvent(u)
 			prior := originalUsers[u.User_ID]
-			prior.event = "questionnaire"
+			prior.Event = "questionnaire"
 
 			if *stat != *prior {
 				t.Errorf("User state changed incorrectly, wanted: %+v got %+v on loop %d", prior, stat, x)
@@ -117,7 +117,7 @@ func TestUserFunctions(t *testing.T) {
 		for _, u := range system.Users {
 			stat := system.GetCurrentEvent(u)
 			prior := originalUsers[u.User_ID]
-			prior.event = "story"
+			prior.Event = "Story"
 
 			if stat.storyIndex == prior.storyIndex {
 				t.Errorf("Story index did not advance: %d got %d", prior.storyIndex, stat.storyIndex)
@@ -125,16 +125,16 @@ func TestUserFunctions(t *testing.T) {
 			if stat.treatmentType == prior.treatmentType {
 				t.Errorf("Treatment Type did not advance: %d got %d", prior.treatmentType, stat.treatmentType)
 			}
-			if stat.story == prior.story {
-				t.Error("Story should have changed on final event")
+			if stat.Story == prior.Story {
+				t.Error("Story should have changed on final Event")
 			}
 			if x == 3 {
-				if !stat.completed {
+				if !stat.Completed {
 					t.Error("Expected routine to finish at the end of loop 3...")
 				}
 
 			} else {
-				if stat.completed == true && x != 3 {
+				if stat.Completed == true && x != 3 {
 					t.Error("Finished too soon on loop ", x)
 				}
 				err := system.AdvanceUser(u)
@@ -206,7 +206,7 @@ func TestUserFunctions(t *testing.T) {
 //     // Test User Progression
 //     user := data_system.Create_user()
 //     if user.hasReadStory() || user.get_story_id() != 0 {
-//         t.Error("New User has read first story")
+//         t.Error("New User has read first Story")
 //     }
 
 //     if user.completeQuiz() == nil {
@@ -219,43 +219,43 @@ func TestUserFunctions(t *testing.T) {
 //         t.Error("System returned an error", err)
 //     }
 //     if s.Name != "Beyonce" {
-//         t.Error("first story is wrong", s.Name)
+//         t.Error("first Story is wrong", s.Name)
 //     }
 
 //     // complete the reading
 //     user.completeReading()
 
-//     // the story should be onto the next
+//     // the Story should be onto the next
 
 //     s, err = data_system.GetStory(user)
 //     if err != nil {
 //         t.Error("System returned an error", err)
 //     }
 //     if s.Name != "Sino-Tibetan_relations_during_the_Ming_dynasty" {
-//         t.Error("second story is wrong", s.Name)
+//         t.Error("second Story is wrong", s.Name)
 //     }
 
-//     //but they should have read the story
+//     //but they should have read the Story
 
 //     if !user.hasReadStory() || user.get_story_id() != 1 {
-//         t.Error("User should have read story")
+//         t.Error("User should have read Story")
 //     }
 
 //     // now that they complete the quiz...
 
 //     user.completeQuiz()
 //     if user.hasReadStory() || user.get_story_id() != 1 {
-//         t.Error("User was not progressed to the next story")
+//         t.Error("User was not progressed to the next Story")
 //     }
 
-//     // they should move on to the next story
+//     // they should move on to the next Story
 
 //     s, err = data_system.GetStory(user)
 //     if err != nil {
 //         t.Error("System returned an error", err)
 //     }
 //     if s.Name != "Sino-Tibetan_relations_during_the_Ming_dynasty" {
-//         t.Error("first story is wrong", s.Name)
+//         t.Error("first Story is wrong", s.Name)
 //     }
 
 //     // because there are 2 stories, this should put the user at the end...
@@ -306,7 +306,7 @@ func TestUserFunctions(t *testing.T) {
 //             t.Error("Error returned from Finish marking: ", err)
 //         }
 //         if !u.hasReadStory(){
-//             t.Error("Not finished story after marking")
+//             t.Error("Not finished Story after marking")
 //         }
 
 //         err = data_system.Finish_Quiz(u, 0,0,rand.Int())

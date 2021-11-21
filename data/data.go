@@ -33,15 +33,31 @@ const (
 	eventsPerTreatment = 3 // this is story, quiz and questionnaire for every block
 )
 
-// Load in the configured data
-// The next functions load in static configured or fixed data.
-// If there are no users, they will be created.
-// The users are assigned groups based on the
-// First we load in the story and test questions....
+type System struct {
+	database    *sql.DB
+	Groups      *Groups
+	Users       map[string]*User
+	Stories     *Stories
+	aborts      []chan struct{}
+	CommonWords []string
+}
+
+type Status struct {
+	storyIndex    int
+	treatmentType int
+	Event         string
+	Completed     bool
+	Story         *Story
+}
+
 type Story struct {
 	Text      string     `yaml:"text"`
 	Title     string     `yaml:"title"`
 	Questions []Question `yaml:"questions"`
+}
+
+type Stories struct {
+	Data []Story `yaml:"Stories"`
 }
 
 type Question struct {
@@ -50,8 +66,21 @@ type Question struct {
 	Distractors []string `yaml:"distractors"`
 }
 
-type Stories struct {
-	Data []Story `yaml:"Stories"`
+type User struct {
+	User_ID  string `yaml:"ID"`
+	Password string `yaml:"password"`
+	position int
+	group    *Group
+}
+
+type Groups struct {
+	Data [4]*Group `yaml:"Groups"`
+}
+
+type Group struct {
+	ID             int       `yaml:"id"`
+	Users          []*User   `yaml:"users"`
+	TreatmentOrder [4][2]int `yaml:"TreatmentOrder"`
 }
 
 func load_stories() *Stories {
@@ -68,14 +97,6 @@ func load_stories() *Stories {
 	}
 	return st
 } // the generic user representation
-
-// Now we get the user info:
-type User struct {
-	User_ID  string `yaml:"ID"`
-	Password string `yaml:"password"`
-	position int
-	group    *Group
-}
 
 func (U *User) getTreatmentAndStory() (int, int) {
 	index := U.position / eventsPerTreatment
@@ -117,16 +138,6 @@ const (
 	HEURISTICS
 	AI
 )
-
-type Groups struct {
-	Data [4]*Group `yaml:"Groups"`
-}
-
-type Group struct {
-	ID             int       `yaml:"id"`
-	Users          []*User   `yaml:"users"`
-	TreatmentOrder [4][2]int `yaml:"TreatmentOrder"`
-}
 
 func newGroup(id int, treatmentOrder [4][2]int) *Group {
 	g := new(Group)
@@ -192,11 +203,6 @@ func loadGroups() (*Groups, map[string]*User) {
 	return groupData, currentUsers
 }
 
-type Record_Update struct {
-	Action int
-	Date   int
-}
-
 // func (U *User) get_story_id() int {
 //     return U.Current_Story_Index
 // }
@@ -219,15 +225,6 @@ type Record_Update struct {
 //     U.Current_Quiz_Index += 1
 //     return nil
 // }
-
-type System struct {
-	database    *sql.DB
-	Groups      *Groups
-	Users       map[string]*User
-	Stories     *Stories
-	aborts      []chan struct{}
-	CommonWords []string
-}
 
 func load_common_words(filename string) []string {
 	common_word_file, err := os.Open(filename)
@@ -391,14 +388,6 @@ func (S *System) initUser(U *User) error {
 	sqlStmt := fmt.Sprintf("INSERT or ignore into Users(User_ID, position) VALUES(\"%s\", %d)", U.User_ID, 0)
 	_, err := S.database.Exec(sqlStmt)
 	return err
-}
-
-type Status struct {
-	storyIndex    int
-	treatmentType int
-	Event         string
-	Completed     bool
-	Story         *Story
 }
 
 func (S *System) GetCurrentEvent(U *User) *Status {

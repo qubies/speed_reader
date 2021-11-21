@@ -23,7 +23,6 @@ import (
 
 	"github.com/gin-gonic/contrib/sessions"
 	data "github.com/qubies/speed_reader/data"
-	"github.com/qubies/speed_reader/stories"
 )
 
 const (
@@ -129,7 +128,60 @@ func storyStartRoute(c *gin.Context) {
 	}
 
 	SP := StoryPage{user, userState}
+	system.Record_Action(user, fmt.Sprintf("Story for '%s' loaded", userState.Story.Title))
+	err = system.AdvanceUser(user)
+	if err != nil {
+		fmt.Printf("Error encountered in advandce user '%s' after advance: %s\n", user.User_ID, err)
+	}
 	c.HTML(200, "story.html", SP)
+}
+
+func quizStartRoute(c *gin.Context) {
+	session := sessions.Default(c)
+	user, err := validateUser(c)
+	if err != nil {
+		return
+	}
+	session.Delete("Answers")
+
+	userState := system.GetCurrentEvent(user)
+
+	// verify that the user should be here....
+	if userState.Event == "story" {
+		fmt.Println("Moving user back to story")
+		system.Record_Action(user, "User sent to story from quiz Redirect")
+		c.Redirect(http.StatusFound, "/private/story")
+		return // im not sure if the return is required here....
+	}
+
+	if userState.Event == "questionnaire" {
+		fmt.Println("Moving user to questionnaire")
+		system.Record_Action(user, "User sent to questionnire from quiz Redirect")
+		c.Redirect(http.StatusFound, "/private/questionnaire")
+		return // im not sure if the return is required here....
+	}
+
+	// check if they are done all the stories
+	if userState.Completed {
+		c.HTML(200, "experimentComplete.html", nil)
+		return
+	}
+
+	quiz := newQuizStruct(userState)
+	session.Set("Answers", quiz.Answers)
+
+	if err := session.Save(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
+		fmt.Println(err)
+		return
+	}
+
+	system.Record_Action(user, fmt.Sprintf("Quiz for '%s' loaded", userState.Story.Title))
+	err = system.AdvanceUser(user) // this is somewhat unforgiving, once they start, they cannot reload.
+	if err != nil {
+		fmt.Printf("Error encountered in advandce user '%s' after advance on quiz start: %s\n", user.User_ID, err)
+	}
+	c.HTML(200, "quiz.html", &quiz)
 }
 
 type storyEndPost struct {
@@ -145,11 +197,13 @@ func storyEndRoute(c *gin.Context) {
 	}
 
 	var record storyEndPost
+
 	if err := c.ShouldBindJSON(&record); err != nil {
 		fmt.Println("Error: ", err)
 		c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
 		return
 	}
+
 	system.Finish_Reading(user, record.StartDate, record.EndDate, record.Wpm)
 	update_user(user, c)
 }
@@ -160,13 +214,12 @@ func update_user(user *data.User, c *gin.Context) {
 	if err := session.Save(); err != nil {
 		fmt.Println(err)
 	}
-	nu, _ := system.User_From_ID(user.User_ID) //lazy refresh of counters
+	nu, _ := system.Users[user.User_ID] //lazy refresh of counters
 	*user = *nu
 }
 
 type actionPost struct {
-	Action int
-	Date   int
+	Action string
 }
 
 func actionRoute(c *gin.Context) {
@@ -180,69 +233,50 @@ func actionRoute(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
 		return
 	}
-	system.Record_Action(user, data.Action, data.Date)
+	system.Record_Action(user, data.Action)
 	fmt.Println("updated", user.User_ID, data.Action)
 }
 
 type QuizStruct struct {
-	Questions []stories.Question
-	Name      string
-	Answers   []int
-	Version   int
+	Questions     []data.Question
+	Name          string
+	QuestionTexts []string
+	Answers       []int
+	AnswerTexts   [][]string
+}
+
+func newQuizStruct(state *data.Status) *QuizStruct {
+	qs := new(QuizStruct)
+	qs.Name = state.Story.Title
+
+	for i, question := range state.Story.Questions {
+		qs.QuestionTexts = append(qs.QuestionTexts, question.Text)
+		totalCount := len(question.Correct) + len(question.Distractors)
+		correctIndex := rand.Intn(totalCount)
+		qs.Answers = append(qs.Answers, correctIndex)
+		var distractors []string
+		DeepCopy(question.Distractors, distractors)
+		rand.Shuffle(len(distractors), func(i, j int) {
+			distractors[i], distractors[j] = distractors[j], distractors[i]
+		})
+
+		distractorIndex := 0
+		for x := 0; x < totalCount; x++ {
+			if x == correctIndex {
+				qs.AnswerTexts[i] = append(qs.AnswerTexts[i], question.Correct)
+			} else {
+				qs.AnswerTexts[i] = append(qs.AnswerTexts[i], distractors[distractorIndex])
+				distractorIndex += 1
+			}
+		}
+	}
+	return qs
 }
 
 // DeepCopy deepcopies a to b using json marshaling
 func DeepCopy(a, b interface{}) {
 	byt, _ := json.Marshal(a)
 	json.Unmarshal(byt, b)
-}
-
-func quizStartRoute(c *gin.Context) {
-	session := sessions.Default(c)
-	session.Delete("Answers")
-	user, err := validateUser(c)
-	if err != nil {
-		return
-	}
-	if user.Current_Quiz_Index == user.Current_Story_Index {
-		fmt.Println("Moving user back to story")
-		c.Redirect(http.StatusFound, "/private/story")
-		return
-	}
-	s, err := system.GetQuiz(user)
-	if err != nil {
-		return
-	}
-
-	quiz := new(QuizStruct)
-	// copy the questions from the quiz to the struct
-	DeepCopy(s.Questions, &quiz.Questions)
-	//shuffle the question order
-	rand.Shuffle(len(quiz.Questions), func(i, j int) { quiz.Questions[i], quiz.Questions[j] = quiz.Questions[j], quiz.Questions[i] })
-	quiz.Name = s.Name
-	fmt.Println("Initial Answers:", quiz.Answers)
-	for i := range quiz.Questions {
-		qs := quiz.Questions[i].Choices
-		ans_index := quiz.Questions[i].Answer
-		ans := quiz.Questions[i].Choices[ans_index]
-		rand.Shuffle(len(qs), func(i, j int) { qs[i], qs[j] = qs[j], qs[i] })
-		for i, q := range qs {
-			if q == ans {
-				quiz.Answers = append(quiz.Answers, i)
-				break
-			}
-		}
-	}
-	fmt.Println("Middle Answers:", quiz.Answers)
-	session.Set("Answers", quiz.Answers)
-	if err := session.Save(); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
-		fmt.Println(err)
-		return
-	}
-	quiz.Version = rand.Int()
-	fmt.Println("Quiz", quiz)
-	c.HTML(200, "quiz.html", &quiz)
 }
 
 type quizEndPost struct {

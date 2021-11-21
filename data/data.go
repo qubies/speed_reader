@@ -15,6 +15,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
+	"runtime"
 	"strings"
 	"time"
 
@@ -25,7 +27,6 @@ import (
 )
 
 const (
-	USER_FILE          = "users.yaml"
 	GROUP_FILE         = "groups.yaml"
 	STORY_FILE         = "stories.yaml"
 	GROUP_COUNT        = 12
@@ -83,11 +84,17 @@ type Group struct {
 	TreatmentOrder [4][2]int `yaml:"TreatmentOrder"`
 }
 
-func load_stories() *Stories {
-	log.Printf("Loading Stories from %v", STORY_FILE)
+func getCurrentPath() string {
+	_, filename, _, _ := runtime.Caller(1)
+
+	return path.Dir(filename)
+}
+
+func load_stories(path string) *Stories {
+	log.Printf("Loading Stories from %v", path)
 
 	st := new(Stories)
-	yamlFile, err := ioutil.ReadFile(STORY_FILE)
+	yamlFile, err := ioutil.ReadFile(path)
 	if err != nil {
 		panic(err)
 	}
@@ -154,12 +161,12 @@ var squareOrder = [4][4][2]int{
 	{{HEURISTICS, 3}, {AI, 2}, {READING, 1}, {RSVP, 0}},
 }
 
-func loadGroups() (*Groups, map[string]*User) {
+func loadGroups(path string) (*Groups, map[string]*User) {
 
 	currentUsers := make(map[string]*User)
 	groupData := new(Groups)
 
-	yamlFile, err := ioutil.ReadFile(GROUP_FILE)
+	yamlFile, err := ioutil.ReadFile(path)
 
 	if err != nil {
 		// read failed, make the users
@@ -181,7 +188,7 @@ func loadGroups() (*Groups, map[string]*User) {
 			log.Fatal("User counts don't match. Expected ", USER_COUNT, "got ", user_count)
 		}
 		// save it for later
-		writeYaml(groupData, GROUP_FILE)
+		writeYaml(groupData, path)
 
 	} else {
 		//read succeeded, load the users.
@@ -203,29 +210,6 @@ func loadGroups() (*Groups, map[string]*User) {
 	return groupData, currentUsers
 }
 
-// func (U *User) get_story_id() int {
-//     return U.Current_Story_Index
-// }
-
-// // a user can read the story, and complete the quiz
-// func (U *User) hasReadStory() bool {
-//     return U.Current_Story_Index > U.Current_Quiz_Index
-// }https://www.networkworld.com/article/3436784/how-to-use-terminator-on-linux-to-run-multiple-terminals-in-one-window.html
-
-// func (U *User) completeReading(){
-//     U.Current_Story_Index += 1
-// }
-
-// advances to the next story
-// func (U *User) completeQuiz() error {
-
-//     if !U.hasReadStory() {
-//         return errors.New("user attempted quiz before story was read")
-//     }
-//     U.Current_Quiz_Index += 1
-//     return nil
-// }
-
 func load_common_words(filename string) []string {
 	common_word_file, err := os.Open(filename)
 	var common_words []string
@@ -238,14 +222,14 @@ func load_common_words(filename string) []string {
 	return common_words
 }
 
-func Build_System(database_location, wordfile_location string) *System {
+func Build_System(database_location, wordfile_location, groupfile, storyfile string) *System {
 	S := new(System)
 	S.database = create_db(database_location)
 	S.aborts = make([]chan struct{}, 0)
 	S.aborts = append(S.aborts, make(chan struct{}))
-	S.Stories = load_stories()
+	S.Stories = load_stories(storyfile)
 	S.CommonWords = load_common_words(wordfile_location)
-	S.Groups, S.Users = loadGroups()
+	S.Groups, S.Users = loadGroups(groupfile)
 
 	for _, user := range S.Users {
 		var err error
@@ -286,18 +270,20 @@ func create_db(location string) *sql.DB {
 	        (Attempt_ID integer primary key autoincrement,
 	        Start_Date integer not null,
 	        End_Date integer not null,
-	        wpm REAL,
-	        User_ID text,
-	        Current_Place integer,
+	        wpm REAL not null,
+	        User_ID text not null,
+	        Story_Num integer not null,
+	        Treatment_Num integer not null,
 	    FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
 
 		create table IF NOT EXISTS Test_Results
 	        (Attempt_ID integer primary key autoincrement,
 	        Start_Date integer not null,
 	        End_Date integer not null,
+	        Story_Num integer not null,
+	        Treatment_Num integer not null,
 	        User_ID text,
 	        Score integer,
-	        Current_Place integer,
 	    FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
 
 		create table IF NOT EXISTS Actions
@@ -412,4 +398,30 @@ func (S *System) GetCurrentEvent(U *User) *Status {
 		return &Status{storyIndex: storyIndex, treatmentType: treatment, Completed: completed, Event: event,
 			Story: nil}
 	}
+}
+
+func (S *System) Finish_Reading(U *User, start_date, end_date int, wpm float32) error {
+
+	sqlStmt := "INSERT INTO  Reading_Results(Start_Date, End_Date, Story_Num, Treatment_Num, User_ID, wpm) Values ($1, $2, $3, $4, $5, $6);"
+	treatment, story := U.getTreatmentAndStory()
+	_, err := S.database.Exec(sqlStmt, start_date, end_date, story, treatment, U.User_ID, wpm)
+	if err != nil {
+		return err
+	}
+	err = S.Record_Action(U, fmt.Sprintf("Story Finished for %d, treatment: %d", story, treatment))
+	return err
+}
+
+// call this function to terminate and record the quiz event
+func (S *System) Finish_Quiz(U *User, start_date, end_date int, score int) error {
+
+	treatment, story := U.getTreatmentAndStory()
+	sqlStmt := "INSERT INTO  Test_Results(Start_Date, End_Date, Story_Num, Treatment_Num, User_ID, Score) Values ($1, $2, $3, $4, $5);"
+	_, err := S.database.Exec(sqlStmt, start_date, end_date, story, treatment, U.User_ID, score)
+	if err != nil {
+		return err
+	}
+	err = S.Record_Action(U, fmt.Sprintf("Quiz Finished for %d, treatment: %d", story, treatment))
+
+	return err
 }

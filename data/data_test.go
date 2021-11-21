@@ -17,24 +17,24 @@ func removeFile(name string) {
 }
 
 func TestLoadStories(t *testing.T) {
-	stories := *load_stories()
+	stories := *load_stories("stories.yaml")
 	t.Log(stories.Data[0])
 }
 
 func TestGroupGenerator(t *testing.T) {
 	t.Log("testing Groups")
-	loadGroups()
+	loadGroups("groups.yaml")
 }
 
 func TestBuildSystem(t *testing.T) {
 	testDB := "test_db.sql"
-	Build_System(testDB, "./common_words.json")
+	Build_System(testDB, "./common_words.json", "groups.yaml", "stories.yaml")
 	defer removeFile(testDB)
 }
 
 func TestUserFunctions(t *testing.T) {
 	testDB := "test_db.sql"
-	system := Build_System(testDB, "./common_words.json")
+	system := Build_System(testDB, "./common_words.json", "groups.yaml", "stories.yaml")
 	defer removeFile(testDB)
 
 	// make sure that the users are created correctly
@@ -71,7 +71,7 @@ func TestUserFunctions(t *testing.T) {
 
 	//rebuild and see if info stays put
 
-	system = Build_System(testDB, "./common_words.json")
+	system = Build_System(testDB, "./common_words.json", "groups.yaml", "stories.yaml")
 	for _, u := range system.Users {
 		if _, ok := originalUsers[u.User_ID]; !ok {
 			t.Error("User '", u.User_ID, "' Missing from reload")

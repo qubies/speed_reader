@@ -33,7 +33,7 @@ const (
 
 // globals
 var templates *template.Template
-var system = data.Build_System("./data/experimental.db", "./data/common_words.json")
+var system = data.Build_System("./data/experimental.db", "./data/common_words.json", "data/groups.yaml", "data/stories.yaml")
 
 type StoryPage struct {
 	User  *data.User
@@ -47,7 +47,7 @@ func sendInvalid(c *gin.Context) {
 func validateUser(c *gin.Context) (*data.User, error) {
 	session := sessions.Default(c)
 	user := session.Get(userkey).(*data.User)
-	if !system.Validate_User(user.User_ID, user.User_ID) {
+	if !system.Validate_User(user.User_ID, user.Password) {
 		sendInvalid(c)
 		return nil, errors.New("User is invaild")
 	}
@@ -101,6 +101,7 @@ func logout(c *gin.Context) {
 func storyStartRoute(c *gin.Context) {
 	user, err := validateUser(c)
 	if err != nil {
+		fmt.Println("Error with validation", err)
 		return
 	}
 
@@ -364,7 +365,6 @@ func main() {
 	// app.Static("/images","./images")
 
 	app.GET("/", introHandler)
-	app.GET("/newaccount", newAccount)
 	app.POST("/login", login)
 	app.GET("/logout", logout)
 

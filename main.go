@@ -110,12 +110,16 @@ func storyStartRoute(c *gin.Context) {
 	// verify that the user should be here....
 	if userState.Event == "quiz" {
 		fmt.Println("Moving user back to quiz")
+		system.Record_Action(user, "User sent to quiz from story Redirect")
 		c.Redirect(http.StatusFound, "/private/quiz")
+		return // im not sure if the return is required here....
 	}
 
 	if userState.Event == "questionnaire" {
 		fmt.Println("Moving user to questionnaire")
+		system.Record_Action(user, "User sent to questionnire from story Redirect")
 		c.Redirect(http.StatusFound, "/private/questionnaire")
+		return // im not sure if the return is required here....
 	}
 
 	// check if they are done all the stories

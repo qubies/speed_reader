@@ -77,6 +77,7 @@ func TestUserFunctions(t *testing.T) {
 		} else if u.position != 1 {
 			t.Error("Position not saved after update expected 1, got ", u.position, " for user ", u.User_ID)
 		}
+		originalUsers[u.User_ID] = system.GetCurrentEvent(u)
 	}
 
 	//test to see if users advance story correctly
@@ -89,7 +90,7 @@ func TestUserFunctions(t *testing.T) {
 			prior.event = "quiz"
 
 			if *stat != *prior {
-				t.Errorf("User state changed incorrectly, wanted: %+v got %+v", prior, stat)
+				t.Errorf("User state changed incorrectly, wanted: %+v got %+v on loop %d, %s, %s", prior, stat, x, prior.story.Title, stat.story.Title)
 			}
 			err := system.AdvanceUser(u)
 			if err != nil {
@@ -103,7 +104,7 @@ func TestUserFunctions(t *testing.T) {
 			prior.event = "questionnaire"
 
 			if *stat != *prior {
-				t.Errorf("User state changed incorrectly, wanted: %+v got %+v", prior, stat)
+				t.Errorf("User state changed incorrectly, wanted: %+v got %+v on loop %d", prior, stat, x)
 			}
 			err := system.AdvanceUser(u)
 			if err != nil {
@@ -122,6 +123,9 @@ func TestUserFunctions(t *testing.T) {
 			if stat.treatmentType == prior.treatmentType {
 				t.Errorf("Treatment Type did not advance: %d got %d", prior.treatmentType, stat.treatmentType)
 			}
+			if stat.story == prior.story {
+				t.Error("Story should have changed on final event")
+			}
 			if x == 3 {
 				if !stat.completed {
 					t.Error("Expected routine to finish at the end of loop 3...")
@@ -139,20 +143,7 @@ func TestUserFunctions(t *testing.T) {
 			}
 			originalUsers[u.User_ID] = stat
 		}
-	}
-	// now we need to check if the users are marked done.
-	for _, u := range system.Users {
-		stat := system.GetCurrentEvent(u)
-		prior := originalUsers[u.User_ID]
-		prior.completed = true
-		prior.storyIndex = -1
-		prior.treatmentType = -1
-
-		if *stat != *prior {
-			t.Errorf("User final state changed incorrectly, wanted: %+v got %+v", prior, stat)
-		}
-
-		originalUsers[u.User_ID] = stat
+		t.Log("stage ", x)
 	}
 }
 

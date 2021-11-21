@@ -397,10 +397,11 @@ type Status struct {
 	treatmentType int
 	event         string
 	completed     bool
+	story         *Story
 }
 
 func (S *System) GetCurrentEvent(U *User) *Status {
-	treatment, story := U.getTreatmentAndStory()
+	treatment, storyIndex := U.getTreatmentAndStory()
 	pos := U.position
 	max_pos := len(U.group.TreatmentOrder) * eventsPerTreatment // each story and treatment has
 	var event string
@@ -413,7 +414,14 @@ func (S *System) GetCurrentEvent(U *User) *Status {
 		event = "questionnaire"
 	}
 
-	return &Status{storyIndex: story, treatmentType: treatment, completed: pos >= max_pos, event: event}
+	completed := pos >= max_pos
+	if !completed {
+		return &Status{storyIndex: storyIndex, treatmentType: treatment, completed: completed, event: event,
+			story: &S.Stories.Data[storyIndex]}
+	} else {
+		return &Status{storyIndex: storyIndex, treatmentType: treatment, completed: completed, event: event,
+			story: nil}
+	}
 }
 
 // func (S *System) GetStory(U *User) (*stories.Story, error){

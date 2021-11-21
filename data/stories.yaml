@@ -3,32 +3,68 @@ Stories:
     text: "someLongStory \nthat continues on multiple lines\nand \"ends' here."
     title: first story
     test:
-      - 
+      -
         question: "this is the first question, how would you answer it?"
         correct: "correctly"
         distractors:
           - "wrong"
           - "incorrect"
           - "I like hats"
-      - 
+      -
         question: "this is the second question, how would you answer it?"
         correct: "correctly"
         distractors:
           - "wrong"
           - "incorrect"
           - "I like hats"
-  - 
+  -
     text: Some short story
     title: second story
     test:
-      - 
+      -
         question: "this is the first question of the second test, how would you answer it?"
         correct: "right"
         distractors:
           - "wrong"
           - "incorrect"
           - "I like hats"
-      - 
+      -
+        question: "this is the second question, how would you answer it?"
+        correct: "right"
+        distractors:
+          - "wrong"
+          - "incorrect"
+          - "I like hats"
+  -
+    text: Some short story
+    title: third story
+    test:
+      -
+        question: "this is the first question of the third test, how would you answer it?"
+        correct: "right"
+        distractors:
+          - "wrong"
+          - "incorrect"
+          - "I like hats"
+      -
+        question: "this is the second question, how would you answer it?"
+        correct: "right"
+        distractors:
+          - "wrong"
+          - "incorrect"
+          - "I like hats"
+  -
+    text: Some short story
+    title: fourth story
+    test:
+      -
+        question: "this is the first question of the fourth test, how would you answer it?"
+        correct: "right"
+        distractors:
+          - "wrong"
+          - "incorrect"
+          - "I like hats"
+      -
         question: "this is the second question, how would you answer it?"
         correct: "right"
         distractors:

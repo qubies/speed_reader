@@ -78,7 +78,11 @@ type User struct {
 }
 
 func (U *User) getTreatmentAndStory() (int, int) {
-	treatment, story := U.group.TreatmentOrder[U.position/eventsPerTreatment][0], U.group.TreatmentOrder[U.position/eventsPerTreatment][1]
+	index := U.position / eventsPerTreatment
+	if index >= len(U.group.TreatmentOrder) {
+		return -1, -1
+	}
+	treatment, story := U.group.TreatmentOrder[index][0], U.group.TreatmentOrder[index][1]
 	return treatment, story
 }
 

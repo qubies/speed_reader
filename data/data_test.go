@@ -39,11 +39,10 @@ func TestUserFunctions(t *testing.T) {
 
 	// make sure that the users are created correctly
 	t.Log(len(system.Users))
-	originalUsers := make(map[string][]int)
+	originalUsers := make(map[string]*Status)
 
 	for _, u := range system.Users {
-		treatment, story := u.getTreatmentAndStory()
-		originalUsers[u.User_ID] = []int{treatment, story}
+		originalUsers[u.User_ID] = system.GetCurrentEvent(u)
 		pos, err := system.GetPosition(u)
 		if err != nil {
 			t.Error(err)
@@ -77,6 +76,57 @@ func TestUserFunctions(t *testing.T) {
 			//do something here
 		} else if u.position != 1 {
 			t.Error("Position not saved after update expected 1, got ", u.position, " for user ", u.User_ID)
+		}
+	}
+
+	//test to see if users advance story correctly
+	//settings should be the same as they were, except they should be on the quiz
+	for x := 0; x < 4; x++ {
+
+		for _, u := range system.Users {
+			stat := system.GetCurrentEvent(u)
+			prior := originalUsers[u.User_ID]
+			prior.event = "quiz"
+
+			if *stat != *prior {
+				t.Errorf("User state changed incorrectly, wanted: %+v got %+v", prior, stat)
+			}
+			err := system.AdvanceUser(u)
+			if err != nil {
+				t.Error("Advance failed: ", err)
+			}
+		}
+
+		for _, u := range system.Users {
+			stat := system.GetCurrentEvent(u)
+			prior := originalUsers[u.User_ID]
+			prior.event = "questionnaire"
+
+			if *stat != *prior {
+				t.Errorf("User state changed incorrectly, wanted: %+v got %+v", prior, stat)
+			}
+			err := system.AdvanceUser(u)
+			if err != nil {
+				t.Error("Advance failed: ", err)
+			}
+		}
+
+		for _, u := range system.Users {
+			stat := system.GetCurrentEvent(u)
+			prior := originalUsers[u.User_ID]
+			prior.event = "story"
+
+			if stat.storyIndex == prior.storyIndex {
+				t.Errorf("Story index did not advance: %d got %d", prior.storyIndex, stat.storyIndex)
+			}
+			if stat.treatmentType == prior.treatmentType {
+				t.Errorf("Treatment Type did not advance: %d got %d", prior.treatmentType, stat.treatmentType)
+			}
+			err := system.AdvanceUser(u)
+			if err != nil {
+				t.Error("Advance failed: ", err)
+			}
+			originalUsers[u.User_ID] = stat
 		}
 	}
 }

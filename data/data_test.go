@@ -35,7 +35,7 @@ func TestBuildSystem(t *testing.T) {
 func TestUserFunctions(t *testing.T) {
 	testDB := "test_db.sql"
 	system := Build_System(testDB, "./common_words.json")
-	//defer removeFile(testDB)
+	// defer removeFile(testDB)
 
 	// make sure that the users are created correctly
 	t.Log(len(system.Users))

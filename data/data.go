@@ -253,6 +253,10 @@ func Build_System(database_location, wordfile_location string) *System {
 		if err != nil {
 			log.Fatal("Error loading position for ", user, " ", err)
 		}
+		err = S.initUser(user)
+		if err != nil {
+			log.Fatal("unable to initialize user '", user, " ' ", err)
+		}
 	}
 
 	return S
@@ -279,7 +283,7 @@ func create_db(location string) *sql.DB {
 
 		create table IF NOT EXISTS Test_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, User_ID text, Score integer, Current_Place integer, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
 
-		create table IF NOT EXISTS Actions (Action_ID integer primary key autoincrement, Date integer not null, Story integer not null, Treatment integer not null, Action text not null, User_ID text not null, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
+		create table IF NOT EXISTS Actions (Action_ID integer primary key autoincrement, Date integer not null, Story_Num integer not null, Treatment_Num integer not null, Action text not null, User_ID text not null, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
 		`
 	_, err = db.Exec(schema)
 	if err != nil {
@@ -342,7 +346,6 @@ func (S *System) GetPosition(U *User) (int, error) {
 }
 
 func (S *System) AdvanceUser(U *User) error {
-	S.Record_Action(U, "Advance Position", time.Now().Unix())
 	//	sqlStmt := "INSERT into Users(User_ID, position) VALUES(\"$2\", $1) ON CONFLICT(User_ID) do update set position=$1;"
 	sqlStmt := fmt.Sprintf("INSERT into Users(User_ID, position) VALUES(\"%[1]s\", %[2]d) ON CONFLICT(User_ID) do update set position=%[2]d;", U.User_ID, U.position+1)
 	// note that we use the current quiz index because if the story has advanced, the user is still doing the quiz for that story. we capture the state of the story that they are currently workin on in either quiz or reading
@@ -350,10 +353,22 @@ func (S *System) AdvanceUser(U *User) error {
 	if err != nil {
 		return err
 	}
+	err = S.Record_Action(U, "Advance Position", time.Now().Unix())
+	if err != nil {
+		return err
+	}
 
 	// update succeeded
 	U.position += 1
 	return nil
+}
+
+func (S *System) initUser(U *User) error {
+	// INSERT OR IGNORE INTO bookmarks(users_id, lessoninfo_id) VALUES(123, 456)
+	sqlStmt := fmt.Sprintf("INSERT or ignore into Users(User_ID, position) VALUES(\"%s\", %d)", U.User_ID, 0)
+	// note that we use the current quiz index because if the story has advanced, the user is still doing the quiz for that story. we capture the state of the story that they are currently workin on in either quiz or reading
+	_, err := S.database.Exec(sqlStmt)
+	return err
 }
 
 type Status struct {

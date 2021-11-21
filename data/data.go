@@ -25,11 +25,12 @@ import (
 )
 
 const (
-	USER_FILE   = "users.yaml"
-	GROUP_FILE  = "groups.yaml"
-	STORY_FILE  = "stories.yaml"
-	GROUP_COUNT = 12
-	USER_COUNT  = GROUP_COUNT * 4
+	USER_FILE          = "users.yaml"
+	GROUP_FILE         = "groups.yaml"
+	STORY_FILE         = "stories.yaml"
+	GROUP_COUNT        = 12
+	USER_COUNT         = GROUP_COUNT * 4
+	eventsPerTreatment = 3 // this is story, quiz and questionnaire for every block
 )
 
 // Load in the configured data
@@ -77,7 +78,7 @@ type User struct {
 }
 
 func (U *User) getTreatmentAndStory() (int, int) {
-	treatment, story := U.group.TreatmentOrder[U.position][0], U.group.TreatmentOrder[U.position][1]
+	treatment, story := U.group.TreatmentOrder[U.position/eventsPerTreatment][0], U.group.TreatmentOrder[U.position][1]
 	return treatment, story
 }
 
@@ -247,6 +248,7 @@ func Build_System(database_location, wordfile_location string) *System {
 
 	for _, user := range S.Users {
 		var err error
+
 		user.position, err = S.GetPosition(user)
 		if err != nil {
 			log.Fatal("Error loading position for ", user, " ", err)
@@ -269,16 +271,16 @@ func create_db(location string) *sql.DB {
 	}
 
 	schema := `
-    PRAGMA foreign_keys = ON;
+		PRAGMA foreign_keys = ON;
 
-    create table IF NOT EXISTS Users (User_ID, Current_Place integer default 0);
+		create table IF NOT EXISTS Users (User_ID text unique, position integer default 0);
 
-    create table IF NOT EXISTS Reading_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, wpm REAL, User_ID text, Current_Place integer, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
+		create table IF NOT EXISTS Reading_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, wpm REAL, User_ID text, Current_Place integer, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
 
-    create table IF NOT EXISTS Test_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, User_ID text, Score integer, Current_Place integer, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
-  
-    create table IF NOT EXISTS Actions (Action_ID integer primary key autoincrement, Date integer not null, Story integer not null, Treatment integer not null, Action string not null, User_ID text not null, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
-    `
+		create table IF NOT EXISTS Test_Results (Attempt_ID integer primary key autoincrement, Start_Date integer not null, End_Date integer not null, User_ID text, Score integer, Current_Place integer, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
+
+		create table IF NOT EXISTS Actions (Action_ID integer primary key autoincrement, Date integer not null, Story integer not null, Treatment integer not null, Action text not null, User_ID text not null, FOREIGN KEY(User_ID) REFERENCES Users(User_ID));
+		`
 	_, err = db.Exec(schema)
 	if err != nil {
 		log.Fatal("Unable to create DB: ", err)
@@ -319,7 +321,7 @@ func (S *System) GetPosition(U *User) (int, error) {
 		return -1, errors.New("User does not exist")
 	}
 
-	sqlStmt := "select Current_Place from Users where User_ID=? limit 1;"
+	sqlStmt := "select position from Users where User_ID=? limit 1;"
 	rows, err := S.database.Query(sqlStmt, U.User_ID)
 
 	if err != nil {
@@ -341,9 +343,10 @@ func (S *System) GetPosition(U *User) (int, error) {
 
 func (S *System) AdvanceUser(U *User) error {
 	S.Record_Action(U, "Advance Position", time.Now().Unix())
-	sqlStmt := "UPDATE Users set position=$1 where User_ID=$2;"
+	//	sqlStmt := "INSERT into Users(User_ID, position) VALUES(\"$2\", $1) ON CONFLICT(User_ID) do update set position=$1;"
+	sqlStmt := fmt.Sprintf("INSERT into Users(User_ID, position) VALUES(\"%[1]s\", %[2]d) ON CONFLICT(User_ID) do update set position=%[2]d;", U.User_ID, U.position+1)
 	// note that we use the current quiz index because if the story has advanced, the user is still doing the quiz for that story. we capture the state of the story that they are currently workin on in either quiz or reading
-	_, err := S.database.Exec(sqlStmt, U.position+1, U.User_ID)
+	_, err := S.database.Exec(sqlStmt)
 	if err != nil {
 		return err
 	}
@@ -351,7 +354,30 @@ func (S *System) AdvanceUser(U *User) error {
 	// update succeeded
 	U.position += 1
 	return nil
+}
 
+type Status struct {
+	storyIndex    int
+	treatmentType int
+	event         string
+	completed     bool
+}
+
+func (S *System) GetCurrentEvent(U *User) *Status {
+	treatment, story := U.getTreatmentAndStory()
+	pos := U.position
+	max_pos := len(U.group.TreatmentOrder) * eventsPerTreatment // each story and treatment has
+	var event string
+	switch e := U.position % eventsPerTreatment; e {
+	case 0:
+		event = "story"
+	case 1:
+		event = "quiz"
+	case 2:
+		event = "questionnaire"
+	}
+
+	return &Status{storyIndex: story, treatmentType: treatment, completed: pos >= max_pos, event: event}
 }
 
 // func (S *System) GetStory(U *User) (*stories.Story, error){

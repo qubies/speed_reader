@@ -35,12 +35,14 @@ func TestBuildSystem(t *testing.T) {
 func TestUserFunctions(t *testing.T) {
 	testDB := "test_db.sql"
 	system := Build_System(testDB, "./common_words.json")
-	defer removeFile(testDB)
+	//defer removeFile(testDB)
 
 	// make sure that the users are created correctly
 	t.Log(len(system.Users))
+	originalUsers := make(map[string]bool)
 
 	for _, u := range system.Users {
+		originalUsers[u.User_ID] = true
 		pos, err := system.GetPosition(u)
 		if err != nil {
 			t.Error(err)
@@ -48,7 +50,7 @@ func TestUserFunctions(t *testing.T) {
 		if pos != 0 {
 			t.Error("user position is not 0 at creation")
 		}
-		t.Log(u.getTreatmentAndStory())
+		u.getTreatmentAndStory()
 		if !system.User_exists(u.User_ID) {
 			t.Error(fmt.Sprintf("validation failed for user '%s'", u.User_ID))
 		}
@@ -59,6 +61,24 @@ func TestUserFunctions(t *testing.T) {
 
 	// advance a user
 
+	for _, u := range system.Users {
+		err := system.AdvanceUser(u)
+		if err != nil {
+			t.Error("Advance failed: ", err)
+		}
+	}
+
+	//rebuild and see if info stays put
+
+	system = Build_System(testDB, "./common_words.json")
+	for _, u := range system.Users {
+		if _, ok := originalUsers[u.User_ID]; !ok {
+			t.Error("User '", u.User_ID, "' Missing from reload")
+			//do something here
+		} else if u.position != 1 {
+			t.Error("Position not saved after update expected 1, got ", u.position, " for user ", u.User_ID)
+		}
+	}
 }
 
 // func TestGenerator(t *testing.T) {

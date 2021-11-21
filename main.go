@@ -37,13 +37,8 @@ var templates *template.Template
 var system = data.Build_System("./data/experimental.db", "./data/common_words.json")
 
 type StoryPage struct {
-	Title       string
-	User        string
-	CommonWords []string
-	Story       [][]string
-	Spans       [][]int
-	Version     int
-	Group       int
+	User  *data.User
+	State *data.Status
 }
 
 func sendInvalid(c *gin.Context) {
@@ -112,22 +107,24 @@ func storyStartRoute(c *gin.Context) {
 
 	userState := system.GetCurrentEvent(user)
 
-	//check if the user has an unfinished quiz
-	if userState.event == "quiz" {
+	// verify that the user should be here....
+	if userState.Event == "quiz" {
 		fmt.Println("Moving user back to quiz")
 		c.Redirect(http.StatusFound, "/private/quiz")
 	}
 
+	if userState.Event == "questionnaire" {
+		fmt.Println("Moving user to questionnaire")
+		c.Redirect(http.StatusFound, "/private/questionnaire")
+	}
+
 	// check if they are done all the stories
-	userStory, err := system.GetStory(user)
-	if err != nil || system.Is_User_Complete(user) {
+	if userState.Completed {
 		c.HTML(200, "experimentComplete.html", nil)
 		return
 	}
 
-	//TODO this needs a switch statement to determine the presentation type for the user's group
-
-	SP := StoryPage{userStory.Name, user.User_ID, system.CommonWords, userStory.Story, userStory.Spans, rand.Int(), user.Group}
+	SP := StoryPage{user, userState}
 	c.HTML(200, "story.html", SP)
 }
 

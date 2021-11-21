@@ -335,10 +335,10 @@ func (S *System) Validate_User(User_ID, password string) bool {
 	return S.Users[User_ID].Password == password
 }
 
-func (S *System) Record_Action(U *User, action string, date int64) error {
+func (S *System) Record_Action(U *User, action string) error {
 	sqlStmt := "INSERT INTO  Actions(Date, Story_Num, Treatment_Num, Action, User_ID) Values ($1, $2, $3, $4, $5);"
 	treatment, story := U.getTreatmentAndStory()
-	_, err := S.database.Exec(sqlStmt, date, story, treatment, action, U.User_ID)
+	_, err := S.database.Exec(sqlStmt, time.Now().Unix(), story, treatment, action, U.User_ID)
 
 	return err
 }
@@ -376,13 +376,14 @@ func (S *System) AdvanceUser(U *User) error {
 	if err != nil {
 		return err
 	}
-	err = S.Record_Action(U, "Advance Position", time.Now().Unix())
+	err = S.Record_Action(U, "Advance Position")
 	if err != nil {
 		return err
 	}
 
 	// update succeeded
 	U.position += 1
+
 	return nil
 }
 

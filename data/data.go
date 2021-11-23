@@ -45,7 +45,7 @@ type System struct {
 
 type Status struct {
 	storyIndex    int
-	treatmentType int
+	TreatmentType int
 	Event         string
 	Completed     bool
 	Story         *Story
@@ -55,6 +55,7 @@ type Story struct {
 	Text      string     `yaml:"text"`
 	Title     string     `yaml:"title"`
 	Questions []Question `yaml:"questions"`
+	Spans     [][]int    `yaml:"spans"`
 }
 
 type Stories struct {
@@ -392,10 +393,10 @@ func (S *System) GetCurrentEvent(U *User) *Status {
 
 	completed := pos >= max_pos
 	if !completed {
-		return &Status{storyIndex: storyIndex, treatmentType: treatment, Completed: completed, Event: event,
+		return &Status{storyIndex: storyIndex, TreatmentType: treatment, Completed: completed, Event: event,
 			Story: &S.Stories.Data[storyIndex]}
 	} else {
-		return &Status{storyIndex: storyIndex, treatmentType: treatment, Completed: completed, Event: event,
+		return &Status{storyIndex: storyIndex, TreatmentType: treatment, Completed: completed, Event: event,
 			Story: nil}
 	}
 }

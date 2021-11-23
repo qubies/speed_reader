@@ -6,20 +6,26 @@
 <body>
     <script>
         let common_words = new Set({{.CommonWords}});
-        let story = {{.Story}};
-        let spans = {{.Spans}};
-        let group = {{.Group}};
+        let story = {{.State.Story.Text}};
+        let spans = {{.State.Story.Spans}};
+        let group = {{.State.TreatmentType}};
     </script>
     <script type="text/javascript" src="/scripts/api.js"></script>
     <div id=whole_page>
         <div id=presentation_column>
             <button onclick="presentStory();" class="btn btn-primary" id="start_button"> START </button>
             <div id="display-story">
-                {{if (eq .Group 0)}}
+                {{if (eq .State.TreatmentType 0)}}
+                    {{template "plainstory.html" .}}
+                {{end}}
+                {{if (eq .State.TreatmentType 1)}}
                     {{template "rsvp.html" .}}
                 {{end}}
-                {{if (eq .Group 1)}}
-                    {{template "plainstory.html" .}}
+                {{if (eq .State.TreatmentType 2)}}
+                    {{template "rsvph.html" .}}
+                {{end}}
+                {{if (eq .State.TreatmentType 3)}}
+                    {{template "rsvpi.html" .}}
                 {{end}}
             </div>
         </div>

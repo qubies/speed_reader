@@ -36,8 +36,9 @@ var templates *template.Template
 var system = data.Build_System("./data/experimental.db", "./data/common_words.json", "data/groups.yaml", "data/stories.yaml")
 
 type StoryPage struct {
-	User  *data.User
-	State *data.Status
+	User        *data.User
+	State       *data.Status
+	CommonWords []string
 }
 
 func sendInvalid(c *gin.Context) {
@@ -51,7 +52,7 @@ func validateUser(c *gin.Context) (*data.User, error) {
 		sendInvalid(c)
 		return nil, errors.New("User is invaild")
 	}
-	return user, nil
+	return system.Users[user.User_ID], nil
 }
 
 // Routes
@@ -104,7 +105,6 @@ func storyStartRoute(c *gin.Context) {
 		fmt.Println("Error with validation", err)
 		return
 	}
-
 	userState := system.GetCurrentEvent(user)
 
 	// verify that the user should be here....
@@ -128,12 +128,12 @@ func storyStartRoute(c *gin.Context) {
 		return
 	}
 
-	SP := StoryPage{user, userState}
+	SP := StoryPage{user, userState, system.CommonWords}
 	system.Record_Action(user, fmt.Sprintf("Story for '%s' loaded", userState.Story.Title))
-	err = system.AdvanceUser(user)
+	/* err = system.AdvanceUser(user)
 	if err != nil {
 		fmt.Printf("Error encountered in advandce user '%s' after advance: %s\n", user.User_ID, err)
-	}
+	} */
 	c.HTML(200, "story.html", SP)
 }
 

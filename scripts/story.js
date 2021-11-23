@@ -13,7 +13,7 @@ let ai_boost = 1.5;
 
 //state
 let running = false;
-let story_length = flatten(story).length;
+let story_length = story.length;
 let line = 0;
 
 

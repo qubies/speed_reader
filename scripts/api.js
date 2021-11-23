@@ -50,10 +50,10 @@ Object.freeze(actionsEnum)
 
 //ENUM for actions table
 const groupsEnum = {
-    "READ":1,
-    "READH":2,
-    "RSVP":0,
-    "RSVPI":3,
+    "READ":0,  //normal reading
+    "RSVP":1,  //normal rsvp
+    "READH":2, //heuristics
+    "RSVPI":3, //ai
 }
 Object.freeze(groupsEnum)
 

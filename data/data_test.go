@@ -122,8 +122,8 @@ func TestUserFunctions(t *testing.T) {
 			if stat.storyIndex == prior.storyIndex {
 				t.Errorf("Story index did not advance: %d got %d", prior.storyIndex, stat.storyIndex)
 			}
-			if stat.treatmentType == prior.treatmentType {
-				t.Errorf("Treatment Type did not advance: %d got %d", prior.treatmentType, stat.treatmentType)
+			if stat.TreatmentType == prior.TreatmentType {
+				t.Errorf("Treatment Type did not advance: %d got %d", prior.TreatmentType, stat.TreatmentType)
 			}
 			if stat.Story == prior.Story {
 				t.Error("Story should have changed on final Event")

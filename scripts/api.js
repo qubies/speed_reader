@@ -52,7 +52,7 @@ Object.freeze(actionsEnum)
 const groupsEnum = {
     "READ":0,  //normal reading
     "RSVP":1,  //normal rsvp
-    "READH":2, //heuristics
+    "RSVPH":2, //heuristics
     "RSVPI":3, //ai
 }
 Object.freeze(groupsEnum)

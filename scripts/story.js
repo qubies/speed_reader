@@ -70,7 +70,7 @@ async function presentStory() {
     document.getElementById('display-story').style.display = 'flex';
     send_update(actionsEnum.START_STORY)
     let t = new Timer();
-    if (group == groupsEnum.READ || group == groupsEnum.READH) {
+    if (group == groupsEnum.READ) {
         start_button = document.getElementById('start_button')
         start_button.style.display="none";
         story_div = document.getElementById('plainstory');
@@ -79,7 +79,7 @@ async function presentStory() {
         done_button.style.display="inline";
         done_button.onclick=function(){move_on(t);};
     }
-    else if (group == groupsEnum.RSVP || group == groupsEnum.RSVPI) {
+    else if (group == groupsEnum.RSVP || group == groupsEnum.RSVPI || group == groupsEnum.RSVPH) {
         start_button = document.getElementById('start_button')
         start_button.style.display="none";
         arrow_box = document.getElementById('arrow_box');

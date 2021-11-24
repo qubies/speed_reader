@@ -25,6 +25,8 @@ function getParameterByName(name, url = window.location.href) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
+var current_question_index = 0;
+
 
 // A function that you can enact on an instance of a quiz object. This function is called render() and takes in a variable called the container, which is the <div> that I will render the quiz in.
 Quiz.prototype.render = function(container) {
@@ -58,7 +60,6 @@ Quiz.prototype.render = function(container) {
     }
 
     // Render the first question
-    var current_question_index = 0;
     change_question();
 
     // Add listener for the previous question button
@@ -112,6 +113,11 @@ Quiz.prototype.render = function(container) {
 
     // Add a listener on the questions container to listen for user select changes. This is for determining whether we can submit answers or not.
     question_container.bind('user-select-change', function() {
+        if (current_question_index < self.questions.length - 1) {
+            change_question();
+        } else {
+            current_question_index = self.questions.length - 1;
+        }
         var all_questions_answered = true;
         for (var i = 0; i < self.questions.length; i++) {
             if (self.questions[i].user_choice_index === null) {
@@ -160,11 +166,9 @@ Question.prototype.render = function(container) {
   question_string_h2.text(this.question_string);
 
   // Clear any radio buttons and create new ones
-  if (container.children('input[type=radio]').length > 0) {
-    container.children('input[type=radio]').each(function() {
-      var radio_button_id = $(this).attr('id');
+  if (container.children("div").length > 0) {
+    container.children("div").each(function() {
       $(this).remove();
-      container.children('label[for=' + radio_button_id + ']').remove();
     });
   }
   for (var i = 0; i < this.choices.length; i++) {
@@ -194,6 +198,9 @@ Question.prototype.render = function(container) {
     // Change the user choice index
     self.user_choice_index = parseInt(selected_radio_button_value.substr(selected_radio_button_value.length - 1, 1));
 
+    current_question_index++;
+    send_update(actionsEnum.NEXT_QUESTION)
+
     // Trigger a user-select-change
     container.trigger('user-select-change');
   });
@@ -206,6 +213,9 @@ Question.prototype.render = function(container) {
 
         // Change the user choice index
         self.user_choice_index = parseInt(selected_radio_button_value.substr(selected_radio_button_value.length - 1, 1));
+
+        current_question_index++;
+        send_update(actionsEnum.NEXT_QUESTION)
 
         // Trigger a user-select-change
         container.trigger('user-select-change');

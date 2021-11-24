@@ -7,8 +7,7 @@ var Quiz = function(quiz_name) {
     this.quiz_name = quiz_name;
 
     // This one will contain an array of Question objects in the order that the questions will be presented.
-    this.questions = [];
-}
+    this.questions = [];}
 
 // A function that you can enact on an instance of a quiz object. This function is called add_question() and takes in a Question object which it will add to the questions field.
 Quiz.prototype.add_question = function(question) {
@@ -45,7 +44,6 @@ Quiz.prototype.render = function(container) {
     function change_question() {
         self.questions[current_question_index].render(question_container);
         $('#prev-question-button').prop('disabled', current_question_index === 0);
-        $('#next-question-button').prop('disabled', current_question_index === self.questions.length - 1);
 
 
         // Determine if all questions have been answered
@@ -71,15 +69,6 @@ Quiz.prototype.render = function(container) {
         }
     });
 
-    // Add listener for the next question button
-    $('#next-question-button').click(function() {
-        send_update(actionsEnum.NEXT_QUESTION)
-        if (current_question_index < self.questions.length - 1) {
-            current_question_index++;
-            change_question();
-        }
-    });
-
     // Add listener for the submit answers button
     $('#submit-button').click(async function() {
         t.stop();
@@ -94,15 +83,11 @@ Quiz.prototype.render = function(container) {
                 window.location.replace('/private/story');
         });
 
-
         // Display the score with the appropriate message
         var percentage = score / self.questions.length;
-        console.log(percentage);
         let data = {"StartDate":t.start_time, "EndDate":t.stop_time, "ChosenAnswers":answers}
-        console.log(data)
         var score = await send_post("/private/quizend", data);
         score = await  score.json(function(data) {return data.value});
-        console.log("Score:", score);
         $('#question').hide();
         $('#quiz-buttons').hide();
         var message = 'Great job, please continue :)'

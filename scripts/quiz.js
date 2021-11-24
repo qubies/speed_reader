@@ -168,6 +168,9 @@ Question.prototype.render = function(container) {
     });
   }
   for (var i = 0; i < this.choices.length; i++) {
+    var choice_container = $('<div>')
+      .attr('class', 'choice-container')
+      .appendTo(container);
     // Create the radio button
     var choice_radio_button = $('<input>')
       .attr('id', 'choices-' + i)
@@ -175,14 +178,14 @@ Question.prototype.render = function(container) {
       .attr('name', 'choices')
       .attr('value', 'choices-' + i)
       .attr('checked', i === this.user_choice_index)
-      .appendTo(container);
+      .appendTo(choice_container);
 
     // Create the label
     var choice_label = $('<label>')
       .text(this.choices[i])
       .attr('for', 'choices-' + i)
       .attr('tabindex', 0)
-      .appendTo(container);
+      .appendTo(choice_container);
   }
 
   // Add a listener for the radio button to change which one the user has clicked on

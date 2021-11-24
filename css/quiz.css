@@ -50,10 +50,6 @@ html, body {
     color: #737272;
 }
 
-#question input[type=radio] {
-    display: none;
-}
-
 #question label {
     color: #737272;
     display: inline-block;
@@ -65,14 +61,7 @@ html, body {
 }
 
 #question label:hover, #question label:focus {
-    background-color: #f5f5f5;
-    border-radius: 3px;
-}
-
-#question input[type=radio]:checked + label {
-    background-color: #d8d8d8;
-    font-weight: 800;
-    border-radius: 3px;
+    text-decoration: underline;
 }
 
 #quiz-results {
